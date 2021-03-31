@@ -70,7 +70,7 @@ export function createNewPointTemplate() {
           <label class="event__label  event__type-output" for="event-destination-1">
             Flight
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
           <datalist id="destination-list-1">
             <option value="Amsterdam"></option>
             <option value="Geneva"></option>
@@ -145,6 +145,21 @@ export function createNewPointTemplate() {
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">40</span>
               </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+              <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
+              <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
+              <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
+              <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
+              <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
             </div>
           </div>
         </section>
