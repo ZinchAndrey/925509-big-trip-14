@@ -4,15 +4,14 @@ import {createTripFiltersTemplate} from './view/filters.js';
 
 import {createSortingTemplate} from './view/sorting.js';
 import {createPointEditTemplate} from './view/point-edit.js';
-import {createNewPointTemplate} from './view/new-point-create.js';
+import {createNewPointTemplate} from './view/point-create.js';
 import {createPointTemplate} from './view/point.js';
 
+const POINTS_COUNT = 3;
 
 function render(container, template, position) {
   container.insertAdjacentHTML(position, template);
 }
-
-const POINTS_COUNT = 3;
 
 const tripMainNode = document.querySelector('.trip-main');
 const tripInfoNode = tripMainNode.querySelector('.trip-info');
