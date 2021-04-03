@@ -7,6 +7,9 @@ import {createPointEditTemplate} from './view/point-edit.js';
 import {createNewPointTemplate} from './view/point-create.js';
 import {createPointTemplate} from './view/point.js';
 
+import {generatePoint} from './mock/point.js';
+console.log(generatePoint());
+
 const POINTS_COUNT = 3;
 
 function render(container, template, position) {
