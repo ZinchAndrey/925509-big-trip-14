@@ -1,32 +1,44 @@
 import dayjs from 'dayjs';
 
+function createOptionsTemplate(options) {
+  let optionsMarkup ='';
+  options.forEach((option) => {
+    optionsMarkup += `<li class="event__offer">
+      <span class="event__offer-title">${option.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${option.price}</span>
+    </li>`;
+  });
+  return optionsMarkup;
+}
+
+function getTimeDifference(start, end) {
+  const duration = require('dayjs/plugin/duration');
+  dayjs.extend(duration);
+  dayjs.duration(100);
+
+  const differenceInMs = dayjs(end).diff(dayjs(start));
+  const difference = {
+    days: dayjs.duration(differenceInMs).days() > 0 ? dayjs.duration(differenceInMs).days() + 'D ' : '',
+    hours: dayjs.duration(differenceInMs).hours() > 0 ? dayjs.duration(differenceInMs).hours() + 'H ' : '',
+    minutes: dayjs.duration(differenceInMs).minutes() > 0 ? dayjs.duration(differenceInMs).minutes() + 'M' : '',
+  };
+  return difference.days + difference.hours + difference.minutes; // 4D 2H 11M
+}
+
 export function createPointTemplate(point) {
   const {date, type, destination, price, isFavorite, options} = point;
   const favoriteClassName  = isFavorite ? 'event__favorite-btn--active' : '';
+  const timeDifference = getTimeDifference(date.from, date.to);
+  // console.log(timeDifference);
 
-  // const dateFrom = dayjs(date.from).format('HH:mm');
-  // const dateTo = dayjs(date.to).format('HH:mm');
-  // const dateFromAttribute = dayjs(date.from).format('YYYY-MM-DD[T]HH:mm');
-  // const dateToAttribute = dayjs(date.to).format('YYYY-MM-DD[T]HH:mm');
-  function createOptionsTemplate() {
-    let optionsMarkup ='';
-    options.forEach((option) => {
-      optionsMarkup += `<li class="event__offer">
-        <span class="event__offer-title">${option.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${option.price}</span>
-      </li>`;
-    });
-    return optionsMarkup;
-  }
-
-  const optionsMarkup = createOptionsTemplate();
+  const optionsMarkup = createOptionsTemplate(options);
 
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dayjs(date.from).format('YYYY-MM-DD')}">${dayjs(date.from).format('MMM DD')}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${destination}</h3>
       <div class="event__schedule">
@@ -35,7 +47,7 @@ export function createPointTemplate(point) {
           &mdash;
           <time class="event__end-time" datetime="${dayjs(date.to).format('YYYY-MM-DD[T]HH:mm')}">${dayjs(date.to).format('HH:mm')}</time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${timeDifference}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>
