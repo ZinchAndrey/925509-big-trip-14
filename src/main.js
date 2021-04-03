@@ -8,7 +8,6 @@ import {createNewPointTemplate} from './view/point-create.js';
 import {createPointTemplate} from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
-console.log(generatePoint());
 
 const POINTS_COUNT = 3;
 
@@ -44,8 +43,10 @@ render(tripEventsListNode, createPointEditTemplate(), 'afterbegin');
 render(tripEventsListNode, createNewPointTemplate(), 'beforeend');
 
 // Точка маршрута (в списке).
+const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 for (let i = 0; i < POINTS_COUNT; i++) {
-  render(tripEventsListNode, createPointTemplate(), 'beforeend');
+  // console.log(points[i]);
+  render(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
 
 
