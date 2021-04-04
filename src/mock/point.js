@@ -122,14 +122,20 @@ function generateDate() {
 
 export function generatePoint() {
   return {
-    type: getRandomArrEl(TYPES),
-    date: generateDate(),
-    destination: getRandomArrEl(DESTINATIONS),
-    price: getRandomInteger(0, MAX_PRICE),
-    options: generateOptions(OPTIONS),
-    photos: generatePhotos(photoSettings),
-    description: generateDescription(),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    destination: {
+      description: generateDescription(),
+      name: getRandomArrEl(DESTINATIONS),
+      pictures: generatePhotos(photoSettings),
+    },
+    offer: {
+      type: getRandomArrEl(TYPES).toLowerCase(),
+      options: generateOptions(OPTIONS),
+    },
+    data: {
+      date: generateDate(),
+      price: getRandomInteger(0, MAX_PRICE),
+      isFavorite: Boolean(getRandomInteger(0, 1)),
+    },
   };
 }
 
