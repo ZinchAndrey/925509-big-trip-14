@@ -37,11 +37,12 @@ render(filtersNode, createTripFiltersTemplate(), 'beforeend');
 render(tripEventsNode, createSortingTemplate(), 'afterbegin');
 
 // Форма редактирования;
-const editPoint = generatePoint();
-render(tripEventsListNode, createPointEditTemplate(editPoint), 'afterbegin');
+const pointEdit = generatePoint();
+render(tripEventsListNode, createPointEditTemplate(pointEdit), 'afterbegin');
 
 // Форма создания;
-render(tripEventsListNode, createNewPointTemplate(), 'beforeend');
+const pointCreate = generatePoint();
+render(tripEventsListNode, createNewPointTemplate(pointCreate), 'beforeend');
 
 // Точка маршрута (в списке).
 const points = new Array(POINTS_COUNT).fill().map(generatePoint);
