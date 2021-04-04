@@ -40,7 +40,7 @@ export function createPointTemplate(point) {
     <div class="event">
       <time class="event__date" datetime="${dayjs(data.date.from).format('YYYY-MM-DD')}">${dayjs(data.date.from).format('MMM DD')}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type.toLowerCase()}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${offer.type} ${destination.name}</h3>
       <div class="event__schedule">

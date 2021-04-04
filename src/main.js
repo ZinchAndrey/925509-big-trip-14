@@ -37,7 +37,8 @@ render(filtersNode, createTripFiltersTemplate(), 'beforeend');
 render(tripEventsNode, createSortingTemplate(), 'afterbegin');
 
 // Форма редактирования;
-render(tripEventsListNode, createPointEditTemplate(), 'afterbegin');
+const editPoint = generatePoint();
+render(tripEventsListNode, createPointEditTemplate(editPoint), 'afterbegin');
 
 // Форма создания;
 render(tripEventsListNode, createNewPointTemplate(), 'beforeend');
