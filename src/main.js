@@ -1,4 +1,5 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
+import {createTripCostTemplate} from './view/cost';
 import {createMainMenuTemplate} from './view/main-menu.js';
 import {createTripFiltersTemplate} from './view/filters.js';
 
@@ -51,5 +52,5 @@ for (let i = 0; i < POINTS_COUNT; i++) {
   render(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
 
-
 // Стоимость поездки;
+render(tripInfoNode, createTripCostTemplate(points), 'beforeend');
