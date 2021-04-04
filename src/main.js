@@ -10,7 +10,7 @@ import {createPointTemplate} from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
 
-const POINTS_COUNT = 3;
+const POINTS_COUNT = 10;
 
 function render(container, template, position) {
   container.insertAdjacentHTML(position, template);
@@ -25,6 +25,8 @@ const siteMainNode = document.querySelector('.page-main');
 const tripEventsNode = siteMainNode.querySelector('.trip-events');
 const tripEventsListNode = tripEventsNode.querySelector('.trip-events__list');
 
+const points = new Array(POINTS_COUNT).fill().map(generatePoint);
+
 // Информация о маршруте: города, даты;
 render(tripInfoNode, createTripInfoTemplate(), 'afterbegin');
 
@@ -38,16 +40,13 @@ render(filtersNode, createTripFiltersTemplate(), 'beforeend');
 render(tripEventsNode, createSortingTemplate(), 'afterbegin');
 
 // Форма редактирования;
-const pointEdit = generatePoint();
-render(tripEventsListNode, createPointEditTemplate(pointEdit), 'afterbegin');
+render(tripEventsListNode, createPointEditTemplate(points[0]), 'afterbegin');
 
 // Форма создания;
-const pointCreate = generatePoint();
-render(tripEventsListNode, createNewPointTemplate(pointCreate), 'beforeend');
+render(tripEventsListNode, createNewPointTemplate(points[1]), 'beforeend');
 
 // Точка маршрута (в списке).
-const points = new Array(POINTS_COUNT).fill().map(generatePoint);
-for (let i = 0; i < POINTS_COUNT; i++) {
+for (let i = 2; i < POINTS_COUNT; i++) {
   // console.log(points[i]);
   render(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
