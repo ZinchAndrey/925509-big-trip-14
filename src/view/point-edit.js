@@ -1,7 +1,16 @@
 import dayjs from 'dayjs';
+import {DESTINATIONS} from '../const.js';
 import {getRandomInteger} from '../utils.js';
 
-function createOptionOffers(options) {
+function createDestinationDatalistTemplate(destinations) {
+  let optionsMarkup = '';
+  destinations.forEach((destination) => {
+    optionsMarkup += `<option value="${destination}"></option>`;
+  });
+  return optionsMarkup;
+}
+
+function createOptionOffersTemplate(options) {
   let optionsMarkup = '';
   options.forEach((option, index) => {
     const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
@@ -92,9 +101,7 @@ export function createPointEditTemplate(point) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinationDatalistTemplate(DESTINATIONS)}
           </datalist>
         </div>
 
@@ -125,7 +132,7 @@ export function createPointEditTemplate(point) {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-          ${createOptionOffers(offer.options)}
+          ${createOptionOffersTemplate(offer.options)}
           </div>
         </section>
 
