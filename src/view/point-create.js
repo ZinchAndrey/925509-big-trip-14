@@ -11,6 +11,10 @@ function createDestinationDatalistTemplate(destinations) {
 }
 
 function createOptionOffersTemplate(options) {
+  if (!options.length) {
+    return '';
+  }
+
   let optionsMarkup = '';
   options.forEach((option, index) => {
     const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
@@ -25,7 +29,14 @@ function createOptionOffersTemplate(options) {
     </label>
   </div>`;
   });
-  return optionsMarkup;
+
+  return `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+      ${optionsMarkup}
+      </div>
+    </section>`;
 }
 
 function createPicturesTemplate(pictures) {
@@ -136,13 +147,7 @@ export function createNewPointTemplate(point) {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-          ${createOptionOffersTemplate(offer.options)}
-          </div>
-        </section>
+        ${createOptionOffersTemplate(offer.options)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
