@@ -1,6 +1,5 @@
 function calcTripCost(points) {
   let tripCost = 0;
-
   points.forEach((point) => {
     const {offer, data} = point;
     const offersPrice = offer.options.reduce((sumPrice, currentOption) => {
