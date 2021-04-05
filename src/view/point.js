@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
+dayjs.extend(duration);
+dayjs.duration(100);
 
 function getTimeDifference(start, end) {
-  //eslint-disable-next-line
-  const duration = require('dayjs/plugin/duration');
-  dayjs.extend(duration);
-  dayjs.duration(100);
-
   const differenceInMs = dayjs(end).diff(dayjs(start));
   const difference = {
     days: dayjs.duration(differenceInMs).days() > 0 ? dayjs.duration(differenceInMs).days() + 'D ' : '',
@@ -32,7 +30,6 @@ export function createPointTemplate(point) {
   const {destination, offer, data} = point;
   const favoriteClassName  = data.isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = getTimeDifference(data.date.from, data.date.to);
-  // console.log(timeDifference);
 
   const optionsMarkup = createOptionsTemplate(offer.options);
 
