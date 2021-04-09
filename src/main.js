@@ -10,11 +10,9 @@ import {createPointTemplate} from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
 
-const POINTS_COUNT = 15;
+import {renderTemplate} from './utils.js';
 
-function render(container, template, position) {
-  container.insertAdjacentHTML(position, template);
-}
+const POINTS_COUNT = 15;
 
 const tripMainNode = document.querySelector('.trip-main');
 const tripInfoNode = tripMainNode.querySelector('.trip-info');
@@ -36,29 +34,29 @@ points.sort((point1, point2) => {
 
 // Информация о маршруте: города, даты;
 // 0 и 1 точки не считаем, так как они идут в шаблоны форм
-render(tripInfoNode, createTripInfoTemplate(points.slice(2)), 'afterbegin');
+renderTemplate(tripInfoNode, createTripInfoTemplate(points.slice(2)), 'afterbegin');
 
 // Стоимость поездки;
-render(tripInfoNode, createTripCostTemplate(points.slice(2)), 'beforeend');
+renderTemplate(tripInfoNode, createTripCostTemplate(points.slice(2)), 'beforeend');
 
 // Меню;
-render(mainMenuNode, createMainMenuTemplate(), 'afterbegin');
+renderTemplate(mainMenuNode, createMainMenuTemplate(), 'afterbegin');
 
 // Фильтры;
-render(filtersNode, createTripFiltersTemplate(), 'beforeend');
+renderTemplate(filtersNode, createTripFiltersTemplate(), 'beforeend');
 
 // Сортировка;
-render(tripEventsNode, createSortingTemplate(), 'afterbegin');
+renderTemplate(tripEventsNode, createSortingTemplate(), 'afterbegin');
 
 // Форма редактирования;
-render(tripEventsListNode, createPointEditTemplate(points[0]), 'afterbegin');
+renderTemplate(tripEventsListNode, createPointEditTemplate(points[0]), 'afterbegin');
 
 // Форма создания;
-render(tripEventsListNode, createNewPointTemplate(points[1]), 'beforeend');
+renderTemplate(tripEventsListNode, createNewPointTemplate(points[1]), 'beforeend');
 
 // Точка маршрута (в списке).
 for (let i = 2; i < POINTS_COUNT; i++) {
   // console.log(points[i]);
-  render(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
+  renderTemplate(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
 
