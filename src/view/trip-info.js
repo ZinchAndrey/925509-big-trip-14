@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { createElement } from '../utils.js';
 
 const DESTINATION_POINTS_LIMIT = 3;
 
@@ -18,10 +19,33 @@ function createDestinationsTemplate(points) {
   return (destinations.join('&nbsp;&mdash;&nbsp;'));
 }
 
-export function createTripInfoTemplate(points) {
+function createTripInfoTemplate(points) {
   return `<div class="trip-info__main">
       <h1 class="trip-info__title">${createDestinationsTemplate(points)}</h1>
       <p class="trip-info__dates">${createDatesTemplate(points)}</p>
     </div>`;
+}
+
+export default class TripInfo {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
 }
 

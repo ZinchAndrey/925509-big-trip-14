@@ -1,4 +1,4 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
+import TripInfoView from './view/trip-info.js';
 import TripCostView from './view/cost';
 import MainMenuView from './view/main-menu.js';
 import FiltersView from './view/filters.js';
@@ -10,7 +10,7 @@ import PointView from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosition, renderTemplate, renderElement} from './utils.js';
+import {RenderPosition, renderElement} from './utils.js';
 
 const POINTS_COUNT = 15;
 
@@ -34,7 +34,7 @@ points.sort((point1, point2) => {
 
 // Информация о маршруте: города, даты;
 // 0 и 1 точки не считаем, так как они идут в шаблоны форм
-renderTemplate(tripInfoNode, createTripInfoTemplate(points.slice(2)), 'afterbegin');
+renderElement(tripInfoNode, new TripInfoView(points.slice(2)).getElement(), RenderPosition.AFTERBEGIN);
 
 // Стоимость поездки;
 renderElement(tripInfoNode, new TripCostView(points.slice(2)).getElement(), RenderPosition.BEFOREEND);
