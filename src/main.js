@@ -29,17 +29,31 @@ function renderPoint(point) {
   const pointComponent = new PointView(point);
   const editPointComponent = new PointEditView(point);
 
-  function replacePointToEdit() {
-    tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+  function pressEscHandler(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      replaceEditToPoint();
+      document.removeEventListener('keydown', pressEscHandler);
+    }
   }
 
-  function replaceEditToPoint(evt) {
-    evt.preventDefault();
+  function replacePointToEdit() {
+    tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+    document.addEventListener('keydown', pressEscHandler);
+  }
+
+  function replaceEditToPoint() {
     tripEventsListNode.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+    document.removeEventListener('keydown', pressEscHandler);
   }
 
   pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replacePointToEdit);
-  editPointComponent.getElement().querySelector('form').addEventListener('submit', replaceEditToPoint);
+
+  editPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+
+  editPointComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceEditToPoint();
+  });
 
   render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
 }
