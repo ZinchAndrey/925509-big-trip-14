@@ -25,6 +25,28 @@ const tripEventsListNode = tripEventsNode.querySelector('.trip-events__list');
 
 const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 
+function renderPoint(point) {
+  const pointComponent = new PointView(point);
+  const editPointComponent = new PointEditView(point);
+
+  function replacePointToEdit() {
+    tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+    // console.log(editPointComponent.getElement());
+  }
+
+  function replaceEditToPoint() {
+    tripEventsListNode.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+  }
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replacePointToEdit);
+  editPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    replaceEditToPoint();
+  });
+
+  render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
+}
+
 points.sort((point1, point2) => {
   if (point1.data.date.from < point2.data.date.from) {
     return -1;
@@ -33,11 +55,11 @@ points.sort((point1, point2) => {
 });
 
 // Информация о маршруте: города, даты;
-// 0 и 1 точки не считаем, так как они идут в шаблоны форм
-render(tripInfoNode, new TripInfoView(points.slice(2)).getElement(), RenderPosition.AFTERBEGIN);
+// 0 точку не считаем, так как она идет в шаблоны формы новой точки
+render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
 
 // Стоимость поездки;
-render(tripInfoNode, new TripCostView(points.slice(2)).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
 
 // Меню;
 render(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
@@ -51,12 +73,8 @@ render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN
 // Форма создания;
 render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
 
-// Форма редактирования;
-render(tripEventsListNode, new PointEditView(points[1]).getElement(), RenderPosition.BEFOREEND);
-
 // Точка маршрута (в списке).
-for (let i = 2; i < POINTS_COUNT; i++) {
-  // console.log(points[i]);
-  render(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
+for (let i = 1; i < POINTS_COUNT; i++) {
+  renderPoint(points[i]);
 }
 
