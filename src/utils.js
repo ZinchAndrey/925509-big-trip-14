@@ -16,7 +16,7 @@ function getRandomArrEl(array) {
   return array[randomIndex];
 }
 
-function renderElement(container, template, position) {
+function render(container, template, position) {
   switch (position) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(template);
@@ -40,4 +40,4 @@ function createElement(template) {
   return newElement.firstChild;
 }
 
-export {RenderPosition, getRandomInteger, getRandomArrEl, renderTemplate, renderElement, createElement};
+export {RenderPosition, getRandomInteger, getRandomArrEl, renderTemplate, render, createElement};

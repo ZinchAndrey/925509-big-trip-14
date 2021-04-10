@@ -10,7 +10,7 @@ import PointView from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosition, renderElement} from './utils.js';
+import {RenderPosition, render} from './utils.js';
 
 const POINTS_COUNT = 15;
 
@@ -34,29 +34,29 @@ points.sort((point1, point2) => {
 
 // Информация о маршруте: города, даты;
 // 0 и 1 точки не считаем, так как они идут в шаблоны форм
-renderElement(tripInfoNode, new TripInfoView(points.slice(2)).getElement(), RenderPosition.AFTERBEGIN);
+render(tripInfoNode, new TripInfoView(points.slice(2)).getElement(), RenderPosition.AFTERBEGIN);
 
 // Стоимость поездки;
-renderElement(tripInfoNode, new TripCostView(points.slice(2)).getElement(), RenderPosition.BEFOREEND);
+render(tripInfoNode, new TripCostView(points.slice(2)).getElement(), RenderPosition.BEFOREEND);
 
 // Меню;
-renderElement(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
+render(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Фильтры;
-renderElement(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 // Сортировка;
-renderElement(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Форма создания;
-renderElement(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
 
 // Форма редактирования;
-renderElement(tripEventsListNode, new PointEditView(points[1]).getElement(), RenderPosition.BEFOREEND);
+render(tripEventsListNode, new PointEditView(points[1]).getElement(), RenderPosition.BEFOREEND);
 
 // Точка маршрута (в списке).
 for (let i = 2; i < POINTS_COUNT; i++) {
   // console.log(points[i]);
-  renderElement(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
