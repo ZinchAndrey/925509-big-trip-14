@@ -1,5 +1,5 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
-import {createTripCostTemplate} from './view/cost';
+import TripCostView from './view/cost';
 import MainMenuView from './view/main-menu.js';
 import FiltersView from './view/filters.js';
 
@@ -37,7 +37,7 @@ points.sort((point1, point2) => {
 renderTemplate(tripInfoNode, createTripInfoTemplate(points.slice(2)), 'afterbegin');
 
 // Стоимость поездки;
-renderTemplate(tripInfoNode, createTripCostTemplate(points.slice(2)), 'beforeend');
+renderElement(tripInfoNode, new TripCostView(points.slice(2)).getElement(), RenderPosition.BEFOREEND);
 
 // Меню;
 renderElement(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
