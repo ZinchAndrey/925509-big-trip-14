@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
+import {createElement} from '../utils.js';
+
 dayjs.extend(duration);
 dayjs.duration(100);
 
@@ -26,7 +28,7 @@ function createOptionsTemplate(options) {
   return optionsMarkup;
 }
 
-export function createPointTemplate(point) {
+function createPointTemplate(point) {
   const {destination, offer, data} = point;
   const favoriteClassName  = data.isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = getTimeDifference(data.date.from, data.date.to);
@@ -68,3 +70,25 @@ export function createPointTemplate(point) {
   </li>`;
 }
 
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
