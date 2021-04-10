@@ -4,7 +4,7 @@ import {createMainMenuTemplate} from './view/main-menu.js';
 import {createTripFiltersTemplate} from './view/filters.js';
 
 import {createSortingTemplate} from './view/sorting.js';
-import {createPointEditTemplate} from './view/point-edit.js';
+import PointEditView from './view/point-edit.js';
 import NewPointView from './view/point-create.js';
 import PointView from './view/point.js';
 
@@ -48,11 +48,11 @@ renderTemplate(filtersNode, createTripFiltersTemplate(), 'beforeend');
 // Сортировка;
 renderTemplate(tripEventsNode, createSortingTemplate(), 'afterbegin');
 
-// Форма редактирования;
-renderTemplate(tripEventsListNode, createPointEditTemplate(points[0]), 'afterbegin');
-
 // Форма создания;
-renderElement(tripEventsListNode, new NewPointView(points[1]).getElement(), RenderPosition.BEFOREEND);
+renderElement(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+
+// Форма редактирования;
+renderElement(tripEventsListNode, new PointEditView(points[1]).getElement(), RenderPosition.BEFOREEND);
 
 // Точка маршрута (в списке).
 for (let i = 2; i < POINTS_COUNT; i++) {
