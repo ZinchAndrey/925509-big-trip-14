@@ -31,18 +31,15 @@ function renderPoint(point) {
 
   function replacePointToEdit() {
     tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
-    // console.log(editPointComponent.getElement());
   }
 
-  function replaceEditToPoint() {
+  function replaceEditToPoint(evt) {
+    evt.preventDefault();
     tripEventsListNode.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
   }
 
   pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replacePointToEdit);
-  editPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
-    replaceEditToPoint();
-  });
+  editPointComponent.getElement().querySelector('form').addEventListener('submit', replaceEditToPoint);
 
   render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
 }
