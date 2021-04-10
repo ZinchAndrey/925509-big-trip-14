@@ -1,7 +1,7 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createTripCostTemplate} from './view/cost';
 import {createMainMenuTemplate} from './view/main-menu.js';
-import {createTripFiltersTemplate} from './view/filters.js';
+import FiltersView from './view/filters.js';
 
 import SortingView from './view/sorting.js';
 import PointEditView from './view/point-edit.js';
@@ -43,7 +43,7 @@ renderTemplate(tripInfoNode, createTripCostTemplate(points.slice(2)), 'beforeend
 renderTemplate(mainMenuNode, createMainMenuTemplate(), 'afterbegin');
 
 // Фильтры;
-renderTemplate(filtersNode, createTripFiltersTemplate(), 'beforeend');
+renderElement(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 // Сортировка;
 renderElement(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
