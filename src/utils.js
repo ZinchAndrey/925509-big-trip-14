@@ -1,4 +1,4 @@
-const RenderPosittion = {
+const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
@@ -18,11 +18,11 @@ function getRandomArrEl(array) {
 
 function renderElement(container, template, position) {
   switch (position) {
-    case RenderPosittion.AFTERBEGIN:
+    case RenderPosition.AFTERBEGIN:
       container.prepend(template);
       break;
 
-    case RenderPosittion.BEFOREEND:
+    case RenderPosition.BEFOREEND:
       container.append(template);
       break;
   }
@@ -40,4 +40,4 @@ function createElement(template) {
   return newElement.firstChild;
 }
 
-export {RenderPosittion, getRandomInteger, getRandomArrEl, renderTemplate, renderElement, createElement};
+export {RenderPosition, getRandomInteger, getRandomArrEl, renderTemplate, renderElement, createElement};

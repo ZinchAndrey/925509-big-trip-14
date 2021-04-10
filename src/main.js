@@ -5,12 +5,12 @@ import {createTripFiltersTemplate} from './view/filters.js';
 
 import {createSortingTemplate} from './view/sorting.js';
 import {createPointEditTemplate} from './view/point-edit.js';
-import {createNewPointTemplate} from './view/point-create.js';
+import NewPointView from './view/point-create.js';
 import PointView from './view/point.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosittion, renderTemplate, renderElement} from './utils.js';
+import {RenderPosition, renderTemplate, renderElement} from './utils.js';
 
 const POINTS_COUNT = 15;
 
@@ -52,12 +52,12 @@ renderTemplate(tripEventsNode, createSortingTemplate(), 'afterbegin');
 renderTemplate(tripEventsListNode, createPointEditTemplate(points[0]), 'afterbegin');
 
 // Форма создания;
-renderTemplate(tripEventsListNode, createNewPointTemplate(points[1]), 'beforeend');
+renderElement(tripEventsListNode, new NewPointView(points[1]).getElement(), RenderPosition.BEFOREEND);
 
 // Точка маршрута (в списке).
 for (let i = 2; i < POINTS_COUNT; i++) {
   // console.log(points[i]);
-  renderElement(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosittion.BEFOREEND);
+  renderElement(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
   // renderTemplate(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
 
