@@ -7,6 +7,7 @@ import SortingView from './view/sorting.js';
 import PointEditView from './view/point-edit.js';
 import NewPointView from './view/point-create.js';
 import PointView from './view/point.js';
+import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/point.js';
 
@@ -65,27 +66,32 @@ points.sort((point1, point2) => {
   return 1;
 });
 
-// Информация о маршруте: города, даты;
-// 0 точку не считаем, так как она идет в шаблоны формы новой точки
-render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
-
-// Стоимость поездки;
-render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
-
 // Меню;
 render(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Фильтры;
 render(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
-// Сортировка;
-render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+if (!points.length) {
+  render(tripEventsNode, new NoPointsView().getElement(), RenderPosition.AFTERBEGIN);
+} else {
+  // Информация о маршруте: города, даты;
+  // 0 точку не считаем, так как она идет в шаблоны формы новой точки
+  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
 
-// Форма создания;
-render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+  // Стоимость поездки;
+  render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
 
-// Точка маршрута (в списке).
-for (let i = 1; i < POINTS_COUNT; i++) {
-  renderPoint(points[i]);
+  // Сортировка;
+  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+
+  // Форма создания;
+  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+
+  // Точка маршрута (в списке).
+  for (let i = 1; i < POINTS_COUNT; i++) {
+    renderPoint(points[i]);
+  }
 }
+
 
