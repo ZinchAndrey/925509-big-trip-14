@@ -1,6 +1,6 @@
 import {createTripInfoTemplate} from './view/trip-info.js';
 import {createTripCostTemplate} from './view/cost';
-import {createMainMenuTemplate} from './view/main-menu.js';
+import MainMenuView from './view/main-menu.js';
 import FiltersView from './view/filters.js';
 
 import SortingView from './view/sorting.js';
@@ -40,7 +40,7 @@ renderTemplate(tripInfoNode, createTripInfoTemplate(points.slice(2)), 'afterbegi
 renderTemplate(tripInfoNode, createTripCostTemplate(points.slice(2)), 'beforeend');
 
 // Меню;
-renderTemplate(mainMenuNode, createMainMenuTemplate(), 'afterbegin');
+renderElement(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Фильтры;
 renderElement(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
