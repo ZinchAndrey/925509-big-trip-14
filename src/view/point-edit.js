@@ -173,5 +173,4 @@ export default class PointEdit {
   removeElement() {
     this._element = null;
   }
-
 }

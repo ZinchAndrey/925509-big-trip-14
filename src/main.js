@@ -3,7 +3,7 @@ import {createTripCostTemplate} from './view/cost';
 import {createMainMenuTemplate} from './view/main-menu.js';
 import {createTripFiltersTemplate} from './view/filters.js';
 
-import {createSortingTemplate} from './view/sorting.js';
+import SortingView from './view/sorting.js';
 import PointEditView from './view/point-edit.js';
 import NewPointView from './view/point-create.js';
 import PointView from './view/point.js';
@@ -46,7 +46,7 @@ renderTemplate(mainMenuNode, createMainMenuTemplate(), 'afterbegin');
 renderTemplate(filtersNode, createTripFiltersTemplate(), 'beforeend');
 
 // Сортировка;
-renderTemplate(tripEventsNode, createSortingTemplate(), 'afterbegin');
+renderElement(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
 // Форма создания;
 renderElement(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
@@ -58,6 +58,5 @@ renderElement(tripEventsListNode, new PointEditView(points[1]).getElement(), Ren
 for (let i = 2; i < POINTS_COUNT; i++) {
   // console.log(points[i]);
   renderElement(tripEventsListNode, new PointView(points[i]).getElement(), RenderPosition.BEFOREEND);
-  // renderTemplate(tripEventsListNode, createPointTemplate(points[i]), 'beforeend');
 }
 
