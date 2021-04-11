@@ -1,19 +1,17 @@
 import { createElement } from '../utils.js';
 
-function createMainMenuTemplate() {
-  return `<nav class="trip-controls__trip-tabs  trip-tabs">
-    <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
-    <a class="trip-tabs__btn" href="#">Stats</a>
-  </nav>`;
+function createTripInfoBlockTemplate() {
+  return `<section class="trip-main__trip-info  trip-info">
+    </section>`;
 }
 
-export default class MainMenu {
+export default class TripInfoBlock {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createMainMenuTemplate();
+    return createTripInfoBlockTemplate();
   }
 
   getElement() {

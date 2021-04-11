@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {DESTINATIONS} from '../const.js';
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger, createElement} from '../utils.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -47,7 +47,7 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-export function createNewPointTemplate(point) {
+function createNewPointTemplate(point) {
   const {destination, offer, data} = point;
 
   return `<li class="trip-events__item">
@@ -162,5 +162,28 @@ export function createNewPointTemplate(point) {
       </section>
     </form>
   </li>`;
+}
+
+export default class NewPoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNewPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
 }
 
