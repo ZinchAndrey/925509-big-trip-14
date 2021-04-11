@@ -1,3 +1,4 @@
+import TripInfoBlockView from './view/trip-info-block.js';
 import TripInfoView from './view/trip-info.js';
 import TripCostView from './view/cost';
 import MainMenuView from './view/main-menu.js';
@@ -16,7 +17,6 @@ import {RenderPosition, render} from './utils.js';
 const POINTS_COUNT = 15;
 
 const tripMainNode = document.querySelector('.trip-main');
-const tripInfoNode = tripMainNode.querySelector('.trip-info');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 
@@ -76,6 +76,9 @@ if (!points.length) {
   render(tripEventsNode, new NoPointsView().getElement(), RenderPosition.AFTERBEGIN);
 } else {
   // Информация о маршруте: города, даты;
+  render(tripMainNode, new TripInfoBlockView().getElement(), RenderPosition.AFTERBEGIN);
+  const tripInfoNode = tripMainNode.querySelector('.trip-info');
+
   // 0 точку не считаем, так как она идет в шаблоны формы новой точки
   render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
 
