@@ -59,6 +59,22 @@ function renderPoint(point) {
   render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
 }
 
+function renderEventsTable(tripInfoNode) {
+  // 0 точку не считаем, так как она идет в шаблоны формы новой точки
+  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
+
+  // Сортировка;
+  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+
+  // Форма создания;
+  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+
+  // Точка маршрута (в списке).
+  for (let i = 1; i < POINTS_COUNT; i++) {
+    renderPoint(points[i]);
+  }
+}
+
 points.sort((point1, point2) => {
   if (point1.data.date.from < point2.data.date.from) {
     return -1;
@@ -79,22 +95,11 @@ if (!points.length) {
   render(tripMainNode, new TripInfoBlockView().getElement(), RenderPosition.AFTERBEGIN);
   const tripInfoNode = tripMainNode.querySelector('.trip-info');
 
-  // 0 точку не считаем, так как она идет в шаблоны формы новой точки
-  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
-
   // Стоимость поездки;
   render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
 
-  // Сортировка;
-  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
-
-  // Форма создания;
-  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
-
-  // Точка маршрута (в списке).
-  for (let i = 1; i < POINTS_COUNT; i++) {
-    renderPoint(points[i]);
-  }
+  // Точки маршрута + сортировка
+  renderEventsTable(tripInfoNode);
 }
 
 
