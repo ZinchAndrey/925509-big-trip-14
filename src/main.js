@@ -59,6 +59,29 @@ function renderPoint(point) {
   render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
 }
 
+function renderEventsTable() {
+  // Сортировка;
+  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+
+  // Форма создания;
+  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+
+  // Точка маршрута (в списке).
+  for (let i = 1; i < POINTS_COUNT; i++) {
+    renderPoint(points[i]);
+  }
+}
+
+function renderTripInfo() {
+  render(tripMainNode, new TripInfoBlockView().getElement(), RenderPosition.AFTERBEGIN);
+  const tripInfoNode = tripMainNode.querySelector('.trip-info');
+
+  // 0 точку не считаем, так как она идет в шаблоны формы новой точки
+  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
+  // Стоимость поездки;
+  render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
+}
+
 points.sort((point1, point2) => {
   if (point1.data.date.from < point2.data.date.from) {
     return -1;
@@ -75,26 +98,11 @@ render(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 if (!points.length) {
   render(tripEventsNode, new NoPointsView().getElement(), RenderPosition.AFTERBEGIN);
 } else {
-  // Информация о маршруте: города, даты;
-  render(tripMainNode, new TripInfoBlockView().getElement(), RenderPosition.AFTERBEGIN);
-  const tripInfoNode = tripMainNode.querySelector('.trip-info');
+  // Информация о маршруте: города, даты, цена;
+  renderTripInfo();
 
-  // 0 точку не считаем, так как она идет в шаблоны формы новой точки
-  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
-
-  // Стоимость поездки;
-  render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
-
-  // Сортировка;
-  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
-
-  // Форма создания;
-  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
-
-  // Точка маршрута (в списке).
-  for (let i = 1; i < POINTS_COUNT; i++) {
-    renderPoint(points[i]);
-  }
+  // Точки маршрута + сортировка
+  renderEventsTable();
 }
 
 
