@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {DESTINATIONS} from '../const.js';
-import {getRandomInteger, createElement} from '../utils.js';
+import {getRandomInteger} from '../utils.js';
+import AbstractView from './abstract.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -164,26 +165,14 @@ function createNewPointTemplate(point) {
   </li>`;
 }
 
-export default class NewPoint {
+export default class NewPoint extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createNewPointTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
