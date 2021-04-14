@@ -12,7 +12,7 @@ import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosition, render} from './utils/render.js';
+import {RenderPosition, render, replace} from './utils/render.js';
 
 const POINTS_COUNT = 15;
 
@@ -38,12 +38,12 @@ function renderPoint(point) {
   }
 
   function replacePointToEdit() {
-    tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+    replace(editPointComponent, pointComponent);
     document.addEventListener('keydown', pressEscHandler);
   }
 
   function replaceEditToPoint() {
-    tripEventsListNode.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+    replace(pointComponent, editPointComponent);
     document.removeEventListener('keydown', pressEscHandler);
   }
 
