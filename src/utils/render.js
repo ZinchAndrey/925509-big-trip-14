@@ -3,19 +3,6 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-function getRandomInteger(a = 0, b = 1) {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-}
-
-function getRandomArrEl(array) {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return array[randomIndex];
-}
-
 function render(container, template, position) {
   switch (position) {
     case RenderPosition.AFTERBEGIN:
@@ -40,4 +27,4 @@ function createElement(template) {
   return newElement.firstChild;
 }
 
-export {RenderPosition, getRandomInteger, getRandomArrEl, renderTemplate, render, createElement};
+export {RenderPosition, renderTemplate, render, createElement};

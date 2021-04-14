@@ -12,7 +12,7 @@ import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosition, render} from './utils.js';
+import {RenderPosition, render} from './utils/render.js';
 
 const POINTS_COUNT = 15;
 

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {DESTINATIONS} from '../const.js';
-import {getRandomInteger, getRandomArrEl} from '../utils.js';
+import {getRandomInteger, getRandomArrEl} from '../utils/common.js';
 
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const MAX_PRICE = 1000;
