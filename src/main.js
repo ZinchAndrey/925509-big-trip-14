@@ -47,14 +47,11 @@ function renderPoint(point) {
     document.removeEventListener('keydown', pressEscHandler);
   }
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replacePointToEdit);
+  pointComponent.setRollUpClickHandler(replacePointToEdit);
 
-  editPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+  editPointComponent.setRollUpClickHandler(replaceEditToPoint);
 
-  editPointComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    replaceEditToPoint();
-  });
+  editPointComponent.setFormSubmitHandler(replaceEditToPoint);
 
   render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
 }
