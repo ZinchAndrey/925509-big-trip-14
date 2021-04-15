@@ -12,7 +12,7 @@ import NoPointsView from './view/no-points.js';
 
 import {generatePoint} from './mock/point.js';
 
-import {RenderPosition, render} from './utils.js';
+import {RenderPosition, render, replace} from './utils/render.js';
 
 const POINTS_COUNT = 15;
 
@@ -38,33 +38,30 @@ function renderPoint(point) {
   }
 
   function replacePointToEdit() {
-    tripEventsListNode.replaceChild(editPointComponent.getElement(), pointComponent.getElement());
+    replace(editPointComponent, pointComponent);
     document.addEventListener('keydown', pressEscHandler);
   }
 
   function replaceEditToPoint() {
-    tripEventsListNode.replaceChild(pointComponent.getElement(), editPointComponent.getElement());
+    replace(pointComponent, editPointComponent);
     document.removeEventListener('keydown', pressEscHandler);
   }
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replacePointToEdit);
+  pointComponent.setRollUpClickHandler(replacePointToEdit);
 
-  editPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', replaceEditToPoint);
+  editPointComponent.setRollUpClickHandler(replaceEditToPoint);
 
-  editPointComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    replaceEditToPoint();
-  });
+  editPointComponent.setFormSubmitHandler(replaceEditToPoint);
 
-  render(tripEventsListNode, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsListNode, pointComponent, RenderPosition.BEFOREEND);
 }
 
 function renderEventsTable() {
   // Сортировка;
-  render(tripEventsNode, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripEventsNode, new SortingView(), RenderPosition.AFTERBEGIN);
 
   // Форма создания;
-  render(tripEventsListNode, new NewPointView(points[0]).getElement(), RenderPosition.AFTERBEGIN);
+  render(tripEventsListNode, new NewPointView(points[0]), RenderPosition.AFTERBEGIN);
 
   // Точка маршрута (в списке).
   for (let i = 1; i < POINTS_COUNT; i++) {
@@ -73,13 +70,13 @@ function renderEventsTable() {
 }
 
 function renderTripInfo() {
-  render(tripMainNode, new TripInfoBlockView().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripMainNode, new TripInfoBlockView(), RenderPosition.AFTERBEGIN);
   const tripInfoNode = tripMainNode.querySelector('.trip-info');
 
   // 0 точку не считаем, так как она идет в шаблоны формы новой точки
-  render(tripInfoNode, new TripInfoView(points.slice(1)).getElement(), RenderPosition.AFTERBEGIN);
+  render(tripInfoNode, new TripInfoView(points.slice(1)), RenderPosition.AFTERBEGIN);
   // Стоимость поездки;
-  render(tripInfoNode, new TripCostView(points.slice(1)).getElement(), RenderPosition.BEFOREEND);
+  render(tripInfoNode, new TripCostView(points.slice(1)), RenderPosition.BEFOREEND);
 }
 
 points.sort((point1, point2) => {
@@ -90,13 +87,13 @@ points.sort((point1, point2) => {
 });
 
 // Меню;
-render(mainMenuNode, new MainMenuView().getElement(), RenderPosition.AFTERBEGIN);
+render(mainMenuNode, new MainMenuView(), RenderPosition.AFTERBEGIN);
 
 // Фильтры;
-render(filtersNode, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(filtersNode, new FiltersView(), RenderPosition.BEFOREEND);
 
 if (!points.length) {
-  render(tripEventsNode, new NoPointsView().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripEventsNode, new NoPointsView(), RenderPosition.AFTERBEGIN);
 } else {
   // Информация о маршруте: города, даты, цена;
   renderTripInfo();
