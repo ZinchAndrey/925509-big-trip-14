@@ -1,15 +1,15 @@
-import TripInfoBlockView from './view/trip-info-block.js';
-import TripInfoView from './view/trip-info.js';
-import TripCostView from './view/cost';
-import MainMenuView from './view/main-menu.js';
-import FiltersView from './view/filters.js';
+import TripInfoBlockView from '../view/trip-info-block.js';
+import TripInfoView from '../view/trip-info.js';
+import TripCostView from '../view/cost';
+import MainMenuView from '../view/main-menu.js';
+import FiltersView from '../view/filters.js';
 
-import SortingView from './view/sorting.js';
-import NewPointView from './view/point-create.js';
+import SortingView from '../view/sorting.js';
+import NewPointView from '../view/point-create.js';
 
-import NoPointsView from './view/no-points.js';
+import NoPointsView from '../view/no-points.js';
 
-import {RenderPosition, render} from './utils/render.js';
+import {RenderPosition, render} from '../utils/render.js';
 
 import PointPresenter from './point.js';
 
@@ -24,11 +24,11 @@ export default class Trip {
 
     this._pageMainNode = pageMainNode;
     this._tripEventsNode = this._pageMainNode.querySelector('.trip-events');
-    this._tripEventsListNode= this._tripEventsListNode.querySelector('.trip-events__list');
+    this._tripEventsListNode = this._tripEventsNode.querySelector('.trip-events__list');
 
 
     this._sortingComponent = new SortingView();
-    this._newPointComponent = new NewPointView();
+    // this._newPointComponent = new NewPointView();
 
     this._tripInfoBlockComponent = new TripInfoBlockView();
     this._tripInfoComponent = new TripInfoView();
@@ -44,9 +44,12 @@ export default class Trip {
     this._renderMainMenu();
     this._renderFilters();
 
-    this._renderEventsTable(points);
-
-    this._renderTripInfo(points);
+    if (!points.length) {
+      render(this._tripEventsListNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
+    } else {
+      this._renderEventsTable(points);
+      this._renderTripInfo(points);
+    }
   }
 
   _renderMainMenu() {
@@ -75,11 +78,12 @@ export default class Trip {
   }
 
   _renderNewPoint(point) {
-    render(this._tripEventsListNode, this._newPointComponent(point), RenderPosition.AFTERBEGIN);
+    const newPointComponent = new NewPointView(point);
+    render(this._tripEventsListNode, newPointComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripEventsNode);
+    const pointPresenter = new PointPresenter(this._tripEventsListNode);
 
     pointPresenter.init(point);
   }

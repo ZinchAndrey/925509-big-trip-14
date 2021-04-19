@@ -1,7 +1,7 @@
-import PointView from './view/point.js';
-import PointEditView from './view/point-edit.js';
+import PointView from '../view/point.js';
+import PointEditView from '../view/point-edit.js';
 
-import {RenderPosition, render, replace} from './utils/render.js';
+import {RenderPosition, render, replace} from '../utils/render.js';
 
 
 export default class Point {
