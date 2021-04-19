@@ -11,9 +11,12 @@ export default class Point {
 
     this._tripEventsListNode = tripEventsListNode;
 
-    /* не очень понятно, требуется ли тут дополнительно биндить или нет,
+    /* не очень понятно, почему тут требуется дополнительно биндить,
     так как в конструкторе PointView this._rollUpClickHandler забинден */
 
+    this._replacePointToEdit = this._replacePointToEdit.bind(this);
+    this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
+    this._pressEscHandler = this._pressEscHandler.bind(this);
   }
 
   init(point) {
@@ -37,6 +40,10 @@ export default class Point {
   _replacePointToEdit() {
     replace(this._editPointComponent, this._pointComponent);
     document.addEventListener('keydown', this._pressEscHandler);
+  }
+
+  _handleEditClick() {
+    this._replacePointToEdit();
   }
 
   _replaceEditToPoint() {
