@@ -4,7 +4,6 @@ import duration from 'dayjs/plugin/duration';
 import AbstractView from './abstract.js';
 
 dayjs.extend(duration);
-dayjs.duration(100);
 
 function getTimeDifference(start, end) {
   const differenceInMs = dayjs(end).diff(dayjs(start));

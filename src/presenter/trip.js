@@ -1,0 +1,92 @@
+import TripInfoBlockView from './view/trip-info-block.js';
+import TripInfoView from './view/trip-info.js';
+import TripCostView from './view/cost';
+import MainMenuView from './view/main-menu.js';
+import FiltersView from './view/filters.js';
+
+import SortingView from './view/sorting.js';
+import NewPointView from './view/point-create.js';
+
+import NoPointsView from './view/no-points.js';
+
+import {RenderPosition, render} from './utils/render.js';
+
+import PointPresenter from './point.js';
+
+const POINTS_COUNT = 15;
+
+export default class Trip {
+  constructor(tripMainNode, pageMainNode) {
+
+    this._tripMainNode = tripMainNode;
+    this._mainMenuNode = this._tripMainNode.querySelector('.trip-controls__navigation');
+    this._filtersNode = this._tripMainNode.querySelector('.trip-controls__filters');
+
+    this._pageMainNode = pageMainNode;
+    this._tripEventsNode = this._pageMainNode.querySelector('.trip-events');
+    this._tripEventsListNode= this._tripEventsListNode.querySelector('.trip-events__list');
+
+
+    this._sortingComponent = new SortingView();
+    this._newPointComponent = new NewPointView();
+
+    this._tripInfoBlockComponent = new TripInfoBlockView();
+    this._tripInfoComponent = new TripInfoView();
+    this._tripCostComponent = new TripCostView();
+
+    this._mainMenuComponent = new MainMenuView();
+    this._filtersComponent = new FiltersView();
+
+    this._noPointsComponent = new NoPointsView();
+  }
+
+  init(points) {
+    this._renderMainMenu();
+    this._renderFilters();
+
+    this._renderEventsTable(points);
+
+    this._renderTripInfo(points);
+  }
+
+  _renderMainMenu() {
+    render(this._mainMenuNode, this._mainMenuComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderFilters() {
+    render(this._filtersNode, this._filtersComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderNoPoints() {
+    render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderEventsTable(points) {
+    this._renderSorting();
+    this._renderNewPoint(points[0]);
+
+    for (let i = 1; i < POINTS_COUNT; i++) {
+      this._renderPoint(points[i]);
+    }
+  }
+
+  _renderSorting() {
+    render(this._tripEventsNode, this._sortingComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderNewPoint(point) {
+    render(this._tripEventsListNode, this._newPointComponent(point), RenderPosition.AFTERBEGIN);
+  }
+
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._tripEventsNode);
+
+    pointPresenter.init(point);
+  }
+
+  _renderTripInfo() {
+    // здесь презентер
+  }
+
+
+}
