@@ -11,9 +11,6 @@ export default class Point {
 
     this._tripEventsListNode = tripEventsListNode;
 
-    /* не очень понятно, почему тут требуется дополнительно биндить,
-    так как в конструкторе PointView this._rollUpClickHandler забинден */
-
     this._replacePointToEdit = this._replacePointToEdit.bind(this);
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
     this._pressEscHandler = this._pressEscHandler.bind(this);

@@ -1,6 +1,7 @@
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
 import TripCostView from '../view/cost';
+
 import MainMenuView from '../view/main-menu.js';
 import FiltersView from '../view/filters.js';
 
@@ -12,6 +13,7 @@ import NoPointsView from '../view/no-points.js';
 import {RenderPosition, render} from '../utils/render.js';
 
 import PointPresenter from './point.js';
+import TripInfoPresenter from './trip-info.js';
 
 const POINTS_COUNT = 15;
 
@@ -28,7 +30,6 @@ export default class Trip {
 
 
     this._sortingComponent = new SortingView();
-    // this._newPointComponent = new NewPointView();
 
     this._tripInfoBlockComponent = new TripInfoBlockView();
     this._tripInfoComponent = new TripInfoView();
@@ -48,7 +49,9 @@ export default class Trip {
       render(this._tripEventsListNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
     } else {
       this._renderEventsTable(points);
-      this._renderTripInfo(points);
+
+      // т.к. первая точка идет на отрисовку компонента новой точки маршрута. В дальнейшем исправить
+      this._renderTripInfo(points.slice(1));
     }
   }
 
@@ -88,9 +91,9 @@ export default class Trip {
     pointPresenter.init(point);
   }
 
-  _renderTripInfo() {
-    // здесь презентер
+  _renderTripInfo(points) {
+    const tripInfoPresenter = new TripInfoPresenter(this._tripMainNode);
+
+    tripInfoPresenter.init(points);
   }
-
-
 }
