@@ -39,6 +39,8 @@ export default class Trip {
     this._filtersComponent = new FiltersView();
 
     this._noPointsComponent = new NoPointsView();
+
+    this._pointPresenter = {};
   }
 
   init(points) {
@@ -89,11 +91,22 @@ export default class Trip {
     const pointPresenter = new PointPresenter(this._tripEventsListNode);
 
     pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
   }
 
   _renderTripInfo(points) {
     const tripInfoPresenter = new TripInfoPresenter(this._tripMainNode);
 
     tripInfoPresenter.init(points);
+  }
+
+  // возможно в _renderEventsTable придется менять логику и вынести отрисовку списка точек в отдельную функцию
+  _clearPointsList() {
+    Object.values(this._pointPresenter).
+      forEach((presenter) => {
+        presenter.destroy();
+      });
+
+    this._pointPresenter = {};
   }
 }

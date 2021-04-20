@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {DESTINATIONS} from '../const.js';
 import {getRandomInteger, getRandomArrEl} from '../utils/common.js';
 
@@ -110,6 +111,7 @@ function generateDate() {
 
 export function generatePoint() {
   return {
+    id: nanoid(),
     destination: {
       description: generateDescription(),
       name: getRandomArrEl(DESTINATIONS),
