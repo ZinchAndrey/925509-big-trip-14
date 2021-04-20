@@ -13,6 +13,7 @@ import NewPointView from '../view/point-create.js';
 import NoPointsView from '../view/no-points.js';
 
 import {RenderPosition, render} from '../utils/render.js';
+import {updateItem} from '../utils/common.js';
 
 import PointPresenter from './point.js';
 import TripInfoPresenter from './trip-info.js';
@@ -41,19 +42,23 @@ export default class Trip {
     this._noPointsComponent = new NoPointsView();
 
     this._pointPresenter = {};
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points) {
+    this._points = points.slice();
+
     this._renderMainMenu();
     this._renderFilters();
 
-    if (!points.length) {
+    if (!this._points.length) {
       render(this._tripEventsListNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
     } else {
-      this._renderEventsTable(points);
+      this._renderEventsTable(this._points);
 
       // т.к. первая точка идет на отрисовку компонента новой точки маршрута. В дальнейшем исправить
-      this._renderTripInfo(points.slice(1));
+      this._renderTripInfo(this._points.slice(1));
     }
   }
 
@@ -108,5 +113,12 @@ export default class Trip {
       });
 
     this._pointPresenter = {};
+  }
+
+  _handlePointChange(updatedPoint) {
+    updateItem(this._points, updatedPoint);
+    console.log(this.pointPresenter[updatedPoint.id]);
+    this.pointPresenter[updatedPoint.id].init(updatedPoint);
+
   }
 }
