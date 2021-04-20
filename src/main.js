@@ -1,4 +1,4 @@
-import POINTS_COUNT from './const.js';
+import {POINTS_COUNT} from './const.js';
 
 import {generatePoint} from './mock/point.js';
 

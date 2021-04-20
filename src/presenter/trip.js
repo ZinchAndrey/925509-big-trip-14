@@ -1,4 +1,4 @@
-import POINTS_COUNT from '../const.js';
+import {POINTS_COUNT} from '../const.js';
 
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
