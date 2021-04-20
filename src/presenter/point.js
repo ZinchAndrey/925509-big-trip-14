@@ -1,7 +1,7 @@
 import PointView from '../view/point.js';
 import PointEditView from '../view/point-edit.js';
 
-import {RenderPosition, render, replace} from '../utils/render.js';
+import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
 
 export default class Point {
@@ -17,6 +17,11 @@ export default class Point {
   }
 
   init(point) {
+    // возможно, необходимо записать точку в приватное свойство this._point
+
+    const prevPointComponent = this._pointComponent;
+    const prevEditPointComponent = this._editPointComponent;
+
     this._pointComponent = new PointView(point);
     this._editPointComponent = new PointEditView(point);
 
@@ -24,7 +29,26 @@ export default class Point {
     this._editPointComponent.setRollUpClickHandler(this._replaceEditToPoint);
     this._editPointComponent.setFormSubmitHandler(this._replaceEditToPoint);
 
-    render(this._tripEventsListNode, this._pointComponent, RenderPosition.BEFOREEND);
+    if (prevPointComponent === null || prevEditPointComponent === null) {
+      render(this._tripEventsListNode, this._pointComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._tripEventsListNode.getElement().contains(prevPointComponent.getElement())) {
+      replace(this.__pointComponent, prevPointComponent);
+    }
+
+    if (this._tripEventsListNode.getElement().contains(prevEditPointComponent.getElement())) {
+      replace(this._editPointComponent, prevEditPointComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditPointComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._editPointComponent);
   }
 
   _pressEscHandler(evt) {
