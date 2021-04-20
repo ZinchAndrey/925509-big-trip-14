@@ -1,3 +1,5 @@
+import POINTS_COUNT from '../const.js';
+
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
 import TripCostView from '../view/cost';
@@ -14,8 +16,6 @@ import {RenderPosition, render} from '../utils/render.js';
 
 import PointPresenter from './point.js';
 import TripInfoPresenter from './trip-info.js';
-
-const POINTS_COUNT = 15;
 
 export default class Trip {
   constructor(tripMainNode, pageMainNode) {
