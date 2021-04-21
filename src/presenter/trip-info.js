@@ -39,6 +39,4 @@ export default class TripInfo {
     this._renderTripInfo(points);
     this._renderTripCost(points);
   }
-
-
 }

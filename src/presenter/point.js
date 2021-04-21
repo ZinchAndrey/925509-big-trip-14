@@ -3,24 +3,28 @@ import PointEditView from '../view/point-edit.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
 export default class Point {
-  constructor(tripEventsListNode, changeData) {
+  constructor(tripEventsListNode, changeData, changeMode) {
+    this._tripEventsListNode = tripEventsListNode;
+    this._changeData = changeData;
+    this._changeMode = changeMode;
+
     this._pointComponent = null;
     this._editPointComponent = null;
-
-    this._changeData = changeData;
-    this._tripEventsListNode = tripEventsListNode;
+    this._mode = Mode.DEFAULT;
 
     this._replacePointToEdit = this._replacePointToEdit.bind(this);
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
-    this._pressEscHandler = this._pressEscHandler.bind(this);
+    this._handleEscPress = this._handleEscPress.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
-    // возможно, необходимо записать точку в приватное свойство this._point
-
     const prevPointComponent = this._pointComponent;
     const prevEditPointComponent = this._editPointComponent;
 
@@ -33,6 +37,8 @@ export default class Point {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     this._editPointComponent.setRollUpClickHandler(this._replaceEditToPoint);
+
+    // скорее всего в дальнейшем вместо this._replaceEditToPoint будет передаваться функция с параметром point ?
     this._editPointComponent.setFormSubmitHandler(this._replaceEditToPoint);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
@@ -57,25 +63,36 @@ export default class Point {
     remove(this._editPointComponent);
   }
 
-  _pressEscHandler(evt) {
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToPoint();
+    }
+  }
+
+  _handleEscPress(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this._replaceEditToPoint();
-      document.removeEventListener('keydown', this._pressEscHandler);
+      document.removeEventListener('keydown', this._handleEscPress);
     }
   }
 
   _replacePointToEdit() {
     replace(this._editPointComponent, this._pointComponent);
-    document.addEventListener('keydown', this._pressEscHandler);
-  }
+    document.addEventListener('keydown', this._handleEscPress);
 
-  _handleEditClick() {
-    this._replacePointToEdit();
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceEditToPoint() {
     replace(this._pointComponent, this._editPointComponent);
-    document.removeEventListener('keydown', this._pressEscHandler);
+    document.removeEventListener('keydown', this._handleEscPress);
+
+    this._mode = Mode.DEFAULT;
+  }
+
+  _handleEditClick() {
+    this._replacePointToEdit();
   }
 
   _handleFavoriteClick() {
