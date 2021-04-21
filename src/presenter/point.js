@@ -40,11 +40,11 @@ export default class Point {
       return;
     }
 
-    if (this._tripEventsListNode.getElement().contains(prevPointComponent.getElement())) {
-      replace(this.__pointComponent, prevPointComponent);
+    if (this._tripEventsListNode.contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._tripEventsListNode.getElement().contains(prevEditPointComponent.getElement())) {
+    if (this._tripEventsListNode.contains(prevEditPointComponent.getElement())) {
       replace(this._editPointComponent, prevEditPointComponent);
     }
 
@@ -79,14 +79,18 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
-    // console.log(this._point);
-
     this._changeData(
       Object.assign(
         {},
         this._point,
         {
-          isFavorite: !this._point.data.isFavorite,
+          data: Object.assign(
+            {},
+            this._point.data,
+            {
+              isFavorite: !this._point.data.isFavorite,
+            },
+          ),
         },
       ),
     );

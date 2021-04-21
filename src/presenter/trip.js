@@ -116,10 +116,7 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
-    // debugger
     updateItem(this._points, updatedPoint);
-    // console.log(this.pointPresenter[updatedPoint.id]);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
-
   }
 }
