@@ -5,15 +5,17 @@ import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
 
 export default class Point {
-  constructor(tripEventsListNode) {
+  constructor(tripEventsListNode, changeData) {
     this._pointComponent = null;
     this._editPointComponent = null;
 
+    this._changeData = changeData;
     this._tripEventsListNode = tripEventsListNode;
 
     this._replacePointToEdit = this._replacePointToEdit.bind(this);
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
     this._pressEscHandler = this._pressEscHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
@@ -25,7 +27,11 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._editPointComponent = new PointEditView(point);
 
+    this._point = point;
+
     this._pointComponent.setRollUpClickHandler(this._replacePointToEdit);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._editPointComponent.setRollUpClickHandler(this._replaceEditToPoint);
     this._editPointComponent.setFormSubmitHandler(this._replaceEditToPoint);
 
@@ -70,5 +76,19 @@ export default class Point {
   _replaceEditToPoint() {
     replace(this._pointComponent, this._editPointComponent);
     document.removeEventListener('keydown', this._pressEscHandler);
+  }
+
+  _handleFavoriteClick() {
+    // console.log(this._point);
+
+    this._changeData(
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavorite: !this._point.data.isFavorite,
+        },
+      ),
+    );
   }
 }

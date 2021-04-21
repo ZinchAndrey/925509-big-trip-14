@@ -93,7 +93,7 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripEventsListNode);
+    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handlePointChange);
 
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
@@ -116,9 +116,10 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
+    // debugger
     updateItem(this._points, updatedPoint);
-    console.log(this.pointPresenter[updatedPoint.id]);
-    this.pointPresenter[updatedPoint.id].init(updatedPoint);
+    // console.log(this.pointPresenter[updatedPoint.id]);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
 
   }
 }
