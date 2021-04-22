@@ -168,7 +168,8 @@ export default class PointEdit extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    // непонятно, зачем этот параметр сейчас
+    this._callback.formSubmit(this._point);
   }
 
   setFormSubmitHandler(callback) {
