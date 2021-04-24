@@ -1,4 +1,4 @@
-import {POINTS_COUNT} from '../const.js';
+import {POINTS_COUNT, SortType} from '../const.js';
 
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
@@ -14,6 +14,7 @@ import NoPointsView from '../view/no-points.js';
 
 import {RenderPosition, render} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
+import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
 
 import PointPresenter from './point.js';
 import TripInfoPresenter from './trip-info.js';
@@ -43,9 +44,11 @@ export default class Trip {
 
     this._pointPresenter = {};
 
+    this._currentSortType = SortType.DAY;
+
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this.this._handleSortTypeChange = this.this._handleSortTypeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(points) {
@@ -76,13 +79,16 @@ export default class Trip {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderEventsTable(points) {
-    this._renderSorting();
-    this._renderNewPoint(points[0]);
-
+  _renderPointsList(points) {
     for (let i = 1; i < POINTS_COUNT; i++) {
       this._renderPoint(points[i]);
     }
+  }
+
+  _renderEventsTable(points) {
+    this._renderSorting();
+    this._renderNewPoint(points[0]);
+    this._renderPointsList(points);
   }
 
   _renderSorting() {
@@ -118,6 +124,26 @@ export default class Trip {
     this._pointPresenter = {};
   }
 
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this._points.sort(sortByDate);
+        break;
+
+      case SortType.PRICE:
+        this._points.sort(sortByPrice);
+        break;
+
+      case SortType.TIME:
+        this._points.sort(sortByTime);
+        break;
+
+      // default:
+      //   this._points.sort(sortByDate);
+      //   break;
+    }
+  }
+
   _handleModeChange() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
@@ -131,7 +157,15 @@ export default class Trip {
   }
 
   _handleSortTypeChange(sortType) {
-    // Отсортировать точки
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    // console.log(this._points);
+    this._sortPoints(sortType);
+    // console.log(this._points);
+    this._clearPointsList();
+    this._renderPointsList(this._points);
+
     // Очистить список точек
     // Отрендерить новый список
   }
