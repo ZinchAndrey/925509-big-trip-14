@@ -44,7 +44,7 @@ export default class Sorting extends AbstractView {
   _sortTypeChangeHandler(evt) {
     if (evt.target.tagName === 'LABEL' && !evt.target.parentElement.querySelector('input').hasAttribute('disabled')) {
       evt.preventDefault();
-      this._callback.sortTypeChange();
+      this._callback.sortTypeChange(evt.target.dataset.sortType);
     }
   }
 

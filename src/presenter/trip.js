@@ -62,8 +62,7 @@ export default class Trip {
     } else {
       this._renderEventsTable(this._points);
 
-      // т.к. первая точка идет на отрисовку компонента новой точки маршрута. В дальнейшем исправить
-      this._renderTripInfo(this._points.slice(1));
+      this._renderTripInfo(this._points);
     }
   }
 
@@ -80,7 +79,7 @@ export default class Trip {
   }
 
   _renderPointsList(points) {
-    for (let i = 1; i < POINTS_COUNT; i++) {
+    for (let i = 0; i < POINTS_COUNT; i++) {
       this._renderPoint(points[i]);
     }
   }
@@ -114,7 +113,6 @@ export default class Trip {
     tripInfoPresenter.init(points);
   }
 
-  // возможно в _renderEventsTable придется менять логику и вынести отрисовку списка точек в отдельную функцию
   _clearPointsList() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
@@ -137,11 +135,9 @@ export default class Trip {
       case SortType.TIME:
         this._points.sort(sortByTime);
         break;
-
-      // default:
-      //   this._points.sort(sortByDate);
-      //   break;
     }
+
+    this._currentSortType = sortType;
   }
 
   _handleModeChange() {
@@ -160,13 +156,9 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-    // console.log(this._points);
+
     this._sortPoints(sortType);
-    // console.log(this._points);
     this._clearPointsList();
     this._renderPointsList(this._points);
-
-    // Очистить список точек
-    // Отрендерить новый список
   }
 }
