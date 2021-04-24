@@ -1,4 +1,4 @@
-import {POINTS_COUNT} from '../const.js';
+import {POINTS_COUNT, SortType} from '../const.js';
 
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
@@ -14,6 +14,7 @@ import NoPointsView from '../view/no-points.js';
 
 import {RenderPosition, render} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
+import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
 
 import PointPresenter from './point.js';
 import TripInfoPresenter from './trip-info.js';
@@ -43,8 +44,11 @@ export default class Trip {
 
     this._pointPresenter = {};
 
+    this._currentSortType = SortType.DAY;
+
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(points) {
@@ -58,8 +62,7 @@ export default class Trip {
     } else {
       this._renderEventsTable(this._points);
 
-      // т.к. первая точка идет на отрисовку компонента новой точки маршрута. В дальнейшем исправить
-      this._renderTripInfo(this._points.slice(1));
+      this._renderTripInfo(this._points);
     }
   }
 
@@ -75,17 +78,21 @@ export default class Trip {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderEventsTable(points) {
-    this._renderSorting();
-    this._renderNewPoint(points[0]);
-
-    for (let i = 1; i < POINTS_COUNT; i++) {
+  _renderPointsList(points) {
+    for (let i = 0; i < POINTS_COUNT; i++) {
       this._renderPoint(points[i]);
     }
   }
 
+  _renderEventsTable(points) {
+    this._renderSorting();
+    this._renderNewPoint(points[0]);
+    this._renderPointsList(points);
+  }
+
   _renderSorting() {
     render(this._tripEventsNode, this._sortingComponent, RenderPosition.AFTERBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderNewPoint(point) {
@@ -106,7 +113,6 @@ export default class Trip {
     tripInfoPresenter.init(points);
   }
 
-  // возможно в _renderEventsTable придется менять логику и вынести отрисовку списка точек в отдельную функцию
   _clearPointsList() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
@@ -114,6 +120,24 @@ export default class Trip {
       });
 
     this._pointPresenter = {};
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this._points.sort(sortByDate);
+        break;
+
+      case SortType.PRICE:
+        this._points.sort(sortByPrice);
+        break;
+
+      case SortType.TIME:
+        this._points.sort(sortByTime);
+        break;
+    }
+
+    this._currentSortType = sortType;
   }
 
   _handleModeChange() {
@@ -126,5 +150,15 @@ export default class Trip {
   _handlePointChange(updatedPoint) {
     updateItem(this._points, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointsList();
+    this._renderPointsList(this._points);
   }
 }
