@@ -45,6 +45,7 @@ export default class Trip {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this.this._handleSortTypeChange = this.this._handleSortTypeChange.bind(this);
   }
 
   init(points) {
@@ -86,6 +87,7 @@ export default class Trip {
 
   _renderSorting() {
     render(this._tripEventsNode, this._sortingComponent, RenderPosition.AFTERBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderNewPoint(point) {
@@ -126,5 +128,11 @@ export default class Trip {
   _handlePointChange(updatedPoint) {
     updateItem(this._points, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
+  _handleSortTypeChange(sortType) {
+    // Отсортировать точки
+    // Очистить список точек
+    // Отрендерить новый список
   }
 }
