@@ -43,13 +43,13 @@ function createOptionOffersTemplate(options) {
 function createPicturesTemplate(pictures) {
   let picturesMarkup = '';
   pictures.forEach((picture) => {
-    picturesMarkup += `<img class="event__photo" src="${picture}" alt="Event photo">`;
+    picturesMarkup += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
   });
   return picturesMarkup;
 }
 
 function createNewPointTemplate(point) {
-  const {destination, offer, data} = point;
+  const {destination, offers, data, type} = point;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -57,7 +57,7 @@ function createNewPointTemplate(point) {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -120,7 +120,7 @@ function createNewPointTemplate(point) {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${offer.type}
+            ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -148,7 +148,7 @@ function createNewPointTemplate(point) {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(offer.options)}
+        ${createOptionOffersTemplate(offers)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>

@@ -40,15 +40,23 @@ function createOptionOffersTemplate(options) {
     </section>`;
 }
 
+function createPicturesTemplate(pictures) {
+  let picturesMarkup = '';
+  pictures.forEach((picture) => {
+    picturesMarkup += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+  });
+  return picturesMarkup;
+}
+
 function createPointEditTemplate(pointData) {
-  const {destination, offer, data} = pointData;
+  const {destination, offers, data, type} = pointData;
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -111,7 +119,7 @@ function createPointEditTemplate(pointData) {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${offer.type}
+            ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
@@ -142,12 +150,18 @@ function createPointEditTemplate(pointData) {
         </button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(offer.options)}
+        ${createOptionOffersTemplate(offers)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-        </section>
+
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${createPicturesTemplate(destination.pictures)}
+            </div>
+          </div>
+          </section>
       </section>
     </form>
   </li>`;

@@ -52,6 +52,7 @@ export default class Trip {
   }
 
   init(points) {
+    // console.log(points);
     this._points = points.slice();
 
     this._renderMainMenu();

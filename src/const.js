@@ -6,4 +6,5 @@ const SortType = {
   PRICE: 'price',
 };
 
+
 export {DESTINATIONS, POINTS_COUNT, SortType};
