@@ -167,6 +167,17 @@ export default class PointEdit extends AbstractView {
     return createPointEditTemplate(this._data);
   }
 
+  updateElement() {
+    const prevElement = this.getElement();
+    const parentElement = prevElement.parentElement;
+
+    // эта комбинация позволяет получить шаблон на основе обновленных данных
+    this.removeElement();
+    const newElement = this.getElement();
+
+    parentElement.replaceChild(newElement, prevElement);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     // непонятно, зачем этот параметр сейчас
