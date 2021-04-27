@@ -40,8 +40,8 @@ function createOptionOffersTemplate(options) {
     </section>`;
 }
 
-function createPointEditTemplate(point) {
-  const {destination, offer, data} = point;
+function createPointEditTemplate(pointData) {
+  const {destination, offer, data} = pointData;
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -156,20 +156,21 @@ function createPointEditTemplate(point) {
 export default class PointEdit extends AbstractView {
   constructor(point) {
     super();
-    this._point = point;
+    // this._point = point;
+    this._data = PointEdit.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._point);
+    return createPointEditTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
     // непонятно, зачем этот параметр сейчас
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(this._data);
   }
 
   setFormSubmitHandler(callback) {
@@ -185,5 +186,17 @@ export default class PointEdit extends AbstractView {
   setRollUpClickHandler(callback) {
     this._callback.rollUpClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
+  }
+
+  static parseDataToPoint(data) {
+    const point = Object.assign({}, data);
+
+    return point;
+  }
+
+  static parsePointToData(point) {
+    const data = Object.assign({}, point);
+
+    return data;
   }
 }
