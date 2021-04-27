@@ -178,6 +178,19 @@ export default class PointEdit extends AbstractView {
     parentElement.replaceChild(newElement, prevElement);
   }
 
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+    this.updateElement();
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     // непонятно, зачем этот параметр сейчас
