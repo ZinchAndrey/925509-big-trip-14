@@ -1,9 +1,8 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
-import {DESTINATIONS} from '../const.js';
+import {DESTINATIONS, TYPES} from '../const.js';
 import {getRandomInteger, getRandomArrEl} from '../utils/common.js';
 
-const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const MAX_PRICE = 1000;
 
 const OPTIONS = [
