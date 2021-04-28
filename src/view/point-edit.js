@@ -85,11 +85,11 @@ function createPointEditTemplate(pointData) {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label  event__type-output" for="event-destination">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-          <datalist id="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
+          <datalist id="destination-list">
             ${createDestinationDatalistTemplate(DESTINATIONS)}
           </datalist>
         </div>
@@ -143,6 +143,7 @@ export default class PointEdit extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -166,6 +167,10 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('.event__type-list')
       .addEventListener('click', this._typeChangeHandler);
+
+    this.getElement()
+      .querySelector('#event-destination')
+      .addEventListener('change', this._destinationChangeHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -181,9 +186,22 @@ export default class PointEdit extends SmartView {
     }
   }
 
+  _destinationChangeHandler(evt) {
+    const newDestinationName = evt.currentTarget.value;
+
+    const destinationItem = destinations.find((destination) => {
+      return destination.name === newDestinationName;
+    });
+
+    if (destinationItem) {
+      this.updateData({
+        destination: destinationItem,
+      });
+    }
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    // непонятно, зачем этот параметр сейчас
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
