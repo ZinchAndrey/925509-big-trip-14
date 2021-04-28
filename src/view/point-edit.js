@@ -142,7 +142,7 @@ export default class PointEdit extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
-    this._typeChangeHandler = this._typeListClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -158,13 +158,17 @@ export default class PointEdit extends SmartView {
     this.setRollUpClickHandler(this._callback.rollUpClick);
   }
 
+  reset(point) {
+    this.updateData(PointEdit.parsePointToData(point));
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-list')
       .addEventListener('click', this._typeChangeHandler);
   }
 
-  _typeListClickHandler(evt) {
+  _typeChangeHandler(evt) {
     if (evt.target.tagName === 'LABEL') {
       const newType = evt.target.parentElement.querySelector('input').value;
 
@@ -180,7 +184,7 @@ export default class PointEdit extends SmartView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     // непонятно, зачем этот параметр сейчас
-    this._callback.formSubmit(this._data);
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
