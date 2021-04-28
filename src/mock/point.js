@@ -110,8 +110,8 @@ function generateOffers() {
   return offers;
 }
 
-const destinations = generateDestinations();
-const offers = generateOffers();
+export const destinations = generateDestinations();
+export const offers = generateOffers();
 
 export function generatePoint() {
   const type = getRandomArrEl(TYPES).toLowerCase();

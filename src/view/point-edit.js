@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
 import {DESTINATIONS, TYPES} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
+
+// в дальнешем эти данные будем получать с сервера
+import {destinations, offers} from '../mock/point.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -131,7 +134,7 @@ function createPointEditTemplate(pointData) {
   </li>`;
 }
 
-export default class PointEdit extends AbstractView {
+export default class PointEdit extends SmartView {
   constructor(point) {
     super();
     // this._point = point;
@@ -139,39 +142,13 @@ export default class PointEdit extends AbstractView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
-    this._typelistClickHandler = this._typeListClickHandler.bind(this);
+    this._typeChangeHandler = this._typeListClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
     return createPointEditTemplate(this._data);
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parentElement = prevElement.parentElement;
-
-    // эта комбинация позволяет получить шаблон на основе обновленных данных
-    this.removeElement();
-    const newElement = this.getElement();
-
-    parentElement.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-    this.updateElement();
   }
 
   restoreHandlers() {
@@ -184,15 +161,18 @@ export default class PointEdit extends AbstractView {
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-list')
-      .addEventListener('click', this._typelistClickHandler);
+      .addEventListener('click', this._typeChangeHandler);
   }
 
   _typeListClickHandler(evt) {
     if (evt.target.tagName === 'LABEL') {
       const newType = evt.target.parentElement.querySelector('input').value;
-      // console.log(newType);
+
       this.updateData({
         type: newType,
+        offers: offers.find((offer) => {
+          return offer.type === newType;
+        }).offers,
       });
     }
   }
