@@ -175,9 +175,9 @@ export default class PointEdit extends AbstractView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
-    this._typelistClickHandler = this._typelistClickHandler.bind(this);
+    this._typelistClickHandler = this._typeListClickHandler.bind(this);
 
-    this.getElement().querySelector('.event__type-list').addEventListener('click', this._typelistClickHandler);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -193,6 +193,8 @@ export default class PointEdit extends AbstractView {
     const newElement = this.getElement();
 
     parentElement.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
   }
 
   updateData(update) {
@@ -208,7 +210,20 @@ export default class PointEdit extends AbstractView {
     this.updateElement();
   }
 
-  _typelistClickHandler(evt) {
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollUpClickHandler(this._callback.rollUpClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-list')
+      .addEventListener('click', this._typelistClickHandler);
+  }
+
+  _typeListClickHandler(evt) {
     if (evt.target.tagName === 'LABEL') {
       const newType = evt.target.parentElement.querySelector('input').value;
       console.log(newType);
