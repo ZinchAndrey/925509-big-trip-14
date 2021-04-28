@@ -66,6 +66,9 @@ export default class Point {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      // при клике на редактирование другой точки нужно сбросить данные в ранее открытой
+      this._changeData(this._point);
+
       this._replaceEditToPoint();
     }
   }
