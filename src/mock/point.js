@@ -41,19 +41,6 @@ const OPTIONS = [
   },
 ];
 
-// const photoSettings = {
-//   minQuantity: 1,
-//   maxQuantity: 5,
-//   maxSrcNumber: 100,
-//   src: 'http://picsum.photos/248/152?r',
-// };
-
-// const descriptionSettings = {
-//   sentenceMin: 1,
-//   sentenceMax: 5,
-//   mockText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus',
-// };
-
 const timeMaxGap = {
   seconds: 60,
   minutes: 60,
@@ -70,32 +57,12 @@ function generateRandomFutureDate(startDate) {
     .format('YYYY-MM-DD HH:mm:ss');
 }
 
-// function generatePhotos(photoSettings) {
-//   const randomQuantity = getRandomInteger(photoSettings.minQuantity, photoSettings.maxQuantity);
-//   const photos = new Array(randomQuantity).fill().map(() => photoSettings.src + getRandomInteger(0, photoSettings.maxSrcNumber));
-
-//   return photos;
-// }
-
 function generateOptions(options) {
   const randomQuantity = getRandomInteger(0, options.length - 1);
   const randomOptions = new Array(randomQuantity).fill().map(() => getRandomArrEl(options));
 
   return randomOptions;
 }
-
-// function generateDescription() {
-//   const mockTexts = descriptionSettings.mockText.split('.');
-//   const sentenceCount = getRandomInteger(descriptionSettings.sentenceMin, descriptionSettings.sentenceMax);
-//   let description = '';
-
-//   for (let i = 1; i <= sentenceCount; i++) {
-//     description += getRandomArrEl(mockTexts) + '.';
-//   }
-
-//   return description;
-
-// }
 
 function generateDate() {
   const dateFrom = generateRandomFutureDate();

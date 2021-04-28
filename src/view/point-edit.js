@@ -175,6 +175,9 @@ export default class PointEdit extends AbstractView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
+    this._typelistClickHandler = this._typelistClickHandler.bind(this);
+
+    this.getElement().querySelector('.event__type-list').addEventListener('click', this._typelistClickHandler);
   }
 
   getTemplate() {
@@ -203,6 +206,16 @@ export default class PointEdit extends AbstractView {
       update,
     );
     this.updateElement();
+  }
+
+  _typelistClickHandler(evt) {
+    if (evt.target.tagName === 'LABEL') {
+      const newType = evt.target.parentElement.querySelector('input').value;
+      console.log(newType);
+      this.updateData({
+        type: newType,
+      });
+    }
   }
 
   _formSubmitHandler(evt) {
