@@ -3,6 +3,10 @@ import {DESTINATIONS, TYPES} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
 // в дальнешем эти данные будем получать с сервера
 import {destinations, offers} from '../mock/point.js';
 
