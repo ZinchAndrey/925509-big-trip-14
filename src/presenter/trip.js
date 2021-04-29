@@ -52,6 +52,7 @@ export default class Trip {
   }
 
   init(points) {
+    // console.log(points);
     this._points = points.slice();
 
     this._renderMainMenu();
@@ -86,7 +87,8 @@ export default class Trip {
 
   _renderEventsTable(points) {
     this._renderSorting();
-    this._renderNewPoint(points[0]);
+    // временно убираем рендер новой точки маршрута, чтобы не было конфликтов id у label-ов с формой редактирования
+    // this._renderNewPoint(points[0]);
     this._renderPointsList(points);
   }
 

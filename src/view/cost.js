@@ -3,8 +3,8 @@ import AbstractView from './abstract.js';
 function calcTripCost(points) {
   let tripCost = 0;
   points.forEach((point) => {
-    const {offer, data} = point;
-    const offersPrice = offer.options.reduce((sumPrice, currentOption) => {
+    const {offers, data} = point;
+    const offersPrice = offers.reduce((sumPrice, currentOption) => {
       return sumPrice + currentOption.price;
     }, 0);
     tripCost += data.price + offersPrice;

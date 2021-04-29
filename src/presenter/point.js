@@ -22,6 +22,8 @@ export default class Point {
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
     this._handleEscPress = this._handleEscPress.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleRollUpClick = this._handleRollUpClick.bind(this);
   }
 
   init(point) {
@@ -36,10 +38,9 @@ export default class Point {
     this._pointComponent.setRollUpClickHandler(this._replacePointToEdit);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
-    this._editPointComponent.setRollUpClickHandler(this._replaceEditToPoint);
+    this._editPointComponent.setRollUpClickHandler(this._handleRollUpClick);
 
-    // скорее всего в дальнейшем вместо this._replaceEditToPoint будет передаваться функция с параметром point ?
-    this._editPointComponent.setFormSubmitHandler(this._replaceEditToPoint);
+    this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this._tripEventsListNode, this._pointComponent, RenderPosition.BEFOREEND);
@@ -65,15 +66,24 @@ export default class Point {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
+      // при клике на редактирование другой точки нужно сбросить данные в ранее открытой
+      this._changeData(this._point);
+
       this._replaceEditToPoint();
     }
   }
 
   _handleEscPress(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this._editPointComponent.reset(this._point);
       this._replaceEditToPoint();
       document.removeEventListener('keydown', this._handleEscPress);
     }
+  }
+
+  _handleRollUpClick() {
+    this._editPointComponent.reset(this._point);
+    this._replaceEditToPoint();
   }
 
   _replacePointToEdit() {
@@ -111,5 +121,10 @@ export default class Point {
         },
       ),
     );
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(point);
+    this._replaceEditToPoint();
   }
 }
