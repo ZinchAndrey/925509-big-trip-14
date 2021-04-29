@@ -177,12 +177,16 @@ export default class PointEdit extends SmartView {
     if (evt.target.tagName === 'LABEL') {
       const newType = evt.target.parentElement.querySelector('input').value;
 
-      this.updateData({
-        type: newType,
-        offers: offers.find((offer) => {
-          return offer.type === newType;
-        }).offers,
-      });
+      const offersItem = offers.find((offer) => {
+        return offer.type === newType;
+      }).offers;
+
+      if (offersItem) {
+        this.updateData({
+          type: newType,
+          offers: offersItem,
+        });
+      }
     }
   }
 

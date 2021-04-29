@@ -76,10 +76,8 @@ function generateDate() {
 }
 
 function generateDestinations() {
-  const destinations = [];
-
-  DESTINATIONS.forEach((destination, index) => {
-    destinations.push({
+  const destinations = DESTINATIONS.map((destination, index) => {
+    return {
       name: destination,
       description: `${destination}, is a beautiful city.`,
       pictures: [
@@ -92,19 +90,18 @@ function generateDestinations() {
           description: `${destination} - photo 02`,
         },
       ],
-    });
+    };
   });
 
   return destinations;
 }
 
 function generateOffers() {
-  const offers = [];
-  TYPES.forEach((type) => {
-    offers.push({
+  const offers = TYPES.map((type) => {
+    return {
       type: type.toLowerCase(),
       offers: generateOptions(OPTIONS),
-    });
+    };
   });
 
   return offers;
