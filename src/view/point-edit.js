@@ -144,15 +144,19 @@ export default class PointEdit extends SmartView {
     // this._point = point;
     this._data = PointEdit.parsePointToData(point);
 
-    this._datepicker = null;
+    this._datepickerFrom = null;
+    this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
-    this._fromDateChangeHandler = this._fromDateChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setFromDatepicker();
+    this._setToDatepicker();
   }
 
   getTemplate() {
@@ -164,30 +168,47 @@ export default class PointEdit extends SmartView {
 
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollUpClickHandler(this._callback.rollUpClick);
+
+    this._setFromDatepicker();
+    this._setToDatepicker();
   }
 
   reset(point) {
     this.updateData(PointEdit.parsePointToData(point));
   }
 
-  _setDatepicker() {
-    // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-    // которые создает flatpickr при инициализации
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+  _setFromDatepicker() {
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
     }
 
-    this._datepicker = flatpickr(
+    this._datepickerFrom = flatpickr(
       this.getElement().querySelector('#event-start-time-1'),
       {
         enableTime: true,
-        dateFormat: 'd/m/y h:i',
-        defaultDate: this._data.data.date.from,
-        onChange: this._fromDateChangeHandler, // На событие flatpickr передаём наш колбэк
+        dateFormat: 'd/m/y H:i',
+        defaultDate: dayjs(this._data.data.date.from).toDate(),
+        onChange: this._dateFromChangeHandler,
       },
     );
+  }
 
+  _setToDatepicker() {
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+    }
+
+    this._datepickerTo = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: dayjs(this._data.data.date.to).toDate(),
+        onChange: this._dateToChangeHandler,
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -231,15 +252,30 @@ export default class PointEdit extends SmartView {
     }
   }
 
-  _fromDateChangeHandler([userDate]) {
+  _dateFromChangeHandler([userDate]) {
     this.updateData({
       data: Object.assign(
         {},
-        this._data,
+        this._data.data,
         {
           date: {
             from: userDate,
-            to: this._data.date.to,
+            to: this._data.data.date.to,
+          },
+        },
+      ),
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          date: {
+            from: this._data.data.date.from,
+            to: userDate,
           },
         },
       ),
