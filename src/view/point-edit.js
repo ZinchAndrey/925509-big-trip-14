@@ -151,6 +151,7 @@ export default class PointEdit extends SmartView {
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
@@ -226,8 +227,12 @@ export default class PointEdit extends SmartView {
   }
 
   _typeChangeHandler(evt) {
-    if (evt.target.tagName === 'LABEL') {
+    if (evt.target.classList.contains('event__type-label')) {
       const newType = evt.target.parentElement.querySelector('input').value;
+
+      if (newType === this._data.type) {
+        return;
+      }
 
       const offersItem = offers.find((offer) => {
         return offer.type === newType;
@@ -244,6 +249,10 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
+
+    if (newDestinationName === this._data.destination) {
+      return;
+    }
 
     const destinationItem = destinations.find((destination) => {
       return destination.name === newDestinationName;

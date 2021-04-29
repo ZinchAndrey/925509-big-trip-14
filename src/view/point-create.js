@@ -3,6 +3,10 @@ import {DESTINATIONS, TYPES} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
 // в дальнешем эти данные будем получать с сервера
 import {destinations, offers} from '../mock/point.js';
 
@@ -138,11 +142,20 @@ export default class NewPoint extends SmartView {
     // this._point = point;
     this._data = NewPoint.parsePointToData(point);
 
+    this._datepickerFrom = null;
+    this._datepickerTo = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+
     this._setInnerHandlers();
+
+    this._setFromDatepicker();
+    this._setToDatepicker();
   }
 
   getTemplate() {
@@ -153,10 +166,50 @@ export default class NewPoint extends SmartView {
     this._setInnerHandlers();
 
     this.setFormSubmitHandler(this._callback.formSubmit);
+
+    this._setFromDatepicker();
+    this._setToDatepicker();
   }
 
   reset(point) {
     this.updateData(NewPoint.parsePointToData(point));
+  }
+
+  _setFromDatepicker() {
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
+
+    this._datepickerFrom = flatpickr(
+      this.getElement().querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        time_24hr: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: dayjs(this._data.data.date.from).toDate(),
+        onChange: this._dateFromChangeHandler,
+      },
+    );
+  }
+
+  _setToDatepicker() {
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+    }
+
+    this._datepickerTo = flatpickr(
+      this.getElement().querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        time_24hr: true,
+        minDate: dayjs(this._data.data.date.from).toDate(),
+        dateFormat: 'd/m/y H:i',
+        defaultDate: dayjs(this._data.data.date.to).toDate(),
+        onChange: this._dateToChangeHandler,
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -170,20 +223,32 @@ export default class NewPoint extends SmartView {
   }
 
   _typeChangeHandler(evt) {
-    if (evt.target.tagName === 'LABEL') {
+    if (evt.target.classList.contains('event__type-label')) {
       const newType = evt.target.parentElement.querySelector('input').value;
 
-      this.updateData({
-        type: newType,
-        offers: offers.find((offer) => {
-          return offer.type === newType;
-        }).offers,
-      });
+      if (newType === this._data.type) {
+        return;
+      }
+
+      const offersItem = offers.find((offer) => {
+        return offer.type === newType;
+      }).offers;
+
+      if (offersItem) {
+        this.updateData({
+          type: newType,
+          offers: offersItem,
+        });
+      }
     }
   }
 
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
+
+    if (newDestinationName === this._data.destination) {
+      return;
+    }
 
     const destinationItem = destinations.find((destination) => {
       return destination.name === newDestinationName;
@@ -194,6 +259,36 @@ export default class NewPoint extends SmartView {
         destination: destinationItem,
       });
     }
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          date: {
+            from: userDate,
+            to: this._data.data.date.to,
+          },
+        },
+      ),
+    });
+  }
+
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          date: {
+            from: this._data.data.date.from,
+            to: userDate,
+          },
+        },
+      ),
+    });
   }
 
   _formSubmitHandler(evt) {
