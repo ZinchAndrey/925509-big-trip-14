@@ -20,7 +20,7 @@ import PointPresenter from './point.js';
 import TripInfoPresenter from './trip-info.js';
 
 export default class Trip {
-  constructor(tripMainNode, pageMainNode) {
+  constructor(tripMainNode, pageMainNode, pointsModel) {
 
     this._tripMainNode = tripMainNode;
     this._mainMenuNode = this._tripMainNode.querySelector('.trip-controls__navigation');
@@ -30,6 +30,7 @@ export default class Trip {
     this._tripEventsNode = this._pageMainNode.querySelector('.trip-events');
     this._tripEventsListNode = this._tripEventsNode.querySelector('.trip-events__list');
 
+    this._pointsModel = pointsModel;
 
     this._sortingComponent = new SortingView();
 
@@ -65,6 +66,10 @@ export default class Trip {
 
       this._renderTripInfo(this._points);
     }
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _renderMainMenu() {
