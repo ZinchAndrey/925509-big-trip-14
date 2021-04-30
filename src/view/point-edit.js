@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {DESTINATIONS, TYPES} from '../const.js';
+import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -266,6 +266,9 @@ export default class PointEdit extends SmartView {
   }
 
   _dateFromChangeHandler([userDate]) {
+    // если пользователь выберет дату начала после даты окончания, дата окончания станет равной дате начала + 1h
+    const isFromAfterTo = userDate > dayjs(this._data.data.date.to).toDate();
+
     this.updateData({
       data: Object.assign(
         {},
@@ -273,7 +276,9 @@ export default class PointEdit extends SmartView {
         {
           date: {
             from: userDate,
-            to: this._data.data.date.to,
+            to: isFromAfterTo ?
+              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour') :
+              this._data.data.date.to,
           },
         },
       ),
