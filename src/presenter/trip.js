@@ -1,4 +1,4 @@
-import {POINTS_COUNT, SortType} from '../const.js';
+import { SortType} from '../const.js';
 
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
@@ -13,7 +13,6 @@ import NewPointView from '../view/point-create.js';
 import NoPointsView from '../view/no-points.js';
 
 import {RenderPosition, render} from '../utils/render.js';
-import {updateItem} from '../utils/common.js';
 import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
 
 import PointPresenter from './point.js';
@@ -52,23 +51,37 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(points) {
+  init() {
     // console.log(points);
-    this._points = points.slice();
+    // this._points = points.slice();
 
     this._renderMainMenu();
     this._renderFilters();
 
-    if (!this._points.length) {
-      render(this._tripEventsListNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
+    if (!this._getPoints().length) {
+      this._renderNoPoints();
     } else {
-      this._renderEventsTable(this._points);
+      this._renderEventsTable(this._getPoints());
 
-      this._renderTripInfo(this._points);
+      this._renderTripInfo(this._getPoints());
     }
   }
 
   _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.DAY:
+        this._pointsModel.getPoints().slice().sort(sortByDate);
+        break;
+
+      case SortType.PRICE:
+        this._pointsModel.getPoints().slice().sort(sortByPrice);
+        break;
+
+      case SortType.TIME:
+        this._pointsModel.getPoints().slice().sort(sortByTime);
+        break;
+    }
+
     return this._pointsModel.getPoints();
   }
 
@@ -85,9 +98,9 @@ export default class Trip {
   }
 
   _renderPointsList(points) {
-    for (let i = 0; i < POINTS_COUNT; i++) {
-      this._renderPoint(points[i]);
-    }
+    points.forEach((point) => {
+      this._renderPoint(point);
+    });
   }
 
   _renderEventsTable(points) {
@@ -129,24 +142,6 @@ export default class Trip {
     this._pointPresenter = {};
   }
 
-  _sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this._points.sort(sortByDate);
-        break;
-
-      case SortType.PRICE:
-        this._points.sort(sortByPrice);
-        break;
-
-      case SortType.TIME:
-        this._points.sort(sortByTime);
-        break;
-    }
-
-    this._currentSortType = sortType;
-  }
-
   _handleModeChange() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
@@ -155,7 +150,8 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
-    updateItem(this._points, updatedPoint);
+    // Здесь будем вызывать обновление модели
+
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
@@ -164,8 +160,8 @@ export default class Trip {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
     this._clearPointsList();
-    this._renderPointsList(this._points);
+    this._renderPointsList(this._getPoints());
   }
 }

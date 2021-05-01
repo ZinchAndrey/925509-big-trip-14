@@ -21,4 +21,4 @@ points.sort((point1, point2) => {
 });
 
 const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel);
-tripPresenter.init(points);
+tripPresenter.init();
