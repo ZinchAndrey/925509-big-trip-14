@@ -1,4 +1,4 @@
-import { SortType} from '../const.js';
+import {SortType, UserAction, UpdateType} from '../const.js';
 
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
@@ -159,8 +159,22 @@ export default class Trip {
   // }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    // console.log(actionType, updateType, update);
     // Здесь будет вызываться обновление модели
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
+
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     // update - обновленные данные
@@ -168,10 +182,23 @@ export default class Trip {
 
   _handleModelEvent(updateType, data) {
     // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялся тип точки?)
-    // - обновить список (например, когда точка ушла в избранное)
-    // - обновить всю таблицу (например, при переключении фильтра)
+    // data - по сути новая точка?
     console.log(updateType, data);
+
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // ??? нужен ли такой тип обновления и корректен ли он
+        this._pointPresenter[data.id].init(data);
+        break;
+
+      case UpdateType.MINOR:
+        // - обновить список (например, когда точка ушла в избранное)
+        break;
+
+      case UpdateType.MAJOR:
+        // - обновить всю таблицу (например, при переключении фильтра)
+        break;
+    }
   }
 
   _handleSortTypeChange(sortType) {

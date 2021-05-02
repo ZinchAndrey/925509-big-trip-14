@@ -40,7 +40,7 @@ export default class Points extends Observer {
     this._notify(updateType, update);
   }
 
-  deleteTask(updateType, update) {
+  deletePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
