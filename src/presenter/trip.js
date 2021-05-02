@@ -201,11 +201,15 @@ export default class Trip {
         break;
 
       case UpdateType.MINOR:
-        // - обновить список (например, когда точка ушла в избранное)
+        // - обновить список (без сброса сортировки)
+        this._clearTrip();
+        this._renderTrip();
         break;
 
       case UpdateType.MAJOR:
         // - обновить всю таблицу (например, при переключении фильтра)
+        this._clearTrip({resetSortType: true});
+        this._renderTrip();
         break;
     }
   }
