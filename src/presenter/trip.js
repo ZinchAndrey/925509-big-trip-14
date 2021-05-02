@@ -75,19 +75,14 @@ export default class Trip {
   _getPoints() {
     switch (this._currentSortType) {
       case SortType.DAY:
-        this._pointsModel.getPoints().slice().sort(sortByDate);
-        break;
+        return this._pointsModel.getPoints().slice().sort(sortByDate);
 
       case SortType.PRICE:
-        this._pointsModel.getPoints().slice().sort(sortByPrice);
-        break;
+        return this._pointsModel.getPoints().slice().sort(sortByPrice);
 
       case SortType.TIME:
-        this._pointsModel.getPoints().slice().sort(sortByTime);
-        break;
+        return this._pointsModel.getPoints().slice().sort(sortByTime);
     }
-
-    return this._pointsModel.getPoints();
   }
 
   _renderMainMenu() {
