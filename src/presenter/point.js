@@ -108,7 +108,7 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
-    console.log('до', this._point);
+    // console.log('до', this._point);
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
