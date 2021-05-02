@@ -9,5 +9,17 @@ const SortType = {
   PRICE: 'price',
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
 
-export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF};
+const UpdateType = {
+  PATCH: 'PATCH', // неясно, будет ли использоваться, так как при любых изменениях меняется либо весь список, либо нужно пересчитывать цену
+  MINOR: 'MINOR', // обновление точки маршрута
+  MAJOR: 'MAJOR', // обновление всей таблицы (Table)?
+};
+
+
+export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType};

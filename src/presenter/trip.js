@@ -46,9 +46,13 @@ export default class Trip {
 
     this._currentSortType = SortType.DAY;
 
-    this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -121,7 +125,7 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
 
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
@@ -149,10 +153,25 @@ export default class Trip {
       });
   }
 
-  _handlePointChange(updatedPoint) {
-    // Здесь будем вызывать обновление модели
+  // _handlePointChange(updatedPoint) {
+  //   // Здесь будем вызывать обновление модели
+  //   this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  // }
 
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будет вызываться обновление модели
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялся тип точки?)
+    // - обновить список (например, когда точка ушла в избранное)
+    // - обновить всю таблицу (например, при переключении фильтра)
+    console.log(updateType, data);
   }
 
   _handleSortTypeChange(sortType) {
