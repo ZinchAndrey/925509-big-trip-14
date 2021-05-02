@@ -80,32 +80,22 @@ export default class Trip {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
+  _renderNewPoint(point) {
+    const newPointComponent = new NewPointView(point);
+    render(this._tripEventsListNode, newPointComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
+
+    pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
   _renderPointsList(points) {
     points.forEach((point) => {
       this._renderPoint(point);
     });
-  }
-
-  // _renderEventsTable(points) {
-  //   this._renderSorting();
-  //   // временно убираем рендер новой точки маршрута, чтобы не было конфликтов id у label-ов с формой редактирования
-  //   // this._renderNewPoint(points[0]);
-  //   this._renderPointsList(points);
-  // }
-
-  _renderTrip() {
-    const points = this._pointsModel.getPoints();
-    // console.log(points);
-    const pointsCount = points.length;
-
-    if (!pointsCount) {
-      this._renderNoPoints();
-    } else {
-      // this._renderEventsTable(points);
-      this._renderSorting();
-      this._renderPointsList(points);
-      this._renderTripInfo(points);
-    }
   }
 
   _renderSorting() {
@@ -119,16 +109,9 @@ export default class Trip {
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _renderNewPoint(point) {
-    const newPointComponent = new NewPointView(point);
-    render(this._tripEventsListNode, newPointComponent, RenderPosition.AFTERBEGIN);
-  }
-
-  _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
-
-    pointPresenter.init(point);
-    this._pointPresenter[point.id] = pointPresenter;
+  _renderEventsTable(points) {
+    this._renderSorting();
+    this._renderPointsList(points);
   }
 
   _renderTripInfo(points) {
@@ -137,7 +120,20 @@ export default class Trip {
     tripInfoPresenter.init(points);
   }
 
-  _clearTrip({resetSortType = false} = {}) {
+  _renderTrip() {
+    const points = this._pointsModel.getPoints();
+    const pointsCount = points.length;
+
+    if (!pointsCount) {
+      this._renderNoPoints();
+    } else {
+      this._renderEventsTable(points);
+      this._renderTripInfo(points);
+    }
+  }
+
+  // при сортировке нам не нужно перерисовывать блок с информацией о поездке
+  _clearEventsTable() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
         presenter.destroy();
@@ -147,6 +143,12 @@ export default class Trip {
 
     remove(this._sortingComponent);
     // в демке почему-то здесь удаляется noTaskComponent
+  }
+
+  _clearTrip({resetSortType = false} = {}) {
+    this._clearEventsTable();
+    // в демке почему-то здесь удаляется noTaskComponent
+    // нужно удалять блок с информацией о поездке и отрисовывать заново
 
 
     if (resetSortType) {
@@ -160,11 +162,6 @@ export default class Trip {
         presenter.resetView();
       });
   }
-
-  // _handlePointChange(updatedPoint) {
-  //   // Здесь будем вызывать обновление модели
-  //   this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  // }
 
   _handleViewAction(actionType, updateType, update) {
     // console.log(actionType, updateType, update);
@@ -212,10 +209,9 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-
     this._currentSortType = sortType;
-    this._clearTrip();
-    this._renderTrip();
-    // this._renderPointsList(this._getPoints());
+
+    this._clearEventsTable();
+    this._renderEventsTable(this._getPoints());
   }
 }
