@@ -36,6 +36,7 @@ export default class Trip {
     this._noPointsComponent = new NoPointsView();
 
     this._pointPresenter = {};
+    this._tripInfoPresenter = {};
 
     this._currentSortType = SortType.DAY;
 
@@ -115,9 +116,9 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
-    const tripInfoPresenter = new TripInfoPresenter(this._tripMainNode);
+    this._tripInfoPresenter = new TripInfoPresenter(this._tripMainNode);
 
-    tripInfoPresenter.init(points);
+    this._tripInfoPresenter.init(points);
   }
 
   _renderTrip() {
@@ -142,13 +143,17 @@ export default class Trip {
     this._pointPresenter = {};
 
     remove(this._sortingComponent);
-    // в демке почему-то здесь удаляется noTaskComponent
+
+    // Удаляем NoPointsComponent на случай, если не было точек и затем мы добавляем их
+    remove(this._noPointsComponent);
   }
 
   _clearTrip({resetSortType = false} = {}) {
     this._clearEventsTable();
-    // в демке почему-то здесь удаляется noTaskComponent
+
     // нужно удалять блок с информацией о поездке и отрисовывать заново
+    this._tripInfoPresenter.destroy();
+    this._tripInfoPresenter = {};
 
 
     if (resetSortType) {
