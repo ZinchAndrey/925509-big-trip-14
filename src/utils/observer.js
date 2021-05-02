@@ -12,7 +12,7 @@ export default class Observer {
       .filter((existedObserver) => existedObserver !== observer);
   }
 
-  notify(event, payload) { // передается тип обновления и обновленная точка маршрута
+  _notify(event, payload) { // передается тип обновления и обновленная точка маршрута
     this._observers.forEach((observer) => observer(event, payload));
   }
 }

@@ -31,7 +31,8 @@ export default class Trip {
 
     this._pointsModel = pointsModel;
 
-    this._sortingComponent = new SortingView();
+    // this._sortingComponent = new SortingView();
+    this._sortingComponent = null;
 
     this._tripInfoBlockComponent = new TripInfoBlockView();
     this._tripInfoComponent = new TripInfoView();
@@ -115,6 +116,12 @@ export default class Trip {
   }
 
   _renderSorting() {
+    if (this._sortingComponent !== null) {
+      this._sortingComponent === null;
+    }
+
+    this._sortingComponent = new SortingView(this._currentSortType);
+
     render(this._tripEventsNode, this._sortingComponent, RenderPosition.AFTERBEGIN);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
@@ -161,6 +168,8 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     // console.log(actionType, updateType, update);
     // Здесь будет вызываться обновление модели
+    // update - обновленные данные / точка
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
@@ -177,17 +186,16 @@ export default class Trip {
 
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
   }
 
   _handleModelEvent(updateType, data) {
     // В зависимости от типа изменений решаем, что делать:
-    // data - по сути новая точка?
-    console.log(updateType, data);
+    // data - данные о новой точке, по сути точка с update
+    // console.log(updateType, data);
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // ??? нужен ли такой тип обновления и корректен ли он
+        // ??? нужен ли такой тип обновления и корректен ли он? Добавление в избранное?
         this._pointPresenter[data.id].init(data);
         break;
 
@@ -202,6 +210,7 @@ export default class Trip {
   }
 
   _handleSortTypeChange(sortType) {
+    // debugger
     if (this._currentSortType === sortType) {
       return;
     }
