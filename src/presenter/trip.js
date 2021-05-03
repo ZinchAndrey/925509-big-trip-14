@@ -122,7 +122,7 @@ export default class Trip {
   }
 
   _renderTrip() {
-    const points = this._pointsModel.getPoints();
+    const points = this._getPoints();
     const pointsCount = points.length;
 
     if (!pointsCount) {

@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 
 dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
 
 function getTimeDifference(start, end) {
   return dayjs(end).diff(dayjs(start));
@@ -28,4 +30,12 @@ function sortByTime(point1, point2) {
   return 1;
 }
 
-export {sortByDate, sortByPrice, sortByTime};
+function isPointFuture(date) {
+  return dayjs(date).isSameOrAfter(dayjs());
+}
+
+function isPointPast(date) {
+  return dayjs(date).isBefore(dayjs());
+}
+
+export {sortByDate, sortByPrice, sortByTime, isPointFuture, isPointPast};
