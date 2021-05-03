@@ -171,9 +171,6 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     // console.log(actionType, updateType, update);
     // Здесь будет вызываться обновление модели
-    // update - обновленные данные / точка
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
