@@ -130,11 +130,12 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(point) {
+  _handleFormSubmit(updatedPoint) {
+    // здесь можно проверять, какого типа изменения произошли (коммит 7.1.6), и если не требующие перерисовки, то делать обновление типа PATCH.
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      point,
+      updatedPoint,
     );
     this._replaceEditToPoint();
   }

@@ -162,6 +162,17 @@ export default class PointEdit extends SmartView {
     this._setToDatepicker();
   }
 
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   getTemplate() {
     return createPointEditTemplate(this._data);
   }

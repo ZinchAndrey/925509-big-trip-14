@@ -2,11 +2,14 @@ import {POINTS_COUNT} from './const.js';
 
 import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
+import FilterModel from './model/filter.js';
 
 import TripPresenter from './presenter/trip.js';
 
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
+
+const filterModel = new FilterModel();
 
 const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 
