@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
+import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF, START_POINT} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -69,7 +69,7 @@ function createPicturesTemplate(pictures) {
 }
 
 function createNewPointTemplate(point) {
-  const {destination, offers, data, type} = point;
+  const {destination, offers, data, type} = START_POINT;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -304,6 +304,11 @@ export default class NewPoint extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parseDataToPoint(data) {

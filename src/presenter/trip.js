@@ -1,4 +1,4 @@
-import {SortType, UserAction, UpdateType} from '../const.js';
+import {SortType, UserAction, UpdateType, FilterType} from '../const.js';
 
 import MainMenuView from '../view/main-menu.js';
 import FiltersView from '../view/filters.js';
@@ -7,6 +7,8 @@ import SortingView from '../view/sorting.js';
 import NewPointView from '../view/point-create.js';
 
 import NoPointsView from '../view/no-points.js';
+
+import PointNewPresenter from '../presenter/point-new.js';
 
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
@@ -41,6 +43,8 @@ export default class Trip {
     this._pointPresenter = {};
     this._tripInfoPresenter = {};
 
+    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListNode, this._handleViewAction);
+
     this._currentSortType = SortType.DAY;
 
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -55,9 +59,13 @@ export default class Trip {
 
   init() {
     this._renderMainMenu();
-    // this._renderFilters();
-
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
   }
 
   _getPoints() {
@@ -81,10 +89,6 @@ export default class Trip {
   _renderMainMenu() {
     render(this._mainMenuNode, this._mainMenuComponent, RenderPosition.AFTERBEGIN);
   }
-
-  // _renderFilters() {
-  //   render(this._filtersNode, this._filtersComponent, RenderPosition.BEFOREEND);
-  // }
 
   _renderNoPoints() {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);

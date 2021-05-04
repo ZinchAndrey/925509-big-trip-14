@@ -10,6 +10,7 @@ import FilterPresenter from './presenter/filter.js';
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
 const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
+const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 
 
 const filterModel = new FilterModel();
@@ -31,3 +32,7 @@ filterPresenter.init();
 
 const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
 tripPresenter.init();
+
+addNewPointBtn.addEventListener('click', () => {
+  tripPresenter.createPoint();
+});
