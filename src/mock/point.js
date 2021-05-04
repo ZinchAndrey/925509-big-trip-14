@@ -56,6 +56,15 @@ function generateRandomFutureDate(startDate) {
     .format('YYYY-MM-DD HH:mm:ss');
 }
 
+function generateRandomDate() {
+  return dayjs('2021-04-25')
+    .add(getRandomInteger(0, timeMaxGap.days), 'day')
+    .add(getRandomInteger(0, timeMaxGap.hours), 'hour')
+    .add(getRandomInteger(0, timeMaxGap.minutes), 'minute')
+    .add(getRandomInteger(0, timeMaxGap.seconsds), 'second')
+    .format('YYYY-MM-DD HH:mm:ss');
+}
+
 function generateOptions(options) {
   const randomQuantity = getRandomInteger(0, options.length - 1);
   const randomOptions = new Array(randomQuantity).fill().map(() => getRandomArrEl(options));
@@ -64,7 +73,7 @@ function generateOptions(options) {
 }
 
 function generateDate() {
-  const dateFrom = generateRandomFutureDate();
+  const dateFrom = generateRandomDate();
   const dateTo = generateRandomFutureDate(dateFrom);
 
   const date = {

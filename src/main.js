@@ -29,5 +29,5 @@ points.sort((point1, point2) => {
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
 filterPresenter.init();
 
-const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel);
+const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
 tripPresenter.init();
