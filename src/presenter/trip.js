@@ -51,7 +51,7 @@ export default class Trip {
 
   init() {
     this._renderMainMenu();
-    this._renderFilters();
+    // this._renderFilters();
 
     this._renderTrip();
   }
@@ -73,9 +73,9 @@ export default class Trip {
     render(this._mainMenuNode, this._mainMenuComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderFilters() {
-    render(this._filtersNode, this._filtersComponent, RenderPosition.BEFOREEND);
-  }
+  // _renderFilters() {
+  //   render(this._filtersNode, this._filtersComponent, RenderPosition.BEFOREEND);
+  // }
 
   _renderNoPoints() {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);

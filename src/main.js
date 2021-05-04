@@ -5,9 +5,12 @@ import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
 
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
+const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
+
 
 const filterModel = new FilterModel();
 
@@ -22,6 +25,9 @@ points.sort((point1, point2) => {
   }
   return 1;
 });
+
+const filterPresenter = new FilterPresenter(filtersNode, filterModel);
+filterPresenter.init();
 
 const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel);
 tripPresenter.init();

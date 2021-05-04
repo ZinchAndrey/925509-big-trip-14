@@ -25,6 +25,7 @@ export default class Filter {
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      return;
     }
 
     replace(this._filterComponent, prevFilterComponent);
@@ -36,7 +37,7 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType) {
+    if (this._getFilter() === filterType) {
       return;
     }
 
@@ -44,6 +45,6 @@ export default class Filter {
   }
 
   _getFilter() {
-    this._filterModel.getFilter();
+    return this._filterModel.getFilter();
   }
 }
