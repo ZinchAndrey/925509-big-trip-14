@@ -4,11 +4,11 @@ import MainMenuView from '../view/main-menu.js';
 import FiltersView from '../view/filters.js';
 
 import SortingView from '../view/sorting.js';
-import NewPointView from '../view/point-create.js';
+// import PointCreateView from '../view/point-create.js';
 
 import NoPointsView from '../view/no-points.js';
 
-import PointNewPresenter from '../presenter/point-new.js';
+import PointCreatePresenter from './point-create.js';
 
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
@@ -43,7 +43,7 @@ export default class Trip {
     this._pointPresenter = {};
     this._tripInfoPresenter = {};
 
-    this._pointNewPresenter = new PointNewPresenter(this._tripEventsListNode, this._handleViewAction);
+    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
 
     this._currentSortType = SortType.DAY;
 
@@ -65,7 +65,7 @@ export default class Trip {
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init();
+    this._pointCreatePresenter.init();
   }
 
   _getPoints() {
@@ -94,10 +94,10 @@ export default class Trip {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderNewPoint(point) {
-    const newPointComponent = new NewPointView(point);
-    render(this._tripEventsListNode, newPointComponent, RenderPosition.AFTERBEGIN);
-  }
+  // _renderNewPoint(point) {
+  //   const pointCreateComponent = new PointCreateView(point);
+  //   render(this._tripEventsListNode, pointCreateComponent, RenderPosition.AFTERBEGIN);
+  // }
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
@@ -184,14 +184,15 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     // Здесь будет вызываться обновление модели
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        // console.log(this._pointsModel);
         this._pointsModel.updatePoint(updateType, update);
         break;
 
       case UserAction.ADD_POINT:
+        // console.log(this._pointsModel);
         this._pointsModel.addPoint(updateType, update);
         break;
 

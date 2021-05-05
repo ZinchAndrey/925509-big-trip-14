@@ -1,4 +1,3 @@
-// import PointView from '../view/point.js';
 import PointCreateView from '../view/point-create.js';
 
 import {nanoid} from 'nanoid';
@@ -11,15 +10,13 @@ import {UserAction, UpdateType} from '../const.js';
 //   EDITING: 'EDITING',
 // };
 
-export default class PointNew {
+export default class PointCreate {
   constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._pointComponent = null;
-    this._pointNewComponent = null;
-    this._editPointComponent = null;
+    this._pointCreateComponent = null;
     // this._mode = Mode.DEFAULT;
 
 
@@ -30,28 +27,28 @@ export default class PointNew {
   }
 
   init() {
-    if (this._pointNewComponent !== null) {
+    if (this._pointCreateComponent !== null) {
       return;
     }
 
-    this._pointNewComponent = new PointCreateView();
+    this._pointCreateComponent = new PointCreateView();
 
     // this._point = point; // ???
 
-    this._pointNewComponent.setFormSubmitHandler(this._handleFormSubmit);
-    this._pointNewComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._pointCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointCreateComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._tripEventsListNode, this._pointNewComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripEventsListNode, this._pointCreateComponent, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this._handleEscPress);
   }
 
   destroy() {
-    if (this._pointNewComponent === null) {
+    if (this._pointCreateComponent === null) {
       return;
     }
 
-    remove(this._pointNewComponent);
-    this._pointNewComponent = null;
+    remove(this._pointCreateComponent);
+    this._pointCreateComponent = null;
 
     document.removeEventListener('keydown', this._handleEscPress);
   }
@@ -64,20 +61,23 @@ export default class PointNew {
   }
 
   _handleFormSubmit(updatedPoint) {
+    // console.log(updatedPoint);
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
       Object.assign({}, updatedPoint, {id: nanoid()}),
     );
 
-    this.destroy;
+    this.destroy();
   }
 
-  _handleDeleteClick(point) {
-    this._changeData(
-      UserAction.DELETE_POINT,
-      UpdateType.MINOR,
-      point,
-    );
+  _handleDeleteClick() {
+    // this._changeData(
+    //   UserAction.DELETE_POINT,
+    //   UpdateType.MINOR,
+    //   point,
+    // );
+
+    this.destroy(); // не удаляется после изменений
   }
 }

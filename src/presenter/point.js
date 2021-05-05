@@ -14,7 +14,7 @@ export default class Point {
   constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
-    this._changeMode = changeMode;
+    this._changeMode = changeMode;// здесь данный параметр лишний ?
 
     this._pointComponent = null;
     this._editPointComponent = null;

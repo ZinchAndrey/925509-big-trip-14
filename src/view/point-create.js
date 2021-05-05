@@ -89,7 +89,7 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createNewPointTemplate(point) {
+function createPointCreateTemplate(point) {
   const {destination, offers, data, type} = point;
 
   return `<li class="trip-events__item">
@@ -157,16 +157,18 @@ function createNewPointTemplate(point) {
   </li>`;
 }
 
-export default class NewPoint extends SmartView {
+export default class PointCreate extends SmartView {
   constructor(point = POINT_BLANK) {
     super();
     // this._point = point;
-    this._data = NewPoint.parsePointToData(point);
+    this._data = PointCreate.parsePointToData(point);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
@@ -180,7 +182,7 @@ export default class NewPoint extends SmartView {
   }
 
   getTemplate() {
-    return createNewPointTemplate(this._data);
+    return createPointCreateTemplate(this._data);
   }
 
   restoreHandlers() {
@@ -193,7 +195,7 @@ export default class NewPoint extends SmartView {
   }
 
   reset(point) {
-    this.updateData(NewPoint.parsePointToData(point));
+    this.updateData(PointCreate.parsePointToData(point));
   }
 
   _setFromDatepicker() {
@@ -319,7 +321,13 @@ export default class NewPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(NewPoint.parseDataToPoint(this._data));
+    // console.log(this._data);
+    this._callback.formSubmit(PointCreate.parseDataToPoint(this._data));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
