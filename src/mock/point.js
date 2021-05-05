@@ -118,6 +118,7 @@ function generateOffers() {
 
 export const destinations = generateDestinations();
 export const offers = generateOffers();
+// console.log(offers);
 
 export function generatePoint() {
   const type = getRandomArrEl(TYPES).toLowerCase();

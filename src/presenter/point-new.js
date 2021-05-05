@@ -1,8 +1,8 @@
-import PointView from '../view/point.js';
+// import PointView from '../view/point.js';
 import PointCreateView from '../view/point-create.js';
 
 import {nanoid} from 'nanoid';
-import {RenderPosition, render, replace, remove} from '../utils/render.js';
+import {RenderPosition, render, remove} from '../utils/render.js';
 
 import {UserAction, UpdateType} from '../const.js';
 
@@ -12,9 +12,9 @@ import {UserAction, UpdateType} from '../const.js';
 // };
 
 export default class PointNew {
-  constructor(tripEventsListNode, changeMode) {
+  constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
-    // this._changeData = changeData;
+    this._changeData = changeData;
     this._changeMode = changeMode;
 
     this._pointComponent = null;
@@ -38,11 +38,10 @@ export default class PointNew {
 
     // this._point = point; // ???
 
-    this._pointNewComponent.setRollUpClickHandler(this._handleRollUpClick);
     this._pointNewComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointNewComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._tripEventsListNode, this._pointNewComponent, RenderPosition.BEFOREEND);
+    render(this._tripEventsListNode, this._pointNewComponent, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this._handleEscPress);
   }
 

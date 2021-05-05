@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF, START_POINT} from '../const.js';
+import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -9,6 +9,27 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // в дальнешем эти данные будем получать с сервера
 import {destinations, offers} from '../mock/point.js';
+
+const typeBlank = TYPES[0].toLowerCase();
+
+const POINT_BLANK = {
+  type: typeBlank,
+  destination: destinations.find((destination) => {
+    return destination.name === DESTINATIONS[0];
+  }),
+  offers: offers.find((offer) => {
+    return offer.type === typeBlank;
+  }).offers,
+  data: {
+    date: {
+      from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    },
+    price: 0,
+    isFavorite: false,
+  },
+};
+
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -69,7 +90,7 @@ function createPicturesTemplate(pictures) {
 }
 
 function createNewPointTemplate(point) {
-  const {destination, offers, data, type} = START_POINT;
+  const {destination, offers, data, type} = point;
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -137,7 +158,7 @@ function createNewPointTemplate(point) {
 }
 
 export default class NewPoint extends SmartView {
-  constructor(point) {
+  constructor(point = POINT_BLANK) {
     super();
     // this._point = point;
     this._data = NewPoint.parsePointToData(point);

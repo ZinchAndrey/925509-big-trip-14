@@ -1,23 +1,9 @@
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 const DESTINATIONS = ['Moscow', 'Roma', 'Paris', 'Istanbul', 'Athens', 'Madrid', 'Berlin', 'Budapest', 'Vienna'];
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const POINTS_COUNT = 15;
 const DEFAULT_POINT_TIME_DIF = 1; // hours
-
-const START_POINT = {
-  type: TYPES[0].toLowerCase(),
-  destination: DESTINATIONS[0],
-  offers: [],
-  data: {
-    date: {
-      dateFrom: dayjs(),
-      dateTo: dayjs(),
-    },
-    price: '1000',
-    isFavorite: false,
-  },
-};
 
 const SortType = {
   DAY: 'day',
@@ -44,4 +30,4 @@ const FilterType = {
 };
 
 
-export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType, FilterType, START_POINT};
+export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType, FilterType};

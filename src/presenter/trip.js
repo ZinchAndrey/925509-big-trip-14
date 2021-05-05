@@ -165,7 +165,9 @@ export default class Trip {
     this._clearEventsTable();
 
     // нужно удалять блок с информацией о поездке и отрисовывать заново
-    this._tripInfoPresenter.destroy();
+    if (this._tripInfoPresenter.destroy) {
+      this._tripInfoPresenter.destroy();
+    }
     this._tripInfoPresenter = {};
 
 
