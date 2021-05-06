@@ -77,7 +77,6 @@ export default class PointCreate {
     //   UpdateType.MINOR,
     //   point,
     // );
-
-    this.destroy(); // не удаляется после изменений
+    this.destroy();
   }
 }

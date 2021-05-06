@@ -189,6 +189,7 @@ export default class PointCreate extends SmartView {
     this._setInnerHandlers();
 
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
 
     this._setFromDatepicker();
     this._setToDatepicker();
@@ -327,7 +328,8 @@ export default class PointCreate extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
+    // this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
+    this._callback.deleteClick();
   }
 
   setFormSubmitHandler(callback) {

@@ -8,7 +8,6 @@ import SortingView from '../view/sorting.js';
 
 import NoPointsView from '../view/no-points.js';
 
-import PointCreatePresenter from './point-create.js';
 
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
@@ -16,6 +15,7 @@ import {filter} from '../utils/filter.js';
 
 
 import PointPresenter from './point.js';
+import PointCreatePresenter from './point-create.js';
 import TripInfoPresenter from './trip-info.js';
 
 export default class Trip {
@@ -43,8 +43,6 @@ export default class Trip {
     this._pointPresenter = {};
     this._tripInfoPresenter = {};
 
-    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
-
     this._currentSortType = SortType.DAY;
 
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -52,6 +50,8 @@ export default class Trip {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
