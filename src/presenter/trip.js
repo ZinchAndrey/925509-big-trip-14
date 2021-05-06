@@ -162,6 +162,7 @@ export default class Trip {
   }
 
   _clearTrip({resetSortType = false} = {}) {
+    this._pointCreatePresenter.destroy();
     this._clearEventsTable();
 
     // нужно удалять блок с информацией о поездке и отрисовывать заново
@@ -177,6 +178,8 @@ export default class Trip {
   }
 
   _handleModeChange() {
+    this._pointCreatePresenter.destroy();
+
     Object.values(this._pointPresenter).
       forEach((presenter) => {
         presenter.resetView();

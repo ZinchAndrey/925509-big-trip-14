@@ -14,7 +14,7 @@ export default class PointCreate {
   constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
-    this._changeMode = changeMode;
+    this._changeMode = changeMode; // неиспользуемый параметр
 
     this._pointCreateComponent = null;
     // this._mode = Mode.DEFAULT;
