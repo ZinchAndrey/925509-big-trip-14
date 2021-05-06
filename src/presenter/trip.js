@@ -190,12 +190,10 @@ export default class Trip {
     // Здесь будет вызываться обновление модели
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        // console.log(this._pointsModel);
         this._pointsModel.updatePoint(updateType, update);
         break;
 
       case UserAction.ADD_POINT:
-        // console.log(this._pointsModel);
         this._pointsModel.addPoint(updateType, update);
         break;
 
@@ -208,11 +206,10 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     // В зависимости от типа изменений решаем, что делать:
     // data - данные о новой точке, по сути точка с update
-    // console.log(updateType, data);
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // ??? нужен ли такой тип обновления и корректен ли он? Добавление в избранное?
+        // ??? нужен ли такой тип обновления?
         this._pointPresenter[data.id].init(data);
         break;
 
