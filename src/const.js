@@ -2,7 +2,7 @@
 
 const DESTINATIONS = ['Moscow', 'Roma', 'Paris', 'Istanbul', 'Athens', 'Madrid', 'Berlin', 'Budapest', 'Vienna'];
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const POINTS_COUNT = 15;
+const POINTS_COUNT = 1;
 const DEFAULT_POINT_TIME_DIF = 1; // hours
 
 const SortType = {

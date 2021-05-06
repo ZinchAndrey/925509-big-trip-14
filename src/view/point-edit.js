@@ -152,6 +152,7 @@ export default class PointEdit extends SmartView {
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._basicPriceChangeHandler = this._basicPriceChangeHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -237,6 +238,10 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('#event-destination')
       .addEventListener('change', this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector('#event-price-1')
+      .addEventListener('change', this._basicPriceChangeHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -276,6 +281,21 @@ export default class PointEdit extends SmartView {
         destination: destinationItem,
       });
     }
+  }
+
+  _basicPriceChangeHandler(evt) {
+    const newPrice = parseInt(evt.currentTarget.value);
+    const justDataUpdating = true; // для читабельности
+
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          price: newPrice,
+        },
+      ),
+    }, justDataUpdating);
   }
 
   _dateFromChangeHandler([userDate]) {
