@@ -267,8 +267,10 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
-
     if (newDestinationName === this._data.destination) {
+      return;
+    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+      evt.currentTarget.value = '';
       return;
     }
 
@@ -287,6 +289,7 @@ export default class PointEdit extends SmartView {
     const newPrice = parseInt(evt.currentTarget.value);
 
     if (!isNumber(newPrice)) {
+      evt.currentTarget.value = '';
       return;
     }
 
@@ -342,9 +345,13 @@ export default class PointEdit extends SmartView {
     evt.preventDefault();
 
     const newPriceNode = this.getElement().querySelector('#event-price-1');
+    const newDestinationName = this.getElement().querySelector('#event-destination');
 
     if (!isNumber(newPriceNode.value)) {
       newPriceNode.value = '';
+      return;
+    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+      newDestinationName.value = '';
       return;
     }
 
