@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
-import {getRandomInteger} from '../utils/common.js';
+import {getRandomInteger, isNumber} from '../utils/common.js';
 import SmartView from './smart.js';
 
 import flatpickr from 'flatpickr';
@@ -285,6 +285,11 @@ export default class PointEdit extends SmartView {
 
   _basicPriceChangeHandler(evt) {
     const newPrice = parseInt(evt.currentTarget.value);
+
+    if (!isNumber(newPrice)) {
+      return;
+    }
+
     const justDataUpdating = true; // для читабельности
 
     this.updateData({
@@ -335,6 +340,14 @@ export default class PointEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    const newPriceNode = this.getElement().querySelector('#event-price-1');
+
+    if (!isNumber(newPriceNode.value)) {
+      newPriceNode.value = '';
+      return;
+    }
+
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
