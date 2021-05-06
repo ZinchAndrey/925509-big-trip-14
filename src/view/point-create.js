@@ -316,9 +316,9 @@ export default class PointCreate extends SmartView {
         this._data.data,
         {
           date: {
-            from: userDate,
+            from: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
             to: isFromAfterTo ?
-              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour') :
+              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour').format('YYYY-MM-DD HH:mm:ss') :
               this._data.data.date.to,
           },
         },
@@ -334,7 +334,7 @@ export default class PointCreate extends SmartView {
         {
           date: {
             from: this._data.data.date.from,
-            to: userDate,
+            to: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
           },
         },
       ),

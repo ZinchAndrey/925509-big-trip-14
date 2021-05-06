@@ -61,11 +61,14 @@ export default class PointCreate {
   }
 
   _handleFormSubmit(updatedPoint) {
-    // console.log(updatedPoint);
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({}, updatedPoint, {id: nanoid()}),
+      Object.assign(
+        {},
+        updatedPoint,
+        {id: nanoid()},
+      ),
     );
 
     this.destroy();
