@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import he from 'he';
 import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
-import {getRandomInteger, isNumber} from '../utils/common.js';
+import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
 import flatpickr from 'flatpickr';
@@ -114,7 +115,7 @@ function createPointCreateTemplate(point) {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
+          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
             ${createDestinationDatalistTemplate(DESTINATIONS)}
           </datalist>
@@ -133,7 +134,7 @@ function createPointCreateTemplate(point) {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${data.price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -181,6 +182,17 @@ export default class PointCreate extends SmartView {
 
     this._setFromDatepicker();
     this._setToDatepicker();
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   getTemplate() {
@@ -296,12 +308,6 @@ export default class PointCreate extends SmartView {
 
   _basicPriceChangeHandler(evt) {
     const newPrice = parseInt(evt.currentTarget.value);
-
-    if (!isNumber(newPrice)) {
-      evt.currentTarget.value = '';
-      return;
-    }
-
     const justDataUpdating = true; // для читабельности
 
     this.updateData({
@@ -352,13 +358,9 @@ export default class PointCreate extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    const newPriceNode = this.getElement().querySelector('#event-price-1');
     const newDestinationName = this.getElement().querySelector('#event-destination');
 
-    if (!isNumber(newPriceNode.value)) {
-      newPriceNode.value = '';
-      return;
-    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
       newDestinationName.value = '';
       return;
     }
