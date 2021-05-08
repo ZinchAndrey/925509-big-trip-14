@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {DESTINATIONS, TYPES} from '../const.js';
+import he from 'he';
+import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -9,6 +10,27 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // в дальнешем эти данные будем получать с сервера
 import {destinations, offers} from '../mock/point.js';
+
+const typeBlank = TYPES[0].toLowerCase();
+
+const POINT_BLANK = {
+  type: typeBlank,
+  destination: destinations.find((destination) => {
+    return destination.name === DESTINATIONS[0];
+  }),
+  offers: offers.find((offer) => {
+    return offer.type === typeBlank;
+  }).offers,
+  data: {
+    date: {
+      from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    },
+    price: 0,
+    isFavorite: false,
+  },
+};
+
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -68,7 +90,7 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createNewPointTemplate(point) {
+function createPointCreateTemplate(point) {
   const {destination, offers, data, type} = point;
 
   return `<li class="trip-events__item">
@@ -93,7 +115,7 @@ function createNewPointTemplate(point) {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
+          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
             ${createDestinationDatalistTemplate(DESTINATIONS)}
           </datalist>
@@ -112,7 +134,7 @@ function createNewPointTemplate(point) {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${data.price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -136,18 +158,22 @@ function createNewPointTemplate(point) {
   </li>`;
 }
 
-export default class NewPoint extends SmartView {
-  constructor(point) {
+export default class PointCreate extends SmartView {
+  constructor(point = POINT_BLANK) {
     super();
     // this._point = point;
-    this._data = NewPoint.parsePointToData(point);
+    this._data = PointCreate.parsePointToData(point);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._basicPriceChangeHandler = this._basicPriceChangeHandler.bind(this);
+
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -158,21 +184,33 @@ export default class NewPoint extends SmartView {
     this._setToDatepicker();
   }
 
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   getTemplate() {
-    return createNewPointTemplate(this._data);
+    return createPointCreateTemplate(this._data);
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
 
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
 
     this._setFromDatepicker();
     this._setToDatepicker();
   }
 
   reset(point) {
-    this.updateData(NewPoint.parsePointToData(point));
+    this.updateData(PointCreate.parsePointToData(point));
   }
 
   _setFromDatepicker() {
@@ -220,6 +258,10 @@ export default class NewPoint extends SmartView {
     this.getElement()
       .querySelector('#event-destination')
       .addEventListener('change', this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector('#event-price-1')
+      .addEventListener('change', this._basicPriceChangeHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -248,6 +290,9 @@ export default class NewPoint extends SmartView {
 
     if (newDestinationName === this._data.destination) {
       return;
+    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+      evt.currentTarget.value = '';
+      return;
     }
 
     const destinationItem = destinations.find((destination) => {
@@ -261,15 +306,35 @@ export default class NewPoint extends SmartView {
     }
   }
 
+  _basicPriceChangeHandler(evt) {
+    const newPrice = parseInt(evt.currentTarget.value);
+    const justDataUpdating = true; // для читабельности
+
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          price: newPrice,
+        },
+      ),
+    }, justDataUpdating);
+  }
+
   _dateFromChangeHandler([userDate]) {
+    // если пользователь выберет дату начала после даты окончания, дата окончания должна обновиться
+    const isFromAfterTo = userDate > dayjs(this._data.data.date.to).toDate();
+
     this.updateData({
       data: Object.assign(
         {},
         this._data.data,
         {
           date: {
-            from: userDate,
-            to: this._data.data.date.to,
+            from: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
+            to: isFromAfterTo ?
+              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour').format('YYYY-MM-DD HH:mm:ss') :
+              this._data.data.date.to,
           },
         },
       ),
@@ -284,7 +349,7 @@ export default class NewPoint extends SmartView {
         {
           date: {
             from: this._data.data.date.from,
-            to: userDate,
+            to: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
           },
         },
       ),
@@ -293,12 +358,30 @@ export default class NewPoint extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(NewPoint.parseDataToPoint(this._data));
+    const newDestinationName = this.getElement().querySelector('#event-destination');
+
+    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
+      newDestinationName.value = '';
+      return;
+    }
+
+    this._callback.formSubmit(PointCreate.parseDataToPoint(this._data));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    // this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
+    this._callback.deleteClick();
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parseDataToPoint(data) {

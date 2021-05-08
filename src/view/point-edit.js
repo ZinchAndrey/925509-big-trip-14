@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {DESTINATIONS, TYPES} from '../const.js';
+import he from 'he';
+import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -92,7 +93,7 @@ function createPointEditTemplate(pointData) {
           <label class="event__label  event__type-output" for="event-destination">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${destination.name}" list="destination-list">
+          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
             ${createDestinationDatalistTemplate(DESTINATIONS)}
           </datalist>
@@ -111,7 +112,7 @@ function createPointEditTemplate(pointData) {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${data.price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -149,8 +150,10 @@ export default class PointEdit extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._basicPriceChangeHandler = this._basicPriceChangeHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -159,6 +162,17 @@ export default class PointEdit extends SmartView {
 
     this._setFromDatepicker();
     this._setToDatepicker();
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   getTemplate() {
@@ -170,6 +184,7 @@ export default class PointEdit extends SmartView {
 
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollUpClickHandler(this._callback.rollUpClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
 
     this._setFromDatepicker();
     this._setToDatepicker();
@@ -224,6 +239,10 @@ export default class PointEdit extends SmartView {
     this.getElement()
       .querySelector('#event-destination')
       .addEventListener('change', this._destinationChangeHandler);
+
+    this.getElement()
+      .querySelector('#event-price-1')
+      .addEventListener('change', this._basicPriceChangeHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -249,8 +268,10 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
-
     if (newDestinationName === this._data.destination) {
+      return;
+    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+      evt.currentTarget.value = '';
       return;
     }
 
@@ -265,15 +286,35 @@ export default class PointEdit extends SmartView {
     }
   }
 
+  _basicPriceChangeHandler(evt) {
+    const newPrice = parseInt(evt.currentTarget.value);
+    const justDataUpdating = true; // для читабельности
+
+    this.updateData({
+      data: Object.assign(
+        {},
+        this._data.data,
+        {
+          price: newPrice,
+        },
+      ),
+    }, justDataUpdating);
+  }
+
   _dateFromChangeHandler([userDate]) {
+    // если пользователь выберет дату начала после даты окончания, дата окончания станет равной дате начала + 1h
+    const isFromAfterTo = userDate > dayjs(this._data.data.date.to).toDate();
+
     this.updateData({
       data: Object.assign(
         {},
         this._data.data,
         {
           date: {
-            from: userDate,
-            to: this._data.data.date.to,
+            from: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
+            to: isFromAfterTo ?
+              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour').format('YYYY-MM-DD HH:mm:ss') :
+              this._data.data.date.to,
           },
         },
       ),
@@ -288,7 +329,7 @@ export default class PointEdit extends SmartView {
         {
           date: {
             from: this._data.data.date.from,
-            to: userDate,
+            to: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
           },
         },
       ),
@@ -297,6 +338,14 @@ export default class PointEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    const newDestinationName = this.getElement().querySelector('#event-destination');
+
+    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
+      newDestinationName.value = '';
+      return;
+    }
+
     this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
@@ -313,6 +362,16 @@ export default class PointEdit extends SmartView {
   setRollUpClickHandler(callback) {
     this._callback.rollUpClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parseDataToPoint(data) {

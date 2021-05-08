@@ -3,6 +3,8 @@ import PointEditView from '../view/point-edit.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
+import {UserAction, UpdateType} from '../const.js';
+
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
@@ -12,7 +14,7 @@ export default class Point {
   constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
-    this._changeMode = changeMode;
+    this._changeMode = changeMode;// здесь данный параметр лишний ?
 
     this._pointComponent = null;
     this._editPointComponent = null;
@@ -24,6 +26,8 @@ export default class Point {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleRollUpClick = this._handleRollUpClick.bind(this);
+
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -39,8 +43,8 @@ export default class Point {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     this._editPointComponent.setRollUpClickHandler(this._handleRollUpClick);
-
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._editPointComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this._tripEventsListNode, this._pointComponent, RenderPosition.BEFOREEND);
@@ -107,6 +111,8 @@ export default class Point {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,
@@ -123,8 +129,21 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(point) {
-    this._changeData(point);
+  _handleFormSubmit(updatedPoint) {
+    // здесь можно проверять, какого типа изменения произошли (коммит 7.1.6), и если не требующие перерисовки, то делать обновление типа PATCH.
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      updatedPoint,
+    );
     this._replaceEditToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   }
 }
