@@ -1,14 +1,12 @@
 import FiltersView from '../view/filters.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
-// import {filter} from '../utils/filter.js';
 import {UpdateType} from '../const.js';
 
 
 export default class Filter {
-  constructor(filterContainer, filterModel, pointsModel) {
+  constructor(filterContainer, filterModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
-    this._pointsModel = pointsModel; // вероятно, здесь не нужна, так как не нужно считать количество задач в фильтре, как в демке
 
     this._filterComponent = null;
 
@@ -17,7 +15,6 @@ export default class Filter {
   }
 
   init() {
-    // const filter = this._getFilter;
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new FiltersView(this._getFilter());

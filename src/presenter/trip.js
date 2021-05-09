@@ -4,7 +4,6 @@ import MainMenuView from '../view/main-menu.js';
 import FiltersView from '../view/filters.js';
 
 import SortingView from '../view/sorting.js';
-// import PointCreateView from '../view/point-create.js';
 
 import NoPointsView from '../view/no-points.js';
 
@@ -32,7 +31,6 @@ export default class Trip {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
 
-    // this._sortingComponent = new SortingView();
     this._sortingComponent = null;
 
     this._mainMenuComponent = new MainMenuView();
@@ -51,7 +49,7 @@ export default class Trip {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
+    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction);
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -93,11 +91,6 @@ export default class Trip {
   _renderNoPoints() {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
-
-  // _renderNewPoint(point) {
-  //   const pointCreateComponent = new PointCreateView(point);
-  //   render(this._tripEventsListNode, pointCreateComponent, RenderPosition.AFTERBEGIN);
-  // }
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
@@ -146,7 +139,6 @@ export default class Trip {
     }
   }
 
-  // при сортировке нам не нужно перерисовывать блок с информацией о поездке
   _clearEventsTable() {
     Object.values(this._pointPresenter).
       forEach((presenter) => {
@@ -156,8 +148,6 @@ export default class Trip {
     this._pointPresenter = {};
 
     remove(this._sortingComponent);
-
-    // Удаляем NoPointsComponent на случай, если не было точек и затем мы добавляем их
     remove(this._noPointsComponent);
   }
 
@@ -165,7 +155,6 @@ export default class Trip {
     this._pointCreatePresenter.destroy();
     this._clearEventsTable();
 
-    // нужно удалять блок с информацией о поездке и отрисовывать заново
     if (this._tripInfoPresenter.destroy) {
       this._tripInfoPresenter.destroy();
     }
@@ -187,7 +176,6 @@ export default class Trip {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // Здесь будет вызываться обновление модели
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
@@ -204,23 +192,20 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data) {
-    // В зависимости от типа изменений решаем, что делать:
     // data - данные о новой точке, по сути точка с update
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // ??? нужен ли такой тип обновления?
+        // для offers
         this._pointPresenter[data.id].init(data);
         break;
 
       case UpdateType.MINOR:
-        // - обновить список (без сброса сортировки)
         this._clearTrip();
         this._renderTrip();
         break;
 
       case UpdateType.MAJOR:
-        // - обновить всю таблицу (например, при переключении фильтра)
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         break;

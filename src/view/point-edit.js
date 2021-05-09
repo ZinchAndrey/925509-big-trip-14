@@ -142,7 +142,6 @@ function createPointEditTemplate(pointData) {
 export default class PointEdit extends SmartView {
   constructor(point) {
     super();
-    // this._point = point;
     this._data = PointEdit.parsePointToData(point);
 
     this._datepickerFrom = null;

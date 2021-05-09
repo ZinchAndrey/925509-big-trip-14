@@ -5,19 +5,12 @@ import {RenderPosition, render, remove} from '../utils/render.js';
 
 import {UserAction, UpdateType} from '../const.js';
 
-// const Mode = {
-//   DEFAULT: 'DEFAULT',
-//   EDITING: 'EDITING',
-// };
-
 export default class PointCreate {
-  constructor(tripEventsListNode, changeData, changeMode) {
+  constructor(tripEventsListNode, changeData) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
-    this._changeMode = changeMode; // неиспользуемый параметр
 
     this._pointCreateComponent = null;
-    // this._mode = Mode.DEFAULT;
 
 
     this._handleEscPress = this._handleEscPress.bind(this);
@@ -32,8 +25,6 @@ export default class PointCreate {
     }
 
     this._pointCreateComponent = new PointCreateView();
-
-    // this._point = point; // ???
 
     this._pointCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointCreateComponent.setDeleteClickHandler(this._handleDeleteClick);
@@ -75,11 +66,6 @@ export default class PointCreate {
   }
 
   _handleDeleteClick() {
-    // this._changeData(
-    //   UserAction.DELETE_POINT,
-    //   UpdateType.MINOR,
-    //   point,
-    // );
     this.destroy();
   }
 }

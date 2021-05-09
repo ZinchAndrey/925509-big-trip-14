@@ -7,7 +7,6 @@ export default class Abstract {
     }
 
     this._element = null;
-    // в этом объекте будут сохраняться все колбэки
     this._callback = {};
   }
 

@@ -30,12 +30,12 @@ function sortByTime(point1, point2) {
   return 1;
 }
 
-function isPointFuture(date) {
+function isFuturePoint(date) {
   return dayjs(date).isSameOrAfter(dayjs());
 }
 
-function isPointPast(date) {
+function isPastPoint(date) {
   return dayjs(date).isBefore(dayjs());
 }
 
-export {sortByDate, sortByPrice, sortByTime, isPointFuture, isPointPast};
+export {sortByDate, sortByPrice, sortByTime, isFuturePoint, isPastPoint};

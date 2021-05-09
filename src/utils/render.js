@@ -30,7 +30,6 @@ function renderTemplate(container, template, place) {
 }
 
 function createElement(template) {
-  // template должен иметь цельную обертку
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
