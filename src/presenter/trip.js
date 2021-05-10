@@ -1,6 +1,5 @@
 import {SortType, UserAction, UpdateType, FilterType} from '../const.js';
 
-import MainMenuView from '../view/main-menu.js';
 import FiltersView from '../view/filters.js';
 
 import SortingView from '../view/sorting.js';
@@ -33,10 +32,8 @@ export default class Trip {
 
     this._sortingComponent = null;
 
-    this._mainMenuComponent = new MainMenuView();
     this._filtersComponent = new FiltersView();
 
-    // this._noPointsComponent = new NoPointsView();
     this._noPointsComponent = null;
 
     this._pointPresenter = {};
@@ -57,7 +54,6 @@ export default class Trip {
   }
 
   init() {
-    this._renderMainMenu();
     this._renderTrip();
   }
 
@@ -92,9 +88,6 @@ export default class Trip {
     }
   }
 
-  _renderMainMenu() {
-    render(this._mainMenuNode, this._mainMenuComponent, RenderPosition.AFTERBEGIN);
-  }
 
   _renderNoPoints() {
     if (this._noPointsComponent === null) {

@@ -1,4 +1,5 @@
-import {POINTS_COUNT} from './const.js';
+import {POINTS_COUNT, MenuItem} from './const.js';
+import {RenderPosition, render} from './utils/render.js';
 
 import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
@@ -7,10 +8,14 @@ import FilterModel from './model/filter.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 
+import MainMenuView from './view/main-menu.js';
+
+
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
 const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
+const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 
 
 const filterModel = new FilterModel();
@@ -27,10 +32,30 @@ points.sort((point1, point2) => {
   return 1;
 });
 
-const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-filterPresenter.init();
+// МЕНЮ САЙТА
+const mainMenuComponent = new MainMenuView();
+render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
+const filterPresenter = new FilterPresenter(filtersNode, filterModel);
 const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
+
+
+function handleSiteMenuClick(menuItem) {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+}
+
+mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+
+filterPresenter.init();
 tripPresenter.init();
 
 addNewPointBtn.addEventListener('click', () => {
