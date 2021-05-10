@@ -36,7 +36,8 @@ export default class Trip {
     this._mainMenuComponent = new MainMenuView();
     this._filtersComponent = new FiltersView();
 
-    this._noPointsComponent = new NoPointsView();
+    // this._noPointsComponent = new NoPointsView();
+    this._noPointsComponent = null;
 
     this._pointPresenter = {};
     this._tripInfoPresenter = {};
@@ -63,6 +64,13 @@ export default class Trip {
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    if (this._noPointsComponent !== null) {
+      remove(this._noPointsComponent);
+      this._noPointsComponent === null;
+    }
+    // если пользователь отменит создание точки, noPointsComponent не появится
+
     this._pointCreatePresenter.init();
   }
 
@@ -89,6 +97,9 @@ export default class Trip {
   }
 
   _renderNoPoints() {
+    if (this._noPointsComponent === null) {
+      this._noPointsComponent = new NoPointsView();
+    }
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
