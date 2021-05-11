@@ -4,7 +4,7 @@ import {MenuItem} from '../const.js';
 function createMainMenuTemplate() {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
     <a class="trip-tabs__btn" href="#" data-type="${MenuItem.TABLE}">${MenuItem.TABLE}</a>
-    <a class="trip-tabs__btn" href="#" data-type="${MenuItem.TABLE}">${MenuItem.STATS}</a>
+    <a class="trip-tabs__btn" href="#" data-type="${MenuItem.STATS}">${MenuItem.STATS}</a>
   </nav>`;
 }
 
@@ -22,7 +22,7 @@ export default class MainMenu extends AbstractView {
   _menuClickHandler(evt) {
     evt.preventDefault();
     if (evt.target.classList.contains('trip-tabs__btn')) {
-      this._callback.menuClick(evt.target.value);
+      this._callback.menuClick(evt.target.dataset.type);
     }
   }
 

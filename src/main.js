@@ -1,4 +1,4 @@
-import {POINTS_COUNT, MenuItem} from './const.js';
+import {POINTS_COUNT, MenuItem, UpdateType, FilterType} from './const.js';
 import {RenderPosition, render} from './utils/render.js';
 
 import {generatePoint} from './mock/point.js';
@@ -44,10 +44,12 @@ function handleSiteMenuClick(menuItem) {
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
+      tripPresenter.init();
       // Скрыть статистику
       break;
     case MenuItem.STATS:
       // Скрыть доску
+      tripPresenter.destroy();
       // Показать статистику
       break;
   }

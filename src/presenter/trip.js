@@ -49,12 +49,23 @@ export default class Trip {
 
     this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     this._renderTrip();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy() {
+    // this._clearTrip({resetSortType: false});
+
+    // remove(this.)
+    this._clearEventsTable();
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint() {
@@ -126,6 +137,10 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
+    if (Object.keys(this._tripInfoPresenter).length !== 0) {
+      this._tripInfoPresenter.destroy();
+      this._tripInfoPresenter = {};
+    }
     this._tripInfoPresenter = new TripInfoPresenter(this._tripMainNode);
 
     this._tripInfoPresenter.init(points);
