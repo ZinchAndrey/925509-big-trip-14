@@ -38,4 +38,4 @@ function isPastPoint(date) {
   return dayjs(date).isBefore(dayjs());
 }
 
-export {sortByDate, sortByPrice, sortByTime, isFuturePoint, isPastPoint};
+export {sortByDate, sortByPrice, sortByTime, isFuturePoint, isPastPoint, getTimeDifference};
