@@ -31,12 +31,21 @@ function createStatisticsTemplate(points) {
   </section>`;
 }
 
+function getLabels(points) {
+  const uniqueLabels = new Set();
+  points.forEach((point) => {
+    uniqueLabels.add(point.type.toUpperCase());
+  });
+
+  return Array.from(uniqueLabels.values());
+};
+
 function createMoneyChart(moneyCtx, points) {
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'], // сюда нужно передать уникальные значение типа точки маршрута
+      labels: getLabels(points),
       datasets: [{
         data: [400, 300, 200, 160, 150, 100], // сюда нужно передать соответствующие данные по цене
         backgroundColor: '#ffffff',
@@ -103,7 +112,7 @@ function createTypeChart (typeCtx, points) {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: getLabels(points),
       datasets: [{
         data: [4, 3, 2, 1, 1, 1],
         backgroundColor: '#ffffff',
@@ -169,7 +178,7 @@ function createTimeChart  (timeCtx, points) {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['TAXI', 'BUS', 'TRAIN', 'SHIP', 'TRANSPORT', 'DRIVE'],
+      labels: getLabels(points),
       datasets: [{
         data: [4, 3, 2, 1, 1, 1],
         backgroundColor: '#ffffff',
