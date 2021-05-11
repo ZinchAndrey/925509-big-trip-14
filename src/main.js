@@ -9,10 +9,12 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 
 import MainMenuView from './view/main-menu.js';
+import StatisticsView from './view/statistics.js';
 
 
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
+const pageMainContainerNode = pageMainNode.querySelector('.page-body__container');
 const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
@@ -41,7 +43,6 @@ const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel,
 
 
 function handleSiteMenuClick(menuItem) {
-  console.log(menuItem);
   if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
     .classList.contains('trip-tabs__btn--active')) {
       return;
@@ -67,7 +68,9 @@ function handleSiteMenuClick(menuItem) {
 mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
-tripPresenter.init();
+// WIP - для удобства скроем table и выведем статистику
+// tripPresenter.init();
+render(pageMainContainerNode, new StatisticsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
 
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();
