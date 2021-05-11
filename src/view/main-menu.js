@@ -3,7 +3,7 @@ import {MenuItem} from '../const.js';
 
 function createMainMenuTemplate() {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
-    <a class="trip-tabs__btn" href="#" data-type="${MenuItem.TABLE}">${MenuItem.TABLE}</a>
+    <a class="trip-tabs__btn trip-tabs__btn--active" href="#" data-type="${MenuItem.TABLE}">${MenuItem.TABLE}</a>
     <a class="trip-tabs__btn" href="#" data-type="${MenuItem.STATS}">${MenuItem.STATS}</a>
   </nav>`;
 }
@@ -33,12 +33,11 @@ export default class MainMenu extends AbstractView {
 
   setMenuItem(menuItem) {
     const items = this.getElement().querySelectorAll('.trip-tabs__btn');
-
-    items.array.forEach((item) => {
+    items.forEach((item) => {
       item.classList.remove('trip-tabs__btn--active');
     });
 
-    const currentItem = this.getElement().querySelector(`[data-type="${menuItem}]`);
+    const currentItem = this.getElement().querySelector(`[data-type="${menuItem}"]`);
     currentItem.classList.add('trip-tabs__btn--active');
   }
 }

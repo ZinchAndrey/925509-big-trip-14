@@ -59,9 +59,6 @@ export default class Trip {
   }
 
   destroy() {
-    // this._clearTrip({resetSortType: false});
-
-    // remove(this.)
     this._clearEventsTable();
 
     this._pointsModel.removeObserver(this._handleModelEvent);
@@ -71,6 +68,7 @@ export default class Trip {
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    // часть выше можно удалить и передавать в createPoint callback, см коммиты 7.2.2 и 7.2.3
 
     if (this._noPointsComponent !== null) {
       remove(this._noPointsComponent);

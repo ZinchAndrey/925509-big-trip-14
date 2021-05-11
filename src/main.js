@@ -41,15 +41,24 @@ const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel,
 
 
 function handleSiteMenuClick(menuItem) {
+  console.log(menuItem);
+  if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
+    .classList.contains('trip-tabs__btn--active')) {
+      return;
+  }
+
+  mainMenuComponent.setMenuItem(menuItem);
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
       tripPresenter.init();
+      addNewPointBtn.disabled = false;
       // Скрыть статистику
       break;
     case MenuItem.STATS:
       // Скрыть доску
       tripPresenter.destroy();
+      addNewPointBtn.disabled = true;
       // Показать статистику
       break;
   }
