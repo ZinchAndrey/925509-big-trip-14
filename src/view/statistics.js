@@ -1,9 +1,8 @@
-import dayjs from 'dayjs';
 import Chart from 'chart.js';
 import ChartDataTypes from 'chartjs-plugin-datalabels';
 
 
-import { getTimeDifference } from '../utils/point.js';
+import {getTimeDifference, getTimeFormatted} from '../utils/point.js';
 import SmartView from './smart.js';
 
 const BAR_HEIGHT = 55;
@@ -72,6 +71,23 @@ function getCountsOfTypes(points) {
   });
 
   return counts;
+}
+
+function getTimesOfTypes(points) {
+  const uniqueTypes = getTypes(points);
+
+  const times = uniqueTypes.map((type) => {
+    let time = 0;
+    points.forEach((point) => {
+      if (point.type.toUpperCase() === type) {
+        const timeDifference = getTimeDifference(point.data.date.from, point.data.date.to);
+        time += timeDifference;
+      }
+    });
+    return time;
+  });
+
+  return times;
 }
 
 
@@ -216,7 +232,7 @@ function createTimeChart  (timeCtx, points) {
     data: {
       labels: getTypes(points),
       datasets: [{
-        data: [4, 3, 2, 1, 1, 1],
+        data: getTimesOfTypes(points),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -231,7 +247,7 @@ function createTimeChart  (timeCtx, points) {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => '${val}x', // здесь соответствующий формат нужно сделать
+          formatter: (val) => `${getTimeFormatted(val)}`,
         },
       },
       title: {
