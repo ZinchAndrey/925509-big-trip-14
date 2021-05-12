@@ -1,5 +1,5 @@
 import {POINTS_COUNT, MenuItem} from './const.js';
-import {RenderPosition, render} from './utils/render.js';
+import {RenderPosition, render, remove} from './utils/render.js';
 
 import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
@@ -38,6 +38,8 @@ points.sort((point1, point2) => {
 const mainMenuComponent = new MainMenuView();
 render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
+let statisticsComponent = null;
+
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
 const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
 
@@ -49,18 +51,22 @@ function handleSiteMenuClick(menuItem) {
   }
 
   mainMenuComponent.setMenuItem(menuItem);
+  // возможно, здесь лучше использовать добавление / удаление классов показа, чтобы не париться с блоком информации
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
       tripPresenter.init();
       addNewPointBtn.disabled = false;
       // Скрыть статистику
+      remove(statisticsComponent);
       break;
     case MenuItem.STATS:
       // Скрыть доску
       tripPresenter.destroy();
       addNewPointBtn.disabled = true;
       // Показать статистику
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
+      render(pageMainContainerNode, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 }
@@ -68,9 +74,7 @@ function handleSiteMenuClick(menuItem) {
 mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
-// WIP - для удобства скроем table и выведем статистику
-// tripPresenter.init();
-render(pageMainContainerNode, new StatisticsView(pointsModel.getPoints()), RenderPosition.BEFOREEND);
+tripPresenter.init();
 
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();
