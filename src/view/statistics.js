@@ -6,13 +6,16 @@ import {getTimeDifference, getTimeFormatted} from '../utils/point.js';
 import SmartView from './smart.js';
 
 const BAR_HEIGHT = 55;
+const MIN_TYPES_COUNT = 4;
 
 function createStatisticsTemplate(points) {
-  // moneyCtx.height = BAR_HEIGHT * 5;
-  // typeCtx.height = BAR_HEIGHT * 5;
-  // timeCtx.height = BAR_HEIGHT * 5;
-  const height = BAR_HEIGHT * 5;
-  // points будет использоваться для задания высоты канваса
+  const typesCount = getTypes(points).length;
+  let height = BAR_HEIGHT * MIN_TYPES_COUNT;
+
+  if (typesCount > MIN_TYPES_COUNT) {
+    height = BAR_HEIGHT * typesCount;
+  }
+
   return `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
 
