@@ -78,4 +78,5 @@ tripPresenter.init();
 
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();
+  addNewPointBtn.disabled = true;
 });

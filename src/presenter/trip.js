@@ -22,6 +22,7 @@ export default class Trip {
     this._tripMainNode = tripMainNode;
     this._mainMenuNode = this._tripMainNode.querySelector('.trip-controls__navigation');
     this._filtersNode = this._tripMainNode.querySelector('.trip-controls__filters');
+    this._addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 
     this._pageMainNode = pageMainNode;
     this._tripEventsNode = this._pageMainNode.querySelector('.trip-events');
@@ -47,7 +48,7 @@ export default class Trip {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction);
+    this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._addNewPointBtn);
 
   }
 

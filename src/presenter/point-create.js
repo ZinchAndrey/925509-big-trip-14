@@ -6,8 +6,9 @@ import {RenderPosition, render, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class PointCreate {
-  constructor(tripEventsListNode, changeData) {
+  constructor(tripEventsListNode, changeData, addNewPointBtn) {
     this._tripEventsListNode = tripEventsListNode;
+    this._addNewPointBtn = addNewPointBtn;
     this._changeData = changeData;
 
     this._pointCreateComponent = null;
@@ -48,6 +49,7 @@ export default class PointCreate {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this.destroy();
       document.removeEventListener('keydown', this._handleEscPress);
+      this._addNewPointBtn.disabled = false;
     }
   }
 
@@ -62,10 +64,12 @@ export default class PointCreate {
       ),
     );
 
+    this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 
   _handleDeleteClick() {
+    this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 }
