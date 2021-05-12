@@ -55,14 +55,14 @@ function handleSiteMenuClick(menuItem) {
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
-      tripPresenter.init();
+      tripPresenter.showEventsTable();
       addNewPointBtn.disabled = false;
       // Скрыть статистику
       remove(statisticsComponent);
       break;
     case MenuItem.STATS:
       // Скрыть доску
-      tripPresenter.destroy();
+      tripPresenter.hideEventsTable();
       addNewPointBtn.disabled = true;
       // Показать статистику
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
