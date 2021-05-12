@@ -40,6 +40,23 @@ function getLabels(points) {
   return Array.from(uniqueLabels.values());
 };
 
+function getSumPriceByLabels(points) {
+  const uniqueLabels = getLabels(points);
+
+  const sumPrices = uniqueLabels.map((label) => {
+    let sumPrice = 0;
+    points.forEach((point) => {
+      if (point.type.toUpperCase() === label) {
+        sumPrice += point.data.price;
+      }
+    });
+
+    return sumPrice;
+  });
+
+  return sumPrices;
+}
+
 function createMoneyChart(moneyCtx, points) {
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -47,7 +64,7 @@ function createMoneyChart(moneyCtx, points) {
     data: {
       labels: getLabels(points),
       datasets: [{
-        data: [400, 300, 200, 160, 150, 100], // сюда нужно передать соответствующие данные по цене
+        data: getSumPriceByLabels(points),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -173,6 +190,7 @@ function createTypeChart (typeCtx, points) {
     },
   });
 };
+
 function createTimeChart  (timeCtx, points) {
   return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
