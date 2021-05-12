@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataTypes from 'chartjs-plugin-datalabels';
 
 
 import { getTimeDifference } from '../utils/point.js';
@@ -31,22 +31,22 @@ function createStatisticsTemplate(points) {
   </section>`;
 }
 
-function getLabels(points) {
-  const uniqueLabels = new Set();
+function getTypes(points) {
+  const uniqueTypes = new Set();
   points.forEach((point) => {
-    uniqueLabels.add(point.type.toUpperCase());
+    uniqueTypes.add(point.type.toUpperCase());
   });
 
-  return Array.from(uniqueLabels.values());
+  return Array.from(uniqueTypes.values());
 };
 
-function getSumPriceByLabels(points) {
-  const uniqueLabels = getLabels(points);
+function getSumPricesOfTypes(points) {
+  const uniqueTypes = getTypes(points);
 
-  const sumPrices = uniqueLabels.map((label) => {
+  const sumPrices = uniqueTypes.map((type) => {
     let sumPrice = 0;
     points.forEach((point) => {
-      if (point.type.toUpperCase() === label) {
+      if (point.type.toUpperCase() === type) {
         sumPrice += point.data.price;
       }
     });
@@ -57,14 +57,32 @@ function getSumPriceByLabels(points) {
   return sumPrices;
 }
 
+function getCountsOfTypes(points) {
+  const uniqueTypes = getTypes(points);
+
+  const counts = uniqueTypes.map((type) => {
+    let count = 0;
+    points.forEach((point) => {
+      if (point.type.toUpperCase() === type) {
+        count += 1;
+      }
+    });
+
+    return count;
+  });
+
+  return counts;
+}
+
+
 function createMoneyChart(moneyCtx, points) {
   return new Chart(moneyCtx, {
-    plugins: [ChartDataLabels],
+    plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getLabels(points),
+      labels: getTypes(points),
       datasets: [{
-        data: getSumPriceByLabels(points),
+        data: getSumPricesOfTypes(points),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -126,12 +144,12 @@ function createMoneyChart(moneyCtx, points) {
 
 function createTypeChart (typeCtx, points) {
   return new Chart(typeCtx, {
-    plugins: [ChartDataLabels],
+    plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getLabels(points),
+      labels: getTypes(points),
       datasets: [{
-        data: [4, 3, 2, 1, 1, 1],
+        data: getCountsOfTypes(points),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -193,10 +211,10 @@ function createTypeChart (typeCtx, points) {
 
 function createTimeChart  (timeCtx, points) {
   return new Chart(timeCtx, {
-    plugins: [ChartDataLabels],
+    plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getLabels(points),
+      labels: getTypes(points),
       datasets: [{
         data: [4, 3, 2, 1, 1, 1],
         backgroundColor: '#ffffff',
