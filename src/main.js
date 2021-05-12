@@ -1,4 +1,4 @@
-import {POINTS_COUNT, MenuItem, UpdateType, FilterType} from './const.js';
+import {POINTS_COUNT, MenuItem} from './const.js';
 import {RenderPosition, render} from './utils/render.js';
 
 import {generatePoint} from './mock/point.js';
@@ -45,7 +45,7 @@ const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel,
 function handleSiteMenuClick(menuItem) {
   if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
     .classList.contains('trip-tabs__btn--active')) {
-      return;
+    return;
   }
 
   mainMenuComponent.setMenuItem(menuItem);

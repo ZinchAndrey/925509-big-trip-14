@@ -40,7 +40,7 @@ function getTypes(points) {
   });
 
   return Array.from(uniqueTypes.values());
-};
+}
 
 function getSumPricesOfTypes(points) {
   const uniqueTypes = getTypes(points);
@@ -159,7 +159,7 @@ function createMoneyChart(moneyCtx, points) {
       },
     },
   });
-};
+}
 
 function createTypeChart (typeCtx, points) {
   return new Chart(typeCtx, {
@@ -226,7 +226,7 @@ function createTypeChart (typeCtx, points) {
       },
     },
   });
-};
+}
 
 function createTimeChart  (timeCtx, points) {
   return new Chart(timeCtx, {
@@ -293,7 +293,7 @@ function createTimeChart  (timeCtx, points) {
       },
     },
   });
-};
+}
 
 export default class Statistics extends SmartView {
   constructor(points) {
