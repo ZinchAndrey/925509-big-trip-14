@@ -43,9 +43,9 @@ function getTypes(points) {
 }
 
 function getSumPricesOfTypes(points) {
-  const uniqueTypes = getTypes(points);
+  let uniqueTypes = getTypes(points);
 
-  const sumPrices = uniqueTypes.map((type) => {
+  let sumPrices = uniqueTypes.map((type) => {
     let sumPrice = 0;
     points.forEach((point) => {
       if (point.type.toUpperCase() === type) {
@@ -56,13 +56,22 @@ function getSumPricesOfTypes(points) {
     return sumPrice;
   });
 
-  return sumPrices;
+  // теперь нужно отсортировать массивы по убыванию согласно ТЗ
+  // сортируем соответстующие индексы
+  const indices = Array.from(sumPrices.keys()).sort((a, b) => {
+    return sumPrices[b] - sumPrices[a];
+  });
+
+  sumPrices = indices.map((i) => sumPrices[i]);
+  uniqueTypes = indices.map((i) => uniqueTypes[i]);
+
+  return {types: uniqueTypes, prices: sumPrices};
 }
 
 function getCountsOfTypes(points) {
-  const uniqueTypes = getTypes(points);
+  let uniqueTypes = getTypes(points);
 
-  const counts = uniqueTypes.map((type) => {
+  let counts = uniqueTypes.map((type) => {
     let count = 0;
     points.forEach((point) => {
       if (point.type.toUpperCase() === type) {
@@ -73,13 +82,20 @@ function getCountsOfTypes(points) {
     return count;
   });
 
-  return counts;
+  const indices = Array.from(counts.keys()).sort((a, b) => {
+    return counts[b] - counts[a];
+  });
+
+  counts = indices.map((i) => counts[i]);
+  uniqueTypes = indices.map((i) => uniqueTypes[i]);
+
+  return {types: uniqueTypes, counts};
 }
 
 function getTimesOfTypes(points) {
-  const uniqueTypes = getTypes(points);
+  let uniqueTypes = getTypes(points);
 
-  const times = uniqueTypes.map((type) => {
+  let times = uniqueTypes.map((type) => {
     let time = 0;
     points.forEach((point) => {
       if (point.type.toUpperCase() === type) {
@@ -90,18 +106,27 @@ function getTimesOfTypes(points) {
     return time;
   });
 
-  return times;
+  const indices = Array.from(times.keys()).sort((a, b) => {
+    return times[b] - times[a];
+  });
+
+  times = indices.map((i) => times[i]);
+  uniqueTypes = indices.map((i) => uniqueTypes[i]);
+
+  return {types: uniqueTypes, times};
 }
 
 
 function createMoneyChart(moneyCtx, points) {
+  const data = getSumPricesOfTypes(points);
+
   return new Chart(moneyCtx, {
     plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getTypes(points),
+      labels: data.types,
       datasets: [{
-        data: getSumPricesOfTypes(points),
+        data: data.prices,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -162,13 +187,15 @@ function createMoneyChart(moneyCtx, points) {
 }
 
 function createTypeChart (typeCtx, points) {
+  const data = getCountsOfTypes(points);
+
   return new Chart(typeCtx, {
     plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getTypes(points),
+      labels: data.types,
       datasets: [{
-        data: getCountsOfTypes(points),
+        data: data.counts,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -229,13 +256,15 @@ function createTypeChart (typeCtx, points) {
 }
 
 function createTimeChart  (timeCtx, points) {
+  const data = getTimesOfTypes(points);
+
   return new Chart(timeCtx, {
     plugins: [ChartDataTypes],
     type: 'horizontalBar',
     data: {
-      labels: getTypes(points),
+      labels: data.types,
       datasets: [{
-        data: getTimesOfTypes(points),
+        data: data.times,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
