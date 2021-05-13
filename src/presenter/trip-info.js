@@ -44,7 +44,6 @@ export default class TripInfo {
     render(this._tripInfoNode, this._tripCostComponent, RenderPosition.BEFOREEND);
   }
 
-  // возможно, понадобится для reinit() при изменении данных
   _renderAllInfo(points) {
     this._renderTripInfo(points);
     this._renderTripCost(points);

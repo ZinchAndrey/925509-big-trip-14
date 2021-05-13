@@ -5,19 +5,13 @@ import {RenderPosition, render, remove} from '../utils/render.js';
 
 import {UserAction, UpdateType} from '../const.js';
 
-// const Mode = {
-//   DEFAULT: 'DEFAULT',
-//   EDITING: 'EDITING',
-// };
-
 export default class PointCreate {
-  constructor(tripEventsListNode, changeData, changeMode) {
+  constructor(tripEventsListNode, changeData, addNewPointBtn) {
     this._tripEventsListNode = tripEventsListNode;
+    this._addNewPointBtn = addNewPointBtn;
     this._changeData = changeData;
-    this._changeMode = changeMode; // неиспользуемый параметр
 
     this._pointCreateComponent = null;
-    // this._mode = Mode.DEFAULT;
 
 
     this._handleEscPress = this._handleEscPress.bind(this);
@@ -32,8 +26,6 @@ export default class PointCreate {
     }
 
     this._pointCreateComponent = new PointCreateView();
-
-    // this._point = point; // ???
 
     this._pointCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointCreateComponent.setDeleteClickHandler(this._handleDeleteClick);
@@ -57,6 +49,7 @@ export default class PointCreate {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this.destroy();
       document.removeEventListener('keydown', this._handleEscPress);
+      this._addNewPointBtn.disabled = false;
     }
   }
 
@@ -71,15 +64,12 @@ export default class PointCreate {
       ),
     );
 
+    this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 
   _handleDeleteClick() {
-    // this._changeData(
-    //   UserAction.DELETE_POINT,
-    //   UpdateType.MINOR,
-    //   point,
-    // );
+    this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 }

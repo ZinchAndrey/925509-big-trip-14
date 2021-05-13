@@ -1,5 +1,3 @@
-const reg = new RegExp('^\\d+$');
-
 function getRandomInteger(a = 0, b = 1) {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -13,8 +11,4 @@ function getRandomArrEl(array) {
   return array[randomIndex];
 }
 
-function isNumber(value) {
-  return reg.test(value);
-}
-
-export {getRandomInteger, getRandomArrEl, isNumber};
+export {getRandomInteger, getRandomArrEl};
