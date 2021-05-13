@@ -34,7 +34,6 @@ points.sort((point1, point2) => {
   return 1;
 });
 
-// МЕНЮ САЙТА
 const mainMenuComponent = new MainMenuView();
 render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
@@ -51,7 +50,6 @@ function handleSiteMenuClick(menuItem) {
   }
 
   mainMenuComponent.setMenuItem(menuItem);
-  // возможно, здесь лучше использовать добавление / удаление классов показа, чтобы не париться с блоком информации
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
