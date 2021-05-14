@@ -13,6 +13,8 @@ export default class PointCreate {
 
     this._pointCreateComponent = null;
 
+    this._checkPointsCountCallback = null;
+
 
     this._handleEscPress = this._handleEscPress.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -20,7 +22,9 @@ export default class PointCreate {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._checkPointsCountCallback = callback;
+
     if (this._pointCreateComponent !== null) {
       return;
     }
@@ -47,6 +51,7 @@ export default class PointCreate {
 
   _handleEscPress(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this._checkPointsCountCallback();
       this.destroy();
       document.removeEventListener('keydown', this._handleEscPress);
       this._addNewPointBtn.disabled = false;
@@ -69,6 +74,7 @@ export default class PointCreate {
   }
 
   _handleDeleteClick() {
+    this._checkPointsCountCallback();
     this._addNewPointBtn.disabled = false;
     this.destroy();
   }

@@ -47,6 +47,7 @@ export default class Trip {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handlePointCreateFormClose = this._handlePointCreateFormClose.bind(this);
 
     this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._addNewPointBtn);
 
@@ -66,6 +67,15 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
+  _handlePointCreateFormClose() {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    if (!pointsCount) {
+      this._renderNoPoints();
+    }
+  }
+
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
@@ -75,9 +85,8 @@ export default class Trip {
       remove(this._noPointsComponent);
       this._noPointsComponent === null;
     }
-    // если пользователь отменит создание точки, noPointsComponent не появится
 
-    this._pointCreatePresenter.init();
+    this._pointCreatePresenter.init(this._handlePointCreateFormClose);
   }
 
   hideEventsTable() {
