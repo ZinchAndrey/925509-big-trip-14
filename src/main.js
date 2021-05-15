@@ -39,6 +39,8 @@ api.getPoints().then((points) => {
   // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
   // Есть вариант получше - паттерн "Адаптер"
 });
+api.getOffers();
+api.getDestinations();
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
