@@ -14,7 +14,7 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getTasks() {
+  getPoints() {
     return this._load({url: 'points'})
       .then(Api.toJSON);
   }
