@@ -32,6 +32,8 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 api.getPoints().then((points) => {
   console.log(points);
+  // http://joxi.ru/RmzdoJNtMpXXpA
+
   // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
   // а ещё на сервере используется snake_case, а у нас camelCase.
   // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
