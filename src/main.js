@@ -35,6 +35,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 api.getPoints().then((points) => {
   console.log(points);
+  // pointsModel.setPoints(points);
   // http://joxi.ru/RmzdoJNtMpXXpA
 
 });
@@ -91,7 +92,7 @@ mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();
-// setTimeout(tripPresenter.init, 5000);
+// setTimeout(tripPresenter.init, 3000);
 
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();

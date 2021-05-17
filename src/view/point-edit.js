@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import he from 'he';
-import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
+import {TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
@@ -9,7 +9,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // в дальнешем эти данные будем получать с сервера
-import {destinations, offers} from '../mock/point.js';
+import {offers} from '../mock/point.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -269,16 +269,21 @@ export default class PointEdit extends SmartView {
     }
   }
 
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
+  }
+
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
     if (newDestinationName === this._data.destination) {
       return;
-    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+    } else if (this._getDestinationList(this._destinations).indexOf(newDestinationName) === -1) {
       evt.currentTarget.value = '';
       return;
     }
 
-    const destinationItem = destinations.find((destination) => {
+    const destinationItem = this._destinations.find((destination) => {
       return destination.name === newDestinationName;
     });
 
@@ -344,7 +349,7 @@ export default class PointEdit extends SmartView {
 
     const newDestinationName = this.getElement().querySelector('#event-destination');
 
-    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
+    if (this._getDestinationList(this._destinations).indexOf(newDestinationName.value) === -1) {
       newDestinationName.value = '';
       return;
     }
