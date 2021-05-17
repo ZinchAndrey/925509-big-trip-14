@@ -31,7 +31,7 @@ const mainMenuComponent = new MainMenuView();
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
 
-const points = new Array(POINTS_COUNT).fill().map(generatePoint);
+// const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -86,6 +86,8 @@ api.getPoints()
   .then((points) => {
     console.log(points);
     pointsModel.setPoints(UpdateType.INIT, points);
+    console.log('Модель обновлена');
+
     // http://joxi.ru/RmzdoJNtMpXXpA
   })
   .catch(() => {
@@ -94,10 +96,10 @@ api.getPoints()
 
 api.getOffers().then((offersData) => {
   offers = offersData;
-  console.log(offers);
+  // console.log(offers);
 });
 
 api.getDestinations().then((destinationsData) => {
   destinations = destinationsData;
-  console.log(destinations);
+  // console.log(destinations);
 });

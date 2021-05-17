@@ -37,6 +37,7 @@ export default class Point {
     const prevEditPointComponent = this._editPointComponent;
 
     this._pointComponent = new PointView(point);
+    // debugger
     this._editPointComponent = new PointEditView(point, destinations);
 
     this._point = point;

@@ -1,16 +1,13 @@
 import {SortType, UserAction, UpdateType, FilterType} from '../const.js';
 
 import FiltersView from '../view/filters.js';
-
 import SortingView from '../view/sorting.js';
-
 import NoPointsView from '../view/no-points.js';
-
+import LoadingView from '../view/loading.js';
 
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {sortByDate, sortByPrice, sortByTime} from '../utils/point.js';
 import {filter} from '../utils/filter.js';
-
 
 import PointPresenter from './point.js';
 import PointCreatePresenter from './point-create.js';
@@ -37,13 +34,16 @@ export default class Trip {
     this._sortingComponent = null;
 
     this._filtersComponent = new FiltersView();
+    this._loadingComponent = new LoadingView();
 
     this._noPointsComponent = null;
+    this._isLoading = true;
 
     this._pointPresenter = {};
     this._tripInfoPresenter = {};
 
     this._currentSortType = SortType.DAY;
+
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -127,6 +127,11 @@ export default class Trip {
     render(this._tripEventsNode, this._noPointsComponent, RenderPosition.AFTERBEGIN);
   }
 
+  _renderLoading() {
+    // debugger
+    render(this._tripEventsNode, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
     const destinations = this._destinations;
@@ -168,13 +173,19 @@ export default class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointsCount = points.length;
+    console.log(pointsCount);
 
     if (!pointsCount) {
       this._renderNoPoints();
     } else {
-      this._renderEventsTable(points);
+      this._renderEventsTable(points); // отсюда мы почему-то попадаем обратно в _renderTrip() но уже с pointsCount = 0
       this._renderTripInfo(points);
     }
   }
@@ -189,6 +200,7 @@ export default class Trip {
 
     remove(this._sortingComponent);
     remove(this._noPointsComponent);
+    remove(this._loadingComponent);
   }
 
   _clearTrip({resetSortType = false} = {}) {
@@ -241,12 +253,21 @@ export default class Trip {
         break;
 
       case UpdateType.MINOR:
+        // debugger
         this._clearTrip();
         this._renderTrip();
         break;
 
       case UpdateType.MAJOR:
+        // debugger
         this._clearTrip({resetSortType: true});
+        this._renderTrip();
+        break;
+
+      case UpdateType.INIT:
+        // debugger
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderTrip();
         break;
     }
