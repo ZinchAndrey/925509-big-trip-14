@@ -17,7 +17,7 @@ import PointCreatePresenter from './point-create.js';
 import TripInfoPresenter from './trip-info.js';
 
 export default class Trip {
-  constructor(tripMainNode, pageMainNode, pointsModel, filterModel) {
+  constructor(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations) {
 
     this._tripMainNode = tripMainNode;
     this._mainMenuNode = this._tripMainNode.querySelector('.trip-controls__navigation');
@@ -30,6 +30,9 @@ export default class Trip {
 
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+
+    this._offers = offers;
+    this._destinations = destinations;
 
     this._sortingComponent = null;
 
@@ -125,7 +128,7 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange);
+    const pointPresenter = new PointPresenter(this._tripEventsListNode, this._handleViewAction, this._handleModeChange, this._destinations);
 
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;

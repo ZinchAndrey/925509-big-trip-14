@@ -27,8 +27,9 @@ export default class Api {
     return this._load({url: 'destinations'})
       .then(Api.toJSON)
       .then((destinations) => {
+        // console.log(destinations);
+        return destinations;
         // DestinationsModel.adaptToClient(destinations));
-        console.log(destinations);
       });
   }
 
@@ -37,7 +38,8 @@ export default class Api {
       .then(Api.toJSON)
       .then((offers) => {
         // OffersModel.adaptToClient(offers));
-        console.log(offers);
+        // console.log(offers);
+        return offers;
       });
   }
 

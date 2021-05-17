@@ -23,6 +23,9 @@ const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 
+let destinations = null;
+let offers = null;
+
 
 const filterModel = new FilterModel();
 
@@ -34,23 +37,20 @@ api.getPoints().then((points) => {
   console.log(points);
   // http://joxi.ru/RmzdoJNtMpXXpA
 
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
 });
-api.getOffers();
-api.getDestinations();
+
+api.getOffers().then((offersData) => {
+  offers = offersData;
+  console.log(offers);
+});
+
+api.getDestinations().then((destinationsData) => {
+  destinations = destinationsData;
+  console.log(destinations);
+});
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
-
-points.sort((point1, point2) => {
-  if (point1.data.date.from < point2.data.date.from) {
-    return -1;
-  }
-  return 1;
-});
 
 const mainMenuComponent = new MainMenuView();
 render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
@@ -58,7 +58,7 @@ render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 let statisticsComponent = null;
 
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
 
 
 function handleSiteMenuClick(menuItem) {
@@ -91,6 +91,7 @@ mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();
+// setTimeout(tripPresenter.init, 5000);
 
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();

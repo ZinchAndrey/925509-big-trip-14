@@ -11,7 +11,7 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(tripEventsListNode, changeData, changeMode) {
+  constructor(tripEventsListNode, changeData, changeMode, destinations) {
     this._tripEventsListNode = tripEventsListNode;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -19,6 +19,8 @@ export default class Point {
     this._pointComponent = null;
     this._editPointComponent = null;
     this._mode = Mode.DEFAULT;
+
+    this._destinations = destinations;
 
     this._replacePointToEdit = this._replacePointToEdit.bind(this);
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
@@ -35,7 +37,7 @@ export default class Point {
     const prevEditPointComponent = this._editPointComponent;
 
     this._pointComponent = new PointView(point);
-    this._editPointComponent = new PointEditView(point);
+    this._editPointComponent = new PointEditView(point, this._destinations);
 
     this._point = point;
 

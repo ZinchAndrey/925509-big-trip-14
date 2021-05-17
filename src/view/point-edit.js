@@ -69,8 +69,10 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createPointEditTemplate(pointData) {
+function createPointEditTemplate(pointData, destinationsData) {
   const {destination, offers, data, type} = pointData;
+  const destinations = destinationsData;
+
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -95,7 +97,7 @@ function createPointEditTemplate(pointData) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
-            ${createDestinationDatalistTemplate(DESTINATIONS)}
+            ${createDestinationDatalistTemplate(destinations)}
           </datalist>
         </div>
 
@@ -140,12 +142,14 @@ function createPointEditTemplate(pointData) {
 }
 
 export default class PointEdit extends SmartView {
-  constructor(point) {
+  constructor(point, destinations) {
     super();
     this._data = PointEdit.parsePointToData(point);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
+
+    this._destinations = destinations;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
@@ -175,7 +179,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data);
+    return createPointEditTemplate(this._data, this._destinations);
   }
 
   restoreHandlers() {
