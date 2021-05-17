@@ -1,4 +1,4 @@
-import {POINTS_COUNT, MenuItem} from './const.js';
+import {POINTS_COUNT, MenuItem, UpdateType} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
 
 import {generatePoint} from './mock/point.js';
@@ -26,40 +26,21 @@ const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 let destinations = null;
 let offers = null;
 
+const mainMenuComponent = new MainMenuView();
 
 const filterModel = new FilterModel();
+const pointsModel = new PointsModel();
 
 const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getPoints().then((points) => {
-  console.log(points);
-  // pointsModel.setPoints(points);
-  // http://joxi.ru/RmzdoJNtMpXXpA
-
-});
-
-api.getOffers().then((offersData) => {
-  offers = offersData;
-  console.log(offers);
-});
-
-api.getDestinations().then((destinationsData) => {
-  destinations = destinationsData;
-  console.log(destinations);
-});
-
-const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
-const mainMenuComponent = new MainMenuView();
-render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
+const filterPresenter = new FilterPresenter(filtersNode, filterModel);
+const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
 
 let statisticsComponent = null;
 
-const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
+// pointsModel.setPoints(points);
 
 
 function handleSiteMenuClick(menuItem) {
@@ -89,6 +70,8 @@ function handleSiteMenuClick(menuItem) {
 }
 
 mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
+
 
 filterPresenter.init();
 tripPresenter.init();
@@ -97,4 +80,24 @@ tripPresenter.init();
 addNewPointBtn.addEventListener('click', () => {
   tripPresenter.createPoint();
   addNewPointBtn.disabled = true;
+});
+
+api.getPoints()
+  .then((points) => {
+    console.log(points);
+    pointsModel.setPoints(UpdateType.INIT, points);
+    // http://joxi.ru/RmzdoJNtMpXXpA
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
+
+api.getOffers().then((offersData) => {
+  offers = offersData;
+  console.log(offers);
+});
+
+api.getDestinations().then((destinationsData) => {
+  destinations = destinationsData;
+  console.log(destinations);
 });
