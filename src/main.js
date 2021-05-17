@@ -23,8 +23,8 @@ const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 
-let destinations = null;
-let offers = null;
+// let destinations = null;
+// let offers = null;
 
 const mainMenuComponent = new MainMenuView();
 
@@ -36,12 +36,8 @@ const pointsModel = new PointsModel();
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
 
 let statisticsComponent = null;
-
-// pointsModel.setPoints(points);
-
 
 function handleSiteMenuClick(menuItem) {
   if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
@@ -69,37 +65,32 @@ function handleSiteMenuClick(menuItem) {
   }
 }
 
-mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
+// Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных
+let destinations = api.getDestinations();
+let offers = api.getOffers();
+let points = api.getPoints();
 
-filterPresenter.init();
-tripPresenter.init();
-// setTimeout(tripPresenter.init, 3000);
-
-addNewPointBtn.addEventListener('click', () => {
-  tripPresenter.createPoint();
-  addNewPointBtn.disabled = true;
-});
-
-api.getPoints()
-  .then((points) => {
-    console.log(points);
+Promise.all([destinations, offers, points])
+  .then((results) => {
+    [destinations, offers, points] = results;
     pointsModel.setPoints(UpdateType.INIT, points);
-    console.log('Модель обновлена');
-
-    // http://joxi.ru/RmzdoJNtMpXXpA
   })
-  .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
+  .then(() => {
+    // элементы управления отрисуем только после загрузки данных
+    mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+    render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
+
+    filterPresenter.init();
+    // tripPresenter.init();
+
+    const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
+    tripPresenter.init();
+
+    addNewPointBtn.addEventListener('click', () => {
+      tripPresenter.createPoint();
+      addNewPointBtn.disabled = true;
+    });
   });
 
-api.getOffers().then((offersData) => {
-  offers = offersData;
-  // console.log(offers);
-});
-
-api.getDestinations().then((destinationsData) => {
-  destinations = destinationsData;
-  // console.log(destinations);
-});
+// const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
