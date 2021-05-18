@@ -76,7 +76,7 @@ let points = api.getPoints();
 Promise.all([destinations, offers, points])
   .then((results) => {
     [destinations, offers, points] = results;
-    console.log(points);
+    // console.log(points);
 
     tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
     tripPresenter.init();

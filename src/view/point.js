@@ -8,7 +8,7 @@ dayjs.extend(duration);
 function getTimeDifference(start, end) {
   const differenceInMs = dayjs(end).diff(dayjs(start));
   const difference = {
-    days: dayjs.duration(differenceInMs).asDays() > 0 ? dayjs.duration(differenceInMs).days() + 'D ' : '',
+    days: dayjs.duration(differenceInMs).asDays() > 1 ? dayjs.duration(differenceInMs).days() + 'D ' : '',
     hours: dayjs.duration(differenceInMs).hours() > 0 ? dayjs.duration(differenceInMs).hours() + 'H ' : '',
     minutes: dayjs.duration(differenceInMs).minutes() > 0 ? dayjs.duration(differenceInMs).minutes() + 'M' : '',
   };

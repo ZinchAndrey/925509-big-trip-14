@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import he from 'he';
 import {TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
-import {getRandomInteger} from '../utils/common.js';
 import SmartView from './smart.js';
 
 import flatpickr from 'flatpickr';
@@ -9,7 +8,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // в дальнешем эти данные будем получать с сервера
-import {offers} from '../mock/point.js';
+// import {offers} from '../mock/point.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -19,19 +18,21 @@ function createDestinationDatalistTemplate(destinations) {
   return optionsMarkup;
 }
 
-function createOptionOffersTemplate(options) {
-  const allOffers = options.offers;
+function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
+  const allOffers = allOffersOfCurrentType.offers;
 
   if (!allOffers.length) {
     return '';
   }
   let optionsMarkup = '';
   allOffers.forEach((offer, index) => {
-    const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
+    const isChecked  = checkedOffers.find((checkedOffer) => {
+      return checkedOffer.title === offer.title;
+    });
     const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked}>
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
     <label class="event__offer-label" for="${id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -71,8 +72,10 @@ function createPicturesTemplate(pictures) {
 }
 
 function createPointEditTemplate(pointData, offersData, destinationsData) {
-  const {destination, offers, data, type} = pointData;
-  // offers будет использоваться для отметки checked
+  const {destination, data, type} = pointData;
+
+  // будет использоваться для отметки checked
+  const checkedOffers = pointData.offers;
   const destinations = destinationsData;
   const allOffersOfCurrentType = offersData.find((item) => {
     return item.type === type;
@@ -130,7 +133,7 @@ function createPointEditTemplate(pointData, offersData, destinationsData) {
         </button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(allOffersOfCurrentType)}
+        ${createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -263,7 +266,7 @@ export default class PointEdit extends SmartView {
         return;
       }
 
-      const offersItem = offers.find((offer) => {
+      const offersItem = this._offers.find((offer) => {
         return offer.type === newType;
       }).offers;
 
