@@ -58,6 +58,7 @@ export default class Points extends Observer {
   }
 
   static adaptToClient(point) {
+    // console.log(point);
     const adaptedPoint = Object.assign(
       {},
       point,
@@ -66,10 +67,11 @@ export default class Points extends Observer {
         type: point.type,
         destination: point.destination, // 3 пункта выше можно убрать
 
-        offers: { // переделать и впоследствии убрать вложенность
-          type: point.type,
-          offers: point.offers,
-        },
+        // offers: { // переделать и впоследствии убрать вложенность
+        //   type: point.type,
+        //   offers: point.offers,
+        // },
+        offers: point.offers,
         data: {
           date: {
             // дату нужно передавать в формате ISO, для этого на клиенте храним ее в Date
@@ -86,7 +88,6 @@ export default class Points extends Observer {
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint.offers; // впоследствие не нужно удалять
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
     delete adaptedPoint.base_price;

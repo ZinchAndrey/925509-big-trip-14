@@ -32,13 +32,13 @@ export default class Point {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(point, destinations) {
+  init(point, offers, destinations) {
     const prevPointComponent = this._pointComponent;
     const prevEditPointComponent = this._editPointComponent;
+    // console.log(destinations, offers);
 
     this._pointComponent = new PointView(point);
-    // debugger
-    this._editPointComponent = new PointEditView(point, destinations);
+    this._editPointComponent = new PointEditView(point, offers, destinations);
 
     this._point = point;
 

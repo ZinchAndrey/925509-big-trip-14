@@ -28,6 +28,7 @@ function createOptionsTemplate(options) {
 }
 
 function createPointTemplate(point) {
+  // console.log(point);
   const {destination, offers, data, type} = point;
   const favoriteClassName  = data.isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = getTimeDifference(data.date.from, data.date.to);

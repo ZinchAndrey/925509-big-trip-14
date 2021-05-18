@@ -20,21 +20,22 @@ function createDestinationDatalistTemplate(destinations) {
 }
 
 function createOptionOffersTemplate(options) {
-  if (!options.length) {
+  const allOffers = options.offers;
+
+  if (!allOffers.length) {
     return '';
   }
-
   let optionsMarkup = '';
-  options.forEach((option, index) => {
+  allOffers.forEach((offer, index) => {
     const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
-    const id = `event-offer-${option.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
+    const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked}>
     <label class="event__offer-label" for="${id}">
-      <span class="event__offer-title">${option.title}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${option.price}</span>
+      <span class="event__offer-price">${offer.price}</span>
     </label>
   </div>`;
   });
@@ -69,9 +70,14 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createPointEditTemplate(pointData, destinationsData) {
+function createPointEditTemplate(pointData, offersData, destinationsData) {
   const {destination, offers, data, type} = pointData;
+  // offers будет использоваться для отметки checked
   const destinations = destinationsData;
+  const allOffersOfCurrentType = offersData.find((item) => {
+    return item.type === type;
+  });
+  // console.log(allOffersOfCurrentType);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -124,7 +130,7 @@ function createPointEditTemplate(pointData, destinationsData) {
         </button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(offers)}
+        ${createOptionOffersTemplate(allOffersOfCurrentType)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -142,7 +148,7 @@ function createPointEditTemplate(pointData, destinationsData) {
 }
 
 export default class PointEdit extends SmartView {
-  constructor(point, destinations) {
+  constructor(point, offers, destinations) {
     super();
     this._data = PointEdit.parsePointToData(point);
 
@@ -150,6 +156,7 @@ export default class PointEdit extends SmartView {
     this._datepickerTo = null;
 
     this._destinations = destinations;
+    this._offers = offers;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
@@ -179,7 +186,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data, this._destinations);
+    return createPointEditTemplate(this._data, this._offers, this._destinations);
   }
 
   restoreHandlers() {
