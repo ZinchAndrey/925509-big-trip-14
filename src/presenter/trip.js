@@ -180,7 +180,6 @@ export default class Trip {
 
     const points = this._getPoints();
     const pointsCount = points.length;
-    console.log(pointsCount);
 
     if (!pointsCount) {
       this._renderNoPoints();

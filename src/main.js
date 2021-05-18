@@ -1,7 +1,7 @@
-import {POINTS_COUNT, MenuItem, UpdateType} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
 
-import {generatePoint} from './mock/point.js';
+// import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 
@@ -36,6 +36,8 @@ const pointsModel = new PointsModel();
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
+
+let tripPresenter = null;
 
 let statisticsComponent = null;
 
@@ -74,18 +76,17 @@ let points = api.getPoints();
 Promise.all([destinations, offers, points])
   .then((results) => {
     [destinations, offers, points] = results;
+
+    tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
+    tripPresenter.init();
+
     pointsModel.setPoints(UpdateType.INIT, points);
-  })
-  .then(() => {
+
     // элементы управления отрисуем только после загрузки данных
     mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
     render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
     filterPresenter.init();
-    // tripPresenter.init();
-
-    const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
-    tripPresenter.init();
 
     addNewPointBtn.addEventListener('click', () => {
       tripPresenter.createPoint();
@@ -93,4 +94,3 @@ Promise.all([destinations, offers, points])
     });
   });
 
-// const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
