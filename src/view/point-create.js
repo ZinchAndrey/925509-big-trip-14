@@ -34,7 +34,7 @@ const typeBlank = TYPES[0].toLowerCase();
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
   destinations.forEach((destination) => {
-    optionsMarkup += `<option value="${destination}"></option>`;
+    optionsMarkup += `<option value="${destination.name}"></option>`;
   });
   return optionsMarkup;
 }
@@ -285,16 +285,10 @@ export default class PointCreate extends SmartView {
         return;
       }
 
-      const offersItem = this._offers.find((offer) => {
-        return offer.type === newType;
-      }).offers;
-
-      if (offersItem) {
-        this.updateData({
-          type: newType,
-          offers: offersItem,
-        });
-      }
+      this.updateData({
+        type: newType,
+        offers: [],
+      });
     }
   }
 
