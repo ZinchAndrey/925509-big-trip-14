@@ -1,7 +1,6 @@
 import {MenuItem, UpdateType} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
 
-// import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 

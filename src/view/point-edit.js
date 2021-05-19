@@ -7,8 +7,6 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-// в дальнешем эти данные будем получать с сервера
-// import {offers} from '../mock/point.js';
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';

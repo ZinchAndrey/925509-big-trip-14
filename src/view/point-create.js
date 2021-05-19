@@ -7,29 +7,6 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-// в дальнешем эти данные будем получать с сервера
-// import {destinations, offers} from '../mock/point.js';
-
-const typeBlank = TYPES[0].toLowerCase();
-
-// const POINT_BLANK = {
-//   type: typeBlank,
-//   destination: destinations.find((destination) => {
-//     return destination.name === DESTINATIONS[0];
-//   }),
-//   offers: offers.find((offer) => {
-//     return offer.type === typeBlank;
-//   }).offers,
-//   data: {
-//     date: {
-//       from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-//       to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-//     },
-//     price: 0,
-//     isFavorite: false,
-//   },
-// };
-
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
@@ -450,7 +427,7 @@ export default class PointCreate extends SmartView {
     }
 
     const pointBlank = {
-      type: typeBlank,
+      type: TYPES[0].toLowerCase(),
       destination: destinations[0],
       offers: [],
       data: {
