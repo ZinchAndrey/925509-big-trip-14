@@ -11,7 +11,7 @@ function getTimeDifference(start, end) {
 
 function getTimeFormatted(timeInMs) {
   const time = {
-    days: dayjs.duration(timeInMs).asDays() > 0 ? dayjs.duration(timeInMs).days() + 'D ' : '',
+    days: dayjs.duration(timeInMs).asDays() > 1 ? dayjs.duration(timeInMs).days() + 'D ' : '',
     hours: dayjs.duration(timeInMs).hours() > 0 ? dayjs.duration(timeInMs).hours() + 'H ' : '',
     minutes: dayjs.duration(timeInMs).minutes() > 0 ? dayjs.duration(timeInMs).minutes() + 'M' : '',
   };
