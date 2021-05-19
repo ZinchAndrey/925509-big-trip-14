@@ -53,7 +53,7 @@ function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
     const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" value="${offer.title}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
     <label class="event__offer-label" for="${id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -168,17 +168,16 @@ function createPointCreateTemplate(pointData, offersData, destinationsData) {
 }
 
 export default class PointCreate extends SmartView {
-  constructor(point, offers, destinations) {
+  constructor(point, allOffers, allDestinations) {
     super();
-    // this._point = point;
-    // console.log(offers, destinations);
-    this._data = PointCreate.createPointBlank(point, destinations);
+
+    this._data = PointCreate.createPointBlank(point, allDestinations);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
-    this._destinations = destinations;
-    this._offers = offers;
+    this._destinations = allDestinations;
+    this._offers = allOffers;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -186,7 +185,7 @@ export default class PointCreate extends SmartView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._basicPriceChangeHandler = this._basicPriceChangeHandler.bind(this);
-
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -275,6 +274,12 @@ export default class PointCreate extends SmartView {
     this.getElement()
       .querySelector('#event-price-1')
       .addEventListener('change', this._basicPriceChangeHandler);
+
+    const offersSectionElement = this.getElement().querySelector('.event__section--offers');
+    // если офферов нет, блок вообще не рендерится
+    if (offersSectionElement) {
+      offersSectionElement.addEventListener('change', this._offersChangeHandler);
+    }
   }
 
   _typeChangeHandler(evt) {
@@ -384,6 +389,37 @@ export default class PointCreate extends SmartView {
     evt.preventDefault();
     // this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
     this._callback.deleteClick();
+  }
+
+  _offersChangeHandler(evt) {
+    if (!evt.target.classList.contains('event__offer-checkbox')) {
+      return;
+    }
+    const justDataUpdating = true; // для читабельности
+    const selectedOfferName = evt.target.value;
+
+    // проверяем наличие оффера в точке маршрута
+    const selectedOfferIndex = this._data.offers.findIndex((offer) => {
+      return offer.title === selectedOfferName;
+    });
+
+    // найти текущий оффер в списке всех офферов и добавить в массив с офферами точки маршрута
+    if (selectedOfferIndex < 0) {
+      const currentOffer = this._offers.find((offers) => {
+        return offers.type === this._data.type;
+      }).offers.find((offer) => {
+        return offer.title === selectedOfferName;
+      });
+
+      this.updateData({
+        offers: [currentOffer, ...this._data.offers],
+      }, justDataUpdating);
+    } else {
+      // удалить текущий оффер в массиве с офферами точки маршрута
+      this.updateData({
+        offers: [...this._data.offers.slice(0, selectedOfferIndex), ...this._data.offers.slice(selectedOfferIndex + 1)],
+      }, justDataUpdating);
+    }
   }
 
   setFormSubmitHandler(callback) {

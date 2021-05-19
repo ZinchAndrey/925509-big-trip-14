@@ -22,14 +22,11 @@ export default class Api {
       .then((points) => points.map(PointsModel.adaptToClient));
   }
 
-  // здесь также должны быть методы getOffers() и getDestinations()
   getDestinations() {
     return this._load({url: 'destinations'})
       .then(Api.toJSON)
       .then((destinations) => {
-        // console.log(destinations);
         return destinations;
-        // DestinationsModel.adaptToClient(destinations));
       });
   }
 
@@ -37,8 +34,6 @@ export default class Api {
     return this._load({url: 'offers'})
       .then(Api.toJSON)
       .then((offers) => {
-        // OffersModel.adaptToClient(offers));
-        // console.log(offers);
         return offers;
       });
   }

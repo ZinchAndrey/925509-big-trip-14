@@ -374,12 +374,12 @@ export default class PointEdit extends SmartView {
     }
 
     const selectedOfferName = evt.target.value;
+    const justDataUpdating = true; // для читабельности
 
     // проверяем наличие оффера в точке маршрута
     const selectedOfferIndex = this._data.offers.findIndex((offer) => {
       return offer.title === selectedOfferName;
     });
-
 
     // найти текущий оффер в списке всех офферов и добавить в массив с офферами точки маршрута
     if (selectedOfferIndex < 0) {
@@ -391,12 +391,12 @@ export default class PointEdit extends SmartView {
 
       this.updateData({
         offers: [currentOffer, ...this._data.offers],
-      }, true);
+      }, justDataUpdating);
     } else {
       // удалить текущий оффер в массиве с офферами точки маршрута
       this.updateData({
         offers: [...this._data.offers.slice(0, selectedOfferIndex), ...this._data.offers.slice(selectedOfferIndex + 1)],
-      }, true);
+      }, justDataUpdating);
     }
   }
 

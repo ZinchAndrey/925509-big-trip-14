@@ -137,8 +137,6 @@ export default class Trip {
     const destinations = this._destinations;
     const offers = this._offers;
 
-    // console.log(destinations, offers);
-
     pointPresenter.init(point, offers, destinations);
     this._pointPresenter[point.id] = pointPresenter;
   }

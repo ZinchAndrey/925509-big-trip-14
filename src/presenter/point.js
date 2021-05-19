@@ -35,7 +35,6 @@ export default class Point {
   init(point, offers, destinations) {
     const prevPointComponent = this._pointComponent;
     const prevEditPointComponent = this._editPointComponent;
-    // console.log(destinations, offers);
 
     this._pointComponent = new PointView(point);
     this._editPointComponent = new PointEditView(point, offers, destinations);
