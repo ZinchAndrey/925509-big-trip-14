@@ -72,8 +72,6 @@ export default class Points extends Observer {
           price: point.base_price,
           isFavorite: point.is_favorite,
         },
-
-        // dueDate: point.due_date !== null ? new Date(point.due_date) : point.due_date, // На клиенте дата хранится как экземпляр Date,
       },
     );
 
@@ -93,16 +91,15 @@ export default class Points extends Observer {
       { // дату нужно передавать в формате ISO, для этого на клиенте храним ее в Date
         'date_from': point.data.date.from instanceof Date ? point.data.date.from.toISOString() : null,
         'date_to': point.data.date.to instanceof Date ? point.data.date.to.toISOString() : null,
-        'base_price': point.price,
-        'is_favorite': point.isFavorite,
+        'base_price': point.data.price,
+        'is_favorite': point.data.isFavorite,
 
-        'offers': point.offers.offers, // в дальнейшем исправить на point.offers
+        'offers': point.offers,
       },
     );
 
     // Ненужные ключи мы удаляем
     delete adaptedPoint.data;
-
     return adaptedPoint;
   }
 }

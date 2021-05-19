@@ -14,7 +14,7 @@ import PointCreatePresenter from './point-create.js';
 import TripInfoPresenter from './trip-info.js';
 
 export default class Trip {
-  constructor(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations) {
+  constructor(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations, api) {
 
     this._tripMainNode = tripMainNode;
     this._mainMenuNode = this._tripMainNode.querySelector('.trip-controls__navigation');
@@ -44,6 +44,7 @@ export default class Trip {
 
     this._currentSortType = SortType.DAY;
 
+    this._api = api;
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -53,7 +54,6 @@ export default class Trip {
     this._handlePointCreateFormClose = this._handlePointCreateFormClose.bind(this);
 
     this._pointCreatePresenter = new PointCreatePresenter(this._tripEventsListNode, this._handleViewAction, this._addNewPointBtn);
-
   }
 
   init() {
@@ -128,7 +128,6 @@ export default class Trip {
   }
 
   _renderLoading() {
-    // debugger
     render(this._tripEventsNode, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
@@ -185,7 +184,7 @@ export default class Trip {
     if (!pointsCount) {
       this._renderNoPoints();
     } else {
-      this._renderEventsTable(points); // отсюда мы почему-то попадаем обратно в _renderTrip() но уже с pointsCount = 0
+      this._renderEventsTable(points);
       this._renderTripInfo(points);
     }
   }
@@ -230,7 +229,9 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
 
       case UserAction.ADD_POINT:
@@ -253,19 +254,16 @@ export default class Trip {
         break;
 
       case UpdateType.MINOR:
-        // debugger
         this._clearTrip();
         this._renderTrip();
         break;
 
       case UpdateType.MAJOR:
-        // debugger
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         break;
 
       case UpdateType.INIT:
-        // debugger
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderTrip();

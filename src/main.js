@@ -12,7 +12,7 @@ import StatisticsView from './view/statistics.js';
 
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic andrey_925509-bt';
+const AUTHORIZATION = 'Basic andrey_925509-bt-02';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const tripMainNode = document.querySelector('.trip-main');
@@ -77,7 +77,7 @@ Promise.all([destinations, offers, points])
     [destinations, offers, points] = results;
     // console.log(points);
 
-    tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations); // сюда нужно передавать offers и destinations
+    tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations, api);
     tripPresenter.init();
 
     pointsModel.setPoints(UpdateType.INIT, points);
