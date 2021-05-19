@@ -81,6 +81,7 @@ function createPointEditTemplate(pointData, offersData, destinationsData) {
     return item.type === type;
   });
   // console.log(allOffersOfCurrentType);
+  // !!! ПРОВЕРИТЬ TYPES
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">

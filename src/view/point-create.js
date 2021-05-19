@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import he from 'he';
-import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
-import {getRandomInteger} from '../utils/common.js';
+import {TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import SmartView from './smart.js';
 
 import flatpickr from 'flatpickr';
@@ -9,27 +8,27 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // в дальнешем эти данные будем получать с сервера
-import {destinations, offers} from '../mock/point.js';
+// import {destinations, offers} from '../mock/point.js';
 
 const typeBlank = TYPES[0].toLowerCase();
 
-const POINT_BLANK = {
-  type: typeBlank,
-  destination: destinations.find((destination) => {
-    return destination.name === DESTINATIONS[0];
-  }),
-  offers: offers.find((offer) => {
-    return offer.type === typeBlank;
-  }).offers,
-  data: {
-    date: {
-      from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    },
-    price: 0,
-    isFavorite: false,
-  },
-};
+// const POINT_BLANK = {
+//   type: typeBlank,
+//   destination: destinations.find((destination) => {
+//     return destination.name === DESTINATIONS[0];
+//   }),
+//   offers: offers.find((offer) => {
+//     return offer.type === typeBlank;
+//   }).offers,
+//   data: {
+//     date: {
+//       from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+//       to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+//     },
+//     price: 0,
+//     isFavorite: false,
+//   },
+// };
 
 
 function createDestinationDatalistTemplate(destinations) {
@@ -40,22 +39,25 @@ function createDestinationDatalistTemplate(destinations) {
   return optionsMarkup;
 }
 
-function createOptionOffersTemplate(options) {
-  if (!options.length) {
+function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
+  const allOffers = allOffersOfCurrentType.offers;
+
+  if (!allOffers.length) {
     return '';
   }
-
   let optionsMarkup = '';
-  options.forEach((option, index) => {
-    const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
-    const id = `event-offer-${option.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
+  allOffers.forEach((offer, index) => {
+    const isChecked  = checkedOffers.find((checkedOffer) => {
+      return checkedOffer.title === offer.title;
+    });
+    const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked}>
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
     <label class="event__offer-label" for="${id}">
-      <span class="event__offer-title">${option.title}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${option.price}</span>
+      <span class="event__offer-price">${offer.price}</span>
     </label>
   </div>`;
   });
@@ -90,8 +92,15 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createPointCreateTemplate(point) {
-  const {destination, offers, data, type} = point;
+function createPointCreateTemplate(pointData, offersData, destinationsData) {
+  const {destination, data, type} = pointData;
+
+  // будет использоваться для отметки checked
+  const checkedOffers = pointData.offers;
+  const destinations = destinationsData;
+  const allOffersOfCurrentType = offersData.find((item) => {
+    return item.type === type;
+  });
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -117,7 +126,7 @@ function createPointCreateTemplate(point) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
-            ${createDestinationDatalistTemplate(DESTINATIONS)}
+            ${createDestinationDatalistTemplate(destinations)}
           </datalist>
         </div>
 
@@ -141,7 +150,7 @@ function createPointCreateTemplate(point) {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(offers)}
+        ${createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -159,13 +168,17 @@ function createPointCreateTemplate(point) {
 }
 
 export default class PointCreate extends SmartView {
-  constructor(point = POINT_BLANK) {
+  constructor(point, offers, destinations) {
     super();
     // this._point = point;
-    this._data = PointCreate.parsePointToData(point);
+    // console.log(offers, destinations);
+    this._data = PointCreate.createPointBlank(point, destinations);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
+
+    this._destinations = destinations;
+    this._offers = offers;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -196,7 +209,7 @@ export default class PointCreate extends SmartView {
   }
 
   getTemplate() {
-    return createPointCreateTemplate(this._data);
+    return createPointCreateTemplate(this._data, this._offers, this._destinations);
   }
 
   restoreHandlers() {
@@ -272,7 +285,7 @@ export default class PointCreate extends SmartView {
         return;
       }
 
-      const offersItem = offers.find((offer) => {
+      const offersItem = this._offers.find((offer) => {
         return offer.type === newType;
       }).offers;
 
@@ -285,17 +298,22 @@ export default class PointCreate extends SmartView {
     }
   }
 
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
+  }
+
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
 
     if (newDestinationName === this._data.destination) {
       return;
-    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+    } else if (this._getDestinationList(this._destinations).indexOf(newDestinationName) === -1) {
       evt.currentTarget.value = '';
       return;
     }
 
-    const destinationItem = destinations.find((destination) => {
+    const destinationItem = this._destinations.find((destination) => {
       return destination.name === newDestinationName;
     });
 
@@ -360,7 +378,7 @@ export default class PointCreate extends SmartView {
     evt.preventDefault();
     const newDestinationName = this.getElement().querySelector('#event-destination');
 
-    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
+    if (this._getDestinationList(this._destinations).indexOf(newDestinationName.value) === -1) {
       newDestinationName.value = '';
       return;
     }
@@ -394,6 +412,28 @@ export default class PointCreate extends SmartView {
     const data = Object.assign({}, point);
 
     return data;
+  }
+
+  static createPointBlank(point, destinations) {
+    if (point) {
+      return PointCreate.parsePointToData(point);
+    }
+
+    const pointBlank = {
+      type: typeBlank,
+      destination: destinations[0],
+      offers: [],
+      data: {
+        date: {
+          from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        },
+        price: 0,
+        isFavorite: false,
+      },
+    };
+
+    return PointCreate.parsePointToData(pointBlank);
   }
 }
 

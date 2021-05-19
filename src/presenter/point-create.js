@@ -22,14 +22,13 @@ export default class PointCreate {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(callback) {
+  init(callback, offers, destinations) {
     this._checkPointsCountCallback = callback;
 
     if (this._pointCreateComponent !== null) {
       return;
     }
-
-    this._pointCreateComponent = new PointCreateView();
+    this._pointCreateComponent = new PointCreateView(undefined, offers, destinations);
 
     this._pointCreateComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointCreateComponent.setDeleteClickHandler(this._handleDeleteClick);

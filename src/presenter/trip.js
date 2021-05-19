@@ -89,7 +89,7 @@ export default class Trip {
       this._noPointsComponent === null;
     }
 
-    this._pointCreatePresenter.init(this._handlePointCreateFormClose);
+    this._pointCreatePresenter.init(this._handlePointCreateFormClose, this._offers, this._destinations);
   }
 
   hideEventsTable() {
