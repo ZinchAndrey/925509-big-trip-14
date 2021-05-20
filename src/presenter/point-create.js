@@ -54,6 +54,18 @@ export default class PointCreate {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this._pointCreateComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._pointCreateComponent.shake(resetFormState);
+  }
+
   _handleEscPress(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this._checkPointsCountCallback();
@@ -69,9 +81,6 @@ export default class PointCreate {
       UpdateType.MAJOR,
       updatedPoint, // id будет присваиваться сервером
     );
-
-    this._addNewPointBtn.disabled = false; // возможно, это тоже после ответа сервера
-    // this.destroy(); - убрать форму надо только после ответа сервера
   }
 
   _handleDeleteClick() {
