@@ -1,6 +1,5 @@
 import PointCreateView from '../view/point-create.js';
 
-import {nanoid} from 'nanoid';
 import {RenderPosition, render, remove} from '../utils/render.js';
 
 import {UserAction, UpdateType} from '../const.js';
@@ -61,11 +60,7 @@ export default class PointCreate {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign(
-        {},
-        updatedPoint,
-        {id: nanoid()},
-      ),
+      updatedPoint, // id будет присваиваться сервером
     );
 
     this._addNewPointBtn.disabled = false;
