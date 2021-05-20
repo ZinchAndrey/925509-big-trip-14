@@ -30,7 +30,7 @@ export default class Smart extends Abstract {
       this._data,
       update,
     );
-    // возможно в дальнейшем понадобится обновлять данные без перерисовки (сохранение пользовательского ввода)
+
     if (justDataUpdating) {
       return;
     }

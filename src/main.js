@@ -1,7 +1,6 @@
-import {POINTS_COUNT, MenuItem} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
 
-import {generatePoint} from './mock/point.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 
@@ -11,6 +10,10 @@ import FilterPresenter from './presenter/filter.js';
 import MainMenuView from './view/main-menu.js';
 import StatisticsView from './view/statistics.js';
 
+import Api from './api.js';
+
+const AUTHORIZATION = 'Basic andrey_925509-bt-02';
+const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const tripMainNode = document.querySelector('.trip-main');
 const pageMainNode = document.querySelector('.page-main');
@@ -19,29 +22,23 @@ const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 
-
-const filterModel = new FilterModel();
-
-const points = new Array(POINTS_COUNT).fill().map(generatePoint);
-
-const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
-points.sort((point1, point2) => {
-  if (point1.data.date.from < point2.data.date.from) {
-    return -1;
-  }
-  return 1;
-});
+// let destinations = null;
+// let offers = null;
 
 const mainMenuComponent = new MainMenuView();
-render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
 
-let statisticsComponent = null;
+const filterModel = new FilterModel();
+const pointsModel = new PointsModel();
+
+// const points = new Array(POINTS_COUNT).fill().map(generatePoint);
+
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-const tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel);
 
+let tripPresenter = null;
+
+let statisticsComponent = null;
 
 function handleSiteMenuClick(menuItem) {
   if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
@@ -69,12 +66,31 @@ function handleSiteMenuClick(menuItem) {
   }
 }
 
-mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
-filterPresenter.init();
-tripPresenter.init();
+// Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных
+let destinations = api.getDestinations();
+let offers = api.getOffers();
+let points = api.getPoints();
 
-addNewPointBtn.addEventListener('click', () => {
-  tripPresenter.createPoint();
-  addNewPointBtn.disabled = true;
-});
+Promise.all([destinations, offers, points])
+  .then((results) => {
+    [destinations, offers, points] = results;
+    // console.log(points);
+
+    tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations, api);
+    tripPresenter.init();
+
+    pointsModel.setPoints(UpdateType.INIT, points);
+
+    // элементы управления отрисуем только после загрузки данных
+    mainMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+    render(mainMenuNode, mainMenuComponent, RenderPosition.AFTERBEGIN);
+
+    filterPresenter.init();
+
+    addNewPointBtn.addEventListener('click', () => {
+      tripPresenter.createPoint();
+      addNewPointBtn.disabled = true;
+    });
+  });
+

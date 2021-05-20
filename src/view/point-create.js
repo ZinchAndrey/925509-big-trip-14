@@ -1,61 +1,40 @@
 import dayjs from 'dayjs';
 import he from 'he';
-import {DESTINATIONS, TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
-import {getRandomInteger} from '../utils/common.js';
+import {TYPES, DEFAULT_POINT_TIME_DIF} from '../const.js';
 import SmartView from './smart.js';
 
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-// в дальнешем эти данные будем получать с сервера
-import {destinations, offers} from '../mock/point.js';
-
-const typeBlank = TYPES[0].toLowerCase();
-
-const POINT_BLANK = {
-  type: typeBlank,
-  destination: destinations.find((destination) => {
-    return destination.name === DESTINATIONS[0];
-  }),
-  offers: offers.find((offer) => {
-    return offer.type === typeBlank;
-  }).offers,
-  data: {
-    date: {
-      from: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      to: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    },
-    price: 0,
-    isFavorite: false,
-  },
-};
-
 
 function createDestinationDatalistTemplate(destinations) {
   let optionsMarkup = '';
   destinations.forEach((destination) => {
-    optionsMarkup += `<option value="${destination}"></option>`;
+    optionsMarkup += `<option value="${destination.name}"></option>`;
   });
   return optionsMarkup;
 }
 
-function createOptionOffersTemplate(options) {
-  if (!options.length) {
+function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
+  const allOffers = allOffersOfCurrentType.offers;
+
+  if (!allOffers.length) {
     return '';
   }
-
   let optionsMarkup = '';
-  options.forEach((option, index) => {
-    const isChecked  = getRandomInteger(0, 1) ? 'checked' : '';
-    const id = `event-offer-${option.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
+  allOffers.forEach((offer, index) => {
+    const isChecked  = checkedOffers.find((checkedOffer) => {
+      return checkedOffer.title === offer.title;
+    });
+    const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isChecked}>
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" value="${offer.title}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
     <label class="event__offer-label" for="${id}">
-      <span class="event__offer-title">${option.title}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${option.price}</span>
+      <span class="event__offer-price">${offer.price}</span>
     </label>
   </div>`;
   });
@@ -90,8 +69,15 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createPointCreateTemplate(point) {
-  const {destination, offers, data, type} = point;
+function createPointCreateTemplate(pointData, offersData, destinationsData) {
+  const {destination, data, type} = pointData;
+
+  // будет использоваться для отметки checked
+  const checkedOffers = pointData.offers;
+  const destinations = destinationsData;
+  const allOffersOfCurrentType = offersData.find((item) => {
+    return item.type === type;
+  });
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -117,7 +103,7 @@ function createPointCreateTemplate(point) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
           <datalist id="destination-list">
-            ${createDestinationDatalistTemplate(DESTINATIONS)}
+            ${createDestinationDatalistTemplate(destinations)}
           </datalist>
         </div>
 
@@ -141,7 +127,7 @@ function createPointCreateTemplate(point) {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createOptionOffersTemplate(offers)}
+        ${createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers)}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -159,13 +145,16 @@ function createPointCreateTemplate(point) {
 }
 
 export default class PointCreate extends SmartView {
-  constructor(point = POINT_BLANK) {
+  constructor(point, allOffers, allDestinations) {
     super();
-    // this._point = point;
-    this._data = PointCreate.parsePointToData(point);
+
+    this._data = PointCreate.createPointBlank(point, allDestinations);
 
     this._datepickerFrom = null;
     this._datepickerTo = null;
+
+    this._destinations = allDestinations;
+    this._offers = allOffers;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -173,7 +162,7 @@ export default class PointCreate extends SmartView {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._basicPriceChangeHandler = this._basicPriceChangeHandler.bind(this);
-
+    this._offersChangeHandler = this._offersChangeHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -196,7 +185,7 @@ export default class PointCreate extends SmartView {
   }
 
   getTemplate() {
-    return createPointCreateTemplate(this._data);
+    return createPointCreateTemplate(this._data, this._offers, this._destinations);
   }
 
   restoreHandlers() {
@@ -262,6 +251,12 @@ export default class PointCreate extends SmartView {
     this.getElement()
       .querySelector('#event-price-1')
       .addEventListener('change', this._basicPriceChangeHandler);
+
+    const offersSectionElement = this.getElement().querySelector('.event__section--offers');
+    // если офферов нет, блок вообще не рендерится
+    if (offersSectionElement) {
+      offersSectionElement.addEventListener('change', this._offersChangeHandler);
+    }
   }
 
   _typeChangeHandler(evt) {
@@ -272,17 +267,16 @@ export default class PointCreate extends SmartView {
         return;
       }
 
-      const offersItem = offers.find((offer) => {
-        return offer.type === newType;
-      }).offers;
-
-      if (offersItem) {
-        this.updateData({
-          type: newType,
-          offers: offersItem,
-        });
-      }
+      this.updateData({
+        type: newType,
+        offers: [],
+      });
     }
+  }
+
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
   }
 
   _destinationChangeHandler(evt) {
@@ -290,12 +284,12 @@ export default class PointCreate extends SmartView {
 
     if (newDestinationName === this._data.destination) {
       return;
-    } else if (DESTINATIONS.indexOf(newDestinationName) === -1) {
+    } else if (this._getDestinationList(this._destinations).indexOf(newDestinationName) === -1) {
       evt.currentTarget.value = '';
       return;
     }
 
-    const destinationItem = destinations.find((destination) => {
+    const destinationItem = this._destinations.find((destination) => {
       return destination.name === newDestinationName;
     });
 
@@ -331,9 +325,9 @@ export default class PointCreate extends SmartView {
         this._data.data,
         {
           date: {
-            from: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
+            from: dayjs(userDate).toDate(),
             to: isFromAfterTo ?
-              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour').format('YYYY-MM-DD HH:mm:ss') :
+              dayjs(userDate).add(DEFAULT_POINT_TIME_DIF, 'hour').toDate() :
               this._data.data.date.to,
           },
         },
@@ -349,7 +343,7 @@ export default class PointCreate extends SmartView {
         {
           date: {
             from: this._data.data.date.from,
-            to: dayjs(userDate).format('YYYY-MM-DD HH:mm:ss'),
+            to: dayjs(userDate).toDate(),
           },
         },
       ),
@@ -360,7 +354,7 @@ export default class PointCreate extends SmartView {
     evt.preventDefault();
     const newDestinationName = this.getElement().querySelector('#event-destination');
 
-    if (DESTINATIONS.indexOf(newDestinationName.value) === -1) {
+    if (this._getDestinationList(this._destinations).indexOf(newDestinationName.value) === -1) {
       newDestinationName.value = '';
       return;
     }
@@ -372,6 +366,37 @@ export default class PointCreate extends SmartView {
     evt.preventDefault();
     // this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
     this._callback.deleteClick();
+  }
+
+  _offersChangeHandler(evt) {
+    if (!evt.target.classList.contains('event__offer-checkbox')) {
+      return;
+    }
+    const justDataUpdating = true; // для читабельности
+    const selectedOfferName = evt.target.value;
+
+    // проверяем наличие оффера в точке маршрута
+    const selectedOfferIndex = this._data.offers.findIndex((offer) => {
+      return offer.title === selectedOfferName;
+    });
+
+    // найти текущий оффер в списке всех офферов и добавить в массив с офферами точки маршрута
+    if (selectedOfferIndex < 0) {
+      const currentOffer = this._offers.find((offers) => {
+        return offers.type === this._data.type;
+      }).offers.find((offer) => {
+        return offer.title === selectedOfferName;
+      });
+
+      this.updateData({
+        offers: [currentOffer, ...this._data.offers],
+      }, justDataUpdating);
+    } else {
+      // удалить текущий оффер в массиве с офферами точки маршрута
+      this.updateData({
+        offers: [...this._data.offers.slice(0, selectedOfferIndex), ...this._data.offers.slice(selectedOfferIndex + 1)],
+      }, justDataUpdating);
+    }
   }
 
   setFormSubmitHandler(callback) {
@@ -394,6 +419,28 @@ export default class PointCreate extends SmartView {
     const data = Object.assign({}, point);
 
     return data;
+  }
+
+  static createPointBlank(point, destinations) {
+    if (point) {
+      return PointCreate.parsePointToData(point);
+    }
+
+    const pointBlank = {
+      type: TYPES[0].toLowerCase(),
+      destination: destinations[0],
+      offers: [],
+      data: {
+        date: {
+          from: dayjs().toDate(),
+          to: dayjs().toDate(),
+        },
+        price: 0,
+        isFavorite: false,
+      },
+    };
+
+    return PointCreate.parsePointToData(pointBlank);
   }
 }
 
