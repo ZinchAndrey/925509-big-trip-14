@@ -58,12 +58,10 @@ export default class Point {
       return;
     }
 
-    // if (this._tripEventsListNode.contains(prevPointComponent.getElement())) {
     if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    // if (this._tripEventsListNode.contains(prevEditPointComponent.getElement())) {
     if (this._mode === Mode.EDITING) {
       replace(this._pointComponent, prevEditPointComponent);
       this._mode === Mode.DEFAULT;

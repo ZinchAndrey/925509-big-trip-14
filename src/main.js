@@ -22,15 +22,10 @@ const filtersNode = tripMainNode.querySelector('.trip-controls__filters');
 const addNewPointBtn = tripMainNode.querySelector('.trip-main__event-add-btn');
 const mainMenuNode = tripMainNode.querySelector('.trip-controls__navigation');
 
-// let destinations = null;
-// let offers = null;
-
 const mainMenuComponent = new MainMenuView();
 
 const filterModel = new FilterModel();
 const pointsModel = new PointsModel();
-
-// const points = new Array(POINTS_COUNT).fill().map(generatePoint);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
