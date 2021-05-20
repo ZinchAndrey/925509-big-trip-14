@@ -47,6 +47,13 @@ export default class PointCreate {
     document.removeEventListener('keydown', this._handleEscPress);
   }
 
+  setSaving() {
+    this._pointCreateComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   _handleEscPress(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       this._checkPointsCountCallback();
@@ -63,8 +70,8 @@ export default class PointCreate {
       updatedPoint, // id будет присваиваться сервером
     );
 
-    this._addNewPointBtn.disabled = false;
-    this.destroy();
+    this._addNewPointBtn.disabled = false; // возможно, это тоже после ответа сервера
+    // this.destroy(); - убрать форму надо только после ответа сервера
   }
 
   _handleDeleteClick() {
