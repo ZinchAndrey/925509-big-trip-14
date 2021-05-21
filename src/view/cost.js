@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-function calcTripCost(points) {
+const calcTripCost = (points) => {
   let tripCost = 0;
   points.forEach((point) => {
     const {offers, data} = point;
@@ -11,13 +11,13 @@ function calcTripCost(points) {
   });
 
   return tripCost;
-}
+};
 
-function createTripCostTemplate(points) {
+const createTripCostTemplate = (points) => {
   return `<p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${calcTripCost(points)}</span>
     </p>`;
-}
+};
 
 export default class TripCost extends AbstractView {
   constructor(points) {

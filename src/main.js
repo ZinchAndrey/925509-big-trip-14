@@ -35,7 +35,7 @@ let tripPresenter = null;
 
 let statisticsComponent = null;
 
-function handleSiteMenuClick(menuItem) {
+const handleSiteMenuClick = (menuItem) => {
   if (mainMenuNode.querySelector(`[data-type="${menuItem}"]`)
     .classList.contains('trip-tabs__btn--active')) {
     return;
@@ -59,7 +59,7 @@ function handleSiteMenuClick(menuItem) {
       render(pageMainContainerNode, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
-}
+};
 
 
 // Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных

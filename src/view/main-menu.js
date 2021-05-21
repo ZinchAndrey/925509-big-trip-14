@@ -1,12 +1,12 @@
 import AbstractView from './abstract.js';
 import {MenuItem} from '../const.js';
 
-function createMainMenuTemplate() {
+const createMainMenuTemplate = () => {
   return `<nav class="trip-controls__trip-tabs  trip-tabs">
     <a class="trip-tabs__btn trip-tabs__btn--active" href="#" data-type="${MenuItem.TABLE}">${MenuItem.TABLE}</a>
     <a class="trip-tabs__btn" href="#" data-type="${MenuItem.STATS}">${MenuItem.STATS}</a>
   </nav>`;
-}
+};
 
 export default class MainMenu extends AbstractView {
   constructor() {

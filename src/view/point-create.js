@@ -8,15 +8,15 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 
-function createDestinationDatalistTemplate(destinations) {
+const createDestinationDatalistTemplate = (destinations) => {
   let optionsMarkup = '';
   destinations.forEach((destination) => {
     optionsMarkup += `<option value="${destination.name}"></option>`;
   });
   return optionsMarkup;
-}
+};
 
-function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers, isDisabled) {
+const createOptionOffersTemplate = (allOffersOfCurrentType, checkedOffers, isDisabled) => {
   const allOffers = allOffersOfCurrentType.offers;
 
   if (!allOffers.length) {
@@ -46,9 +46,9 @@ function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers, isDis
       ${optionsMarkup}
       </div>
     </section>`;
-}
+};
 
-function createEventTypeItemsTemplate(chosenType, types, isDisabled) {
+const createEventTypeItemsTemplate = (chosenType, types, isDisabled) => {
   let itemsMarkup = '';
 
   types.forEach((currentType) => {
@@ -59,17 +59,17 @@ function createEventTypeItemsTemplate(chosenType, types, isDisabled) {
   });
 
   return itemsMarkup;
-}
+};
 
-function createPicturesTemplate(pictures) {
+const createPicturesTemplate = (pictures) => {
   let picturesMarkup = '';
   pictures.forEach((picture) => {
     picturesMarkup += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
   });
   return picturesMarkup;
-}
+};
 
-function createPointCreateTemplate(pointData, offersData, destinationsData, isDisabled) {
+const createPointCreateTemplate = (pointData, offersData, destinationsData, isDisabled) => {
   const {destination, data, type, isSaving} = pointData;
 
   // будет использоваться для отметки checked
@@ -142,7 +142,7 @@ function createPointCreateTemplate(pointData, offersData, destinationsData, isDi
       </section>
     </form>
   </li>`;
-}
+};
 
 export default class PointCreate extends SmartView {
   constructor(point, allOffers, allDestinations) {
