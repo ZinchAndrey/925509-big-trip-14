@@ -364,7 +364,6 @@ export default class PointCreate extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    // this._callback.deleteClick(PointCreate.parseDataToPoint(this._data));
     this._callback.deleteClick();
   }
 

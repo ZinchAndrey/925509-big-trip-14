@@ -268,7 +268,6 @@ export default class Trip {
 
   _handleModelEvent(updateType, data) {
     // data - данные о новой точке, по сути точка с update
-
     switch (updateType) {
       case UpdateType.PATCH:
         // для offers

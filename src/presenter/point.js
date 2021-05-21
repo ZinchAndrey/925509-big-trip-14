@@ -26,8 +26,6 @@ export default class Point {
     this._editPointComponent = null;
     this._mode = Mode.DEFAULT;
 
-    // this._destinations = destinations;
-
     this._replacePointToEdit = this._replacePointToEdit.bind(this);
     this._replaceEditToPoint = this._replaceEditToPoint.bind(this);
     this._handleEscPress = this._handleEscPress.bind(this);

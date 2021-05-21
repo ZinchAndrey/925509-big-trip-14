@@ -1,5 +1,3 @@
-// import dayjs from 'dayjs';
-
 const DESTINATIONS = ['Moscow', 'Roma', 'Paris', 'Istanbul', 'Athens', 'Madrid', 'Berlin', 'Budapest', 'Vienna'];
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 const POINTS_COUNT = 5;
@@ -18,7 +16,7 @@ const UserAction = {
 };
 
 const UpdateType = {
-  PATCH: 'PATCH', // неясно, будет ли использоваться, так как при любых изменениях меняется либо весь список, либо нужно пересчитывать цену
+  PATCH: 'PATCH',
   MINOR: 'MINOR', // обновление точки маршрута, вызовет перерисовку всего, кроме сброса типа сотрировки
   MAJOR: 'MAJOR', // обновление всего
   INIT: 'INIT', // начальная инициализация
