@@ -120,7 +120,7 @@ function createPointEditTemplate(pointData, offersData, destinationsData, isDisa
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${data.price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
@@ -287,9 +287,13 @@ export default class PointEdit extends SmartView {
     if (newDestinationName === this._data.destination) {
       return;
     } else if (this._getDestinationList(this._destinations).indexOf(newDestinationName) === -1) {
+      evt.target.setCustomValidity('Choose destination from the list');
+      evt.target.reportValidity();
       evt.currentTarget.value = '';
       return;
     }
+
+    evt.target.setCustomValidity('');
 
     const destinationItem = this._destinations.find((destination) => {
       return destination.name === newDestinationName;
@@ -305,6 +309,14 @@ export default class PointEdit extends SmartView {
   _basicPriceChangeHandler(evt) {
     const newPrice = parseInt(evt.currentTarget.value);
     const justDataUpdating = true; // для читабельности
+
+    evt.target.setCustomValidity(''); // устанавливаем значение до проверки, иначе validity.CustomError = true
+
+    if (!evt.target.checkValidity()) {
+      evt.target.setCustomValidity('Set positive integer');
+      evt.target.reportValidity();
+      return;
+    }
 
     this.updateData({
       data: Object.assign(
