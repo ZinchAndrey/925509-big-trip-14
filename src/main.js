@@ -63,14 +63,13 @@ const handleSiteMenuClick = (menuItem) => {
 
 
 // Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных
-let destinations = api.getDestinations();
-let offers = api.getOffers();
-let points = api.getPoints();
+const destinationsRequest = api.getDestinations();
+const offersRequest = api.getOffers();
+const pointsRequest = api.getPoints();
 
-Promise.all([destinations, offers, points])
+Promise.all([destinationsRequest, offersRequest, pointsRequest])
   .then((results) => {
-    [destinations, offers, points] = results;
-    // console.log(points);
+    const [destinations, offers, points] = results;
 
     tripPresenter = new TripPresenter(tripMainNode, pageMainNode, pointsModel, filterModel, offers, destinations, api);
     tripPresenter.init();
