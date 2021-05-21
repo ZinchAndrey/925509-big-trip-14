@@ -37,6 +37,9 @@ export default class PointCreate {
   }
 
   destroy() {
+    // при скрытии формы создания точки, всегда нужно возвращать кнопку в активное состояние
+    this._addNewPointBtn.disabled = false;
+
     if (this._pointCreateComponent === null) {
       return;
     }
@@ -45,6 +48,7 @@ export default class PointCreate {
     this._pointCreateComponent = null;
 
     document.removeEventListener('keydown', this._handleEscPress);
+
   }
 
   setSaving() {
@@ -71,7 +75,7 @@ export default class PointCreate {
       this._checkPointsCountCallback();
       this.destroy();
       document.removeEventListener('keydown', this._handleEscPress);
-      this._addNewPointBtn.disabled = false;
+      // this._addNewPointBtn.disabled = false;
     }
   }
 
@@ -85,7 +89,7 @@ export default class PointCreate {
 
   _handleDeleteClick() {
     this._checkPointsCountCallback();
-    this._addNewPointBtn.disabled = false;
+    // this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 }

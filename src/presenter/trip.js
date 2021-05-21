@@ -81,6 +81,7 @@ export default class Trip {
   }
 
   createPoint() {
+    // debugger
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     // часть выше можно удалить и передавать в createPoint callback, см коммиты 7.2.2 и 7.2.3
@@ -198,13 +199,15 @@ export default class Trip {
 
     this._pointPresenter = {};
 
+    this._pointCreatePresenter.destroy();
+
     remove(this._sortingComponent);
     remove(this._noPointsComponent);
     remove(this._loadingComponent);
   }
 
   _clearTrip({resetSortType = false} = {}) {
-    this._pointCreatePresenter.destroy();
+    // this._pointCreatePresenter.destroy();
     this._clearEventsTable();
 
     if (this._tripInfoPresenter.destroy) {
@@ -246,7 +249,7 @@ export default class Trip {
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
             // разблочить кнопку только после ответа сервера
-            this._addNewPointBtn.disabled = false;
+            // this._addNewPointBtn.disabled = false; - лишнее
           })
           .catch(() => {
             this._pointCreatePresenter.setAborting();
