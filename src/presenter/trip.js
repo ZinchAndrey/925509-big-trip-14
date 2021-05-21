@@ -81,7 +81,6 @@ export default class Trip {
   }
 
   createPoint() {
-    // debugger
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     // часть выше можно удалить и передавать в createPoint callback, см коммиты 7.2.2 и 7.2.3
