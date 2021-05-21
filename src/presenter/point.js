@@ -10,6 +10,12 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class Point {
   constructor(tripEventsListNode, changeData, changeMode) {
     this._tripEventsListNode = tripEventsListNode;
@@ -53,12 +59,13 @@ export default class Point {
       return;
     }
 
-    if (this._tripEventsListNode.contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._tripEventsListNode.contains(prevEditPointComponent.getElement())) {
-      replace(this._editPointComponent, prevEditPointComponent);
+    if (this._mode === Mode.EDITING) {
+      replace(this._pointComponent, prevEditPointComponent);
+      this._mode === Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -76,6 +83,35 @@ export default class Point {
       this._changeData(this._point);
 
       this._replaceEditToPoint();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._editPointComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._editPointComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._editPointComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -138,7 +174,7 @@ export default class Point {
       UpdateType.MINOR,
       updatedPoint,
     );
-    this._replaceEditToPoint();
+    // this._replaceEditToPoint();
   }
 
   _handleDeleteClick(point) {

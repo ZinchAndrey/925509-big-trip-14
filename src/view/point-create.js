@@ -16,7 +16,7 @@ function createDestinationDatalistTemplate(destinations) {
   return optionsMarkup;
 }
 
-function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
+function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers, isDisabled) {
   const allOffers = allOffersOfCurrentType.offers;
 
   if (!allOffers.length) {
@@ -30,7 +30,7 @@ function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
     const id = `event-offer-${offer.title.toLowerCase().split(' ').join('-')}-${index + 1}`;
 
     optionsMarkup += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" value="${offer.title}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''}>
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" value="${offer.title}" type="checkbox" name="${id}" ${isChecked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="event__offer-label" for="${id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -48,12 +48,12 @@ function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers) {
     </section>`;
 }
 
-function createEventTypeItemsTemplate(chosenType, types) {
+function createEventTypeItemsTemplate(chosenType, types, isDisabled) {
   let itemsMarkup = '';
 
   types.forEach((currentType) => {
     itemsMarkup += `<div class="event__type-item">
-      <input id="event-type-${currentType.toLowerCase()}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${currentType.toLowerCase()}" ${currentType.toLowerCase() === chosenType ? 'checked' : ''}>
+      <input id="event-type-${currentType.toLowerCase()}" class="event__type-input  visually-hidden" type="radio" name="event-type" ${isDisabled ? 'disabled' : ''} value="${currentType.toLowerCase()}" ${currentType.toLowerCase() === chosenType ? 'checked' : ''}>
       <label class="event__type-label  event__type-label--${currentType.toLowerCase()}" for="event-type-${currentType.toLowerCase()}">${currentType}</label>
     </div>`;
   });
@@ -69,8 +69,8 @@ function createPicturesTemplate(pictures) {
   return picturesMarkup;
 }
 
-function createPointCreateTemplate(pointData, offersData, destinationsData) {
-  const {destination, data, type} = pointData;
+function createPointCreateTemplate(pointData, offersData, destinationsData, isDisabled) {
+  const {destination, data, type, isSaving} = pointData;
 
   // будет использоваться для отметки checked
   const checkedOffers = pointData.offers;
@@ -87,12 +87,12 @@ function createPointCreateTemplate(pointData, offersData, destinationsData) {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createEventTypeItemsTemplate(type, TYPES)}
+              ${createEventTypeItemsTemplate(type, TYPES, isDisabled)}
             </fieldset>
           </div>
         </div>
@@ -101,7 +101,7 @@ function createPointCreateTemplate(pointData, offersData, destinationsData) {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list">
+          <input class="event__input  event__input--destination" id="event-destination" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list" ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list">
             ${createDestinationDatalistTemplate(destinations)}
           </datalist>
@@ -109,10 +109,10 @@ function createPointCreateTemplate(pointData, offersData, destinationsData) {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(data.date.from).format('DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(data.date.from).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(data.date.to).format('DD/MM/YY HH:mm')}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(data.date.to).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -123,8 +123,8 @@ function createPointCreateTemplate(pointData, offersData, destinationsData) {
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>
       </header>
       <section class="event__details">
         ${createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers)}
@@ -412,11 +412,19 @@ export default class PointCreate extends SmartView {
   static parseDataToPoint(data) {
     const point = Object.assign({}, data);
 
+    delete point.isDisabled;
+    delete point.isSaving;
+
     return point;
   }
 
   static parsePointToData(point) {
-    const data = Object.assign({}, point);
+    const data = Object.assign({},
+      point,
+      {
+        isDisabled: false,
+        isSaving: false,
+      });
 
     return data;
   }
