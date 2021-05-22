@@ -1,12 +1,15 @@
 import FiltersView from '../view/filters.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
-import {UpdateType} from '../const.js';
+import {UpdateType, MenuItem} from '../const.js';
 
 
 export default class Filter {
-  constructor(filterContainer, filterModel) {
+  constructor(filterContainer, filterModel, handleSiteMenuClick) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
+
+    // так как при клике на фильтр с экрана статистики, нужно переключиться на экран с точками маршрута
+    this._handleSiteMenuClick = handleSiteMenuClick;
 
     this._filterComponent = null;
 
@@ -26,6 +29,9 @@ export default class Filter {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
       return;
     }
+
+    // нужно для переключения на точки маршрута, если был клик с экрана статистики. Если мы уже на экране точек, функция завершится после проверки
+    this._handleSiteMenuClick(MenuItem.TABLE);
 
     replace(this._filterComponent, prevFilterComponent);
     remove(prevFilterComponent);

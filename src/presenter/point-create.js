@@ -75,7 +75,6 @@ export default class PointCreate {
       this._checkPointsCountCallback();
       this.destroy();
       document.removeEventListener('keydown', this._handleEscPress);
-      // this._addNewPointBtn.disabled = false;
     }
   }
 
@@ -89,7 +88,6 @@ export default class PointCreate {
 
   _handleDeleteClick() {
     this._checkPointsCountCallback();
-    // this._addNewPointBtn.disabled = false;
     this.destroy();
   }
 }

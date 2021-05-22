@@ -59,6 +59,7 @@ export default class Trip {
 
   init() {
     this._renderTrip();
+    this._handleSortTypeChange(SortType.DAY);
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -74,7 +75,6 @@ export default class Trip {
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // часть выше можно удалить и передавать в createPoint callback, см коммиты 7.2.2 и 7.2.3
 
     if (this._noPointsComponent !== null) {
       remove(this._noPointsComponent);
@@ -82,15 +82,6 @@ export default class Trip {
     }
 
     this._pointCreatePresenter.init(this._handlePointCreateFormClose, this._offers, this._destinations);
-  }
-
-  hideEventsTable() {
-    this._tripEventsNode.classList.add('trip-events--hidden');
-  }
-
-  showEventsTable() {
-    this._tripEventsNode.classList.remove('trip-events--hidden');
-    this._handleSortTypeChange(SortType.DAY);
   }
 
   _getPoints() {
@@ -245,8 +236,6 @@ export default class Trip {
         this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
-            // разблочить кнопку только после ответа сервера
-            // this._addNewPointBtn.disabled = false; - лишнее
           })
           .catch(() => {
             this._pointCreatePresenter.setAborting();

@@ -1,4 +1,4 @@
-import {MenuItem, UpdateType} from './const.js';
+import {MenuItem, UpdateType, INIT_ERROR_MESSAGE} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
 
 import PointsModel from './model/points.js';
@@ -12,7 +12,7 @@ import StatisticsView from './view/statistics.js';
 
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic andrey_925509-bt-02';
+const AUTHORIZATION = 'Basic andrey_925509-bt-03';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const tripMainNode = document.querySelector('.trip-main');
@@ -29,8 +29,6 @@ const pointsModel = new PointsModel();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const filterPresenter = new FilterPresenter(filtersNode, filterModel);
-
 let tripPresenter = null;
 
 let statisticsComponent = null;
@@ -45,14 +43,14 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
       // Показать доску
-      tripPresenter.showEventsTable();
+      tripPresenter.init();
       addNewPointBtn.disabled = false;
       // Скрыть статистику
       remove(statisticsComponent);
       break;
     case MenuItem.STATS:
       // Скрыть доску
-      tripPresenter.hideEventsTable();
+      tripPresenter.destroy();
       addNewPointBtn.disabled = true;
       // Показать статистику
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
@@ -60,6 +58,8 @@ const handleSiteMenuClick = (menuItem) => {
       break;
   }
 };
+
+const filterPresenter = new FilterPresenter(filtersNode, filterModel, handleSiteMenuClick);
 
 const destinationsRequest = api.getDestinations();
 const offersRequest = api.getOffers();
@@ -85,5 +85,7 @@ Promise.all([destinationsRequest, offersRequest, pointsRequest])
       tripPresenter.createPoint();
       addNewPointBtn.disabled = true;
     });
+  }).catch(() => {
+    alert(INIT_ERROR_MESSAGE);
   });
 

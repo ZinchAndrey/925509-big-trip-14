@@ -1,7 +1,7 @@
 const DESTINATIONS = ['Moscow', 'Roma', 'Paris', 'Istanbul', 'Athens', 'Madrid', 'Berlin', 'Budapest', 'Vienna'];
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const POINTS_COUNT = 5;
 const DEFAULT_POINT_TIME_DIF = 1; // hours
+const INIT_ERROR_MESSAGE = 'Возникла проблема с сервером. Попробуйте перезагрузить страницу';
 
 const SortType = {
   DAY: 'day',
@@ -33,4 +33,4 @@ const MenuItem = {
   STATS: 'Stats',
 };
 
-export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType, FilterType, MenuItem};
+export {DESTINATIONS, TYPES, INIT_ERROR_MESSAGE, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType, FilterType, MenuItem};

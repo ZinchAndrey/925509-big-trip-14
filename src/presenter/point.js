@@ -172,7 +172,6 @@ export default class Point {
       UpdateType.MINOR,
       updatedPoint,
     );
-    // this._replaceEditToPoint();
   }
 
   _handleDeleteClick(point) {
