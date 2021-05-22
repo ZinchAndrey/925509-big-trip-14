@@ -19,11 +19,6 @@ export default class MainMenu extends AbstractView {
     return createMainMenuTemplate();
   }
 
-  setMenuClickHandler(callback) {
-    this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
-  }
-
   setMenuItem(menuItem) {
     const items = this.getElement().querySelectorAll('.trip-tabs__btn');
     items.forEach((item) => {
@@ -32,6 +27,11 @@ export default class MainMenu extends AbstractView {
 
     const currentItem = this.getElement().querySelector(`[data-type="${menuItem}"]`);
     currentItem.classList.add('trip-tabs__btn--active');
+  }
+
+  setMenuClickHandler(callback) {
+    this._callback.menuClick = callback;
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 
   _menuClickHandler(evt) {

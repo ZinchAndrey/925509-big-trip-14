@@ -111,7 +111,6 @@ export default class Trip {
     }
   }
 
-
   _renderNoPoints() {
     if (this._noPointsComponent === null) {
       this._noPointsComponent = new NoPointsView();
