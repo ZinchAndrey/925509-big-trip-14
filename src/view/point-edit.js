@@ -229,7 +229,7 @@ export default class PointEdit extends SmartView {
       this.getElement().querySelector('#event-start-time-1'),
       {
         enableTime: true,
-        time_24hr: true,
+        'time_24hr': true,
         dateFormat: 'd/m/y H:i',
         defaultDate: dayjs(this._data.data.date.from).toDate(),
         onChange: this._dateFromChangeHandler,
@@ -247,7 +247,7 @@ export default class PointEdit extends SmartView {
       this.getElement().querySelector('#event-end-time-1'),
       {
         enableTime: true,
-        time_24hr: true,
+        'time_24hr': true,
         minDate: dayjs(this._data.data.date.from).toDate(),
         dateFormat: 'd/m/y H:i',
         defaultDate: dayjs(this._data.data.date.to).toDate(),
