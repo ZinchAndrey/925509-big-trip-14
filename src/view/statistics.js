@@ -116,7 +116,6 @@ const getTimesOfTypes = (points) => {
   return {types: uniqueTypes, times};
 };
 
-
 const createMoneyChart = (moneyCtx, points) => {
   const data = getSumPricesOfTypes(points);
 

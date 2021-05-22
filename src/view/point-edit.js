@@ -7,7 +7,6 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-
 const createDestinationDatalistTemplate = (destinations) => {
   let optionsMarkup = '';
   destinations.forEach((destination) => {
@@ -190,6 +189,16 @@ export default class PointEdit extends SmartView {
     return createPointEditTemplate(this._data, this._offers, this._destinations);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setRollUpClickHandler(callback) {
+    this._callback.rollUpClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
 
@@ -203,6 +212,11 @@ export default class PointEdit extends SmartView {
 
   reset(point) {
     this.updateData(PointEdit.parsePointToData(point));
+  }
+
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
   }
 
   _setFromDatepicker() {
@@ -275,11 +289,6 @@ export default class PointEdit extends SmartView {
         offers: [],
       });
     }
-  }
-
-  _getDestinationList(destinations) {
-    const destinationList = destinations.map((destination) => destination.name);
-    return destinationList;
   }
 
   _destinationChangeHandler(evt) {
@@ -409,19 +418,9 @@ export default class PointEdit extends SmartView {
     }
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
-
   _rollUpClickHandler(evt) {
     evt.preventDefault();
     this._callback.rollUpClick();
-  }
-
-  setRollUpClickHandler(callback) {
-    this._callback.rollUpClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
   }
 
   _formDeleteClickHandler(evt) {

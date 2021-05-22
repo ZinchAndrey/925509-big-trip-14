@@ -188,6 +188,17 @@ export default class PointCreate extends SmartView {
     return createPointCreateTemplate(this._data, this._offers, this._destinations);
   }
 
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
 
@@ -200,6 +211,11 @@ export default class PointCreate extends SmartView {
 
   reset(point) {
     this.updateData(PointCreate.parsePointToData(point));
+  }
+
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
   }
 
   _setFromDatepicker() {
@@ -272,11 +288,6 @@ export default class PointCreate extends SmartView {
         offers: [],
       });
     }
-  }
-
-  _getDestinationList(destinations) {
-    const destinationList = destinations.map((destination) => destination.name);
-    return destinationList;
   }
 
   _destinationChangeHandler(evt) {
@@ -408,16 +419,6 @@ export default class PointCreate extends SmartView {
         offers: [...this._data.offers.slice(0, selectedOfferIndex), ...this._data.offers.slice(selectedOfferIndex + 1)],
       }, justDataUpdating);
     }
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parseDataToPoint(data) {
