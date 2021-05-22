@@ -8,7 +8,7 @@ import SmartView from './smart.js';
 const BAR_HEIGHT = 55;
 const MIN_TYPES_COUNT = 4;
 
-function createStatisticsTemplate(points) {
+const createStatisticsTemplate = (points) => {
   const typesCount = getTypes(points).length;
   let height = BAR_HEIGHT * MIN_TYPES_COUNT;
 
@@ -31,18 +31,18 @@ function createStatisticsTemplate(points) {
       <canvas class="statistics__chart  statistics__chart--time" width="900" height="${height}"></canvas>
     </div>
   </section>`;
-}
+};
 
-function getTypes(points) {
+const getTypes = (points) => {
   const uniqueTypes = new Set();
   points.forEach((point) => {
     uniqueTypes.add(point.type.toUpperCase());
   });
 
   return Array.from(uniqueTypes.values());
-}
+};
 
-function getSumPricesOfTypes(points) {
+const getSumPricesOfTypes = (points) => {
   let uniqueTypes = getTypes(points);
 
   let sumPrices = uniqueTypes.map((type) => {
@@ -66,9 +66,9 @@ function getSumPricesOfTypes(points) {
   uniqueTypes = indices.map((i) => uniqueTypes[i]);
 
   return {types: uniqueTypes, prices: sumPrices};
-}
+};
 
-function getCountsOfTypes(points) {
+const getCountsOfTypes = (points) => {
   let uniqueTypes = getTypes(points);
 
   let counts = uniqueTypes.map((type) => {
@@ -90,9 +90,9 @@ function getCountsOfTypes(points) {
   uniqueTypes = indices.map((i) => uniqueTypes[i]);
 
   return {types: uniqueTypes, counts};
-}
+};
 
-function getTimesOfTypes(points) {
+const getTimesOfTypes = (points) => {
   let uniqueTypes = getTypes(points);
 
   let times = uniqueTypes.map((type) => {
@@ -114,10 +114,9 @@ function getTimesOfTypes(points) {
   uniqueTypes = indices.map((i) => uniqueTypes[i]);
 
   return {types: uniqueTypes, times};
-}
+};
 
-
-function createMoneyChart(moneyCtx, points) {
+const createMoneyChart = (moneyCtx, points) => {
   const data = getSumPricesOfTypes(points);
 
   return new Chart(moneyCtx, {
@@ -184,9 +183,9 @@ function createMoneyChart(moneyCtx, points) {
       },
     },
   });
-}
+};
 
-function createTypeChart (typeCtx, points) {
+const createTypeChart = (typeCtx, points) => {
   const data = getCountsOfTypes(points);
 
   return new Chart(typeCtx, {
@@ -253,9 +252,9 @@ function createTypeChart (typeCtx, points) {
       },
     },
   });
-}
+};
 
-function createTimeChart  (timeCtx, points) {
+const createTimeChart = (timeCtx, points) => {
   const data = getTimesOfTypes(points);
 
   return new Chart(timeCtx, {
@@ -322,7 +321,7 @@ function createTimeChart  (timeCtx, points) {
       },
     },
   });
-}
+};
 
 export default class Statistics extends SmartView {
   constructor(points) {

@@ -5,7 +5,7 @@ import AbstractView from './abstract.js';
 
 dayjs.extend(duration);
 
-function getTimeDifference(start, end) {
+const getTimeDifference = (start, end) => {
   const differenceInMs = dayjs(end).diff(dayjs(start));
   const difference = {
     days: dayjs.duration(differenceInMs).asDays() > 1 ? dayjs.duration(differenceInMs).days() + 'D ' : '',
@@ -13,9 +13,9 @@ function getTimeDifference(start, end) {
     minutes: dayjs.duration(differenceInMs).minutes() > 0 ? dayjs.duration(differenceInMs).minutes() + 'M' : '',
   };
   return difference.days + difference.hours + difference.minutes; // 4D 2H 11M
-}
+};
 
-function createOptionsTemplate(options) {
+const createOptionsTemplate = (options) => {
   let optionsMarkup ='';
   options.forEach((option) => {
     optionsMarkup += `<li class="event__offer">
@@ -25,9 +25,9 @@ function createOptionsTemplate(options) {
     </li>`;
   });
   return optionsMarkup;
-}
+};
 
-function createPointTemplate(point) {
+const createPointTemplate = (point) => {
   const {destination, offers, data, type} = point;
   const favoriteClassName  = data.isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = getTimeDifference(data.date.from, data.date.to);
@@ -67,7 +67,7 @@ function createPointTemplate(point) {
       </button>
     </div>
   </li>`;
-}
+};
 
 export default class Point extends AbstractView {
   constructor(point) {
@@ -82,16 +82,6 @@ export default class Point extends AbstractView {
     return createPointTemplate(this._point);
   }
 
-  _rollUpClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.rollUpClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setRollUpClickHandler(callback) {
     this._callback.rollUpClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
@@ -100,5 +90,15 @@ export default class Point extends AbstractView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('button.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  _rollUpClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.rollUpClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

@@ -59,6 +59,7 @@ export default class Trip {
 
   init() {
     this._renderTrip();
+    this._handleSortTypeChange(SortType.DAY);
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -71,19 +72,9 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  _handlePointCreateFormClose() {
-    const points = this._getPoints();
-    const pointsCount = points.length;
-
-    if (!pointsCount) {
-      this._renderNoPoints();
-    }
-  }
-
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // часть выше можно удалить и передавать в createPoint callback, см коммиты 7.2.2 и 7.2.3
 
     if (this._noPointsComponent !== null) {
       remove(this._noPointsComponent);
@@ -91,15 +82,6 @@ export default class Trip {
     }
 
     this._pointCreatePresenter.init(this._handlePointCreateFormClose, this._offers, this._destinations);
-  }
-
-  hideEventsTable() {
-    this._tripEventsNode.classList.add('trip-events--hidden');
-  }
-
-  showEventsTable() {
-    this._tripEventsNode.classList.remove('trip-events--hidden');
-    this._handleSortTypeChange(SortType.DAY);
   }
 
   _getPoints() {
@@ -119,7 +101,6 @@ export default class Trip {
         return filteredPoints.sort(sortByTime);
     }
   }
-
 
   _renderNoPoints() {
     if (this._noPointsComponent === null) {
@@ -198,13 +179,14 @@ export default class Trip {
 
     this._pointPresenter = {};
 
+    this._pointCreatePresenter.destroy();
+
     remove(this._sortingComponent);
     remove(this._noPointsComponent);
     remove(this._loadingComponent);
   }
 
   _clearTrip({resetSortType = false} = {}) {
-    this._pointCreatePresenter.destroy();
     this._clearEventsTable();
 
     if (this._tripInfoPresenter.destroy) {
@@ -215,6 +197,15 @@ export default class Trip {
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
+    }
+  }
+
+  _handlePointCreateFormClose() {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    if (!pointsCount) {
+      this._renderNoPoints();
     }
   }
 
@@ -245,8 +236,6 @@ export default class Trip {
         this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
-            // разблочить кнопку только после ответа сервера
-            this._addNewPointBtn.disabled = false;
           })
           .catch(() => {
             this._pointCreatePresenter.setAborting();
@@ -268,7 +257,6 @@ export default class Trip {
 
   _handleModelEvent(updateType, data) {
     // data - данные о новой точке, по сути точка с update
-
     switch (updateType) {
       case UpdateType.PATCH:
         // для offers

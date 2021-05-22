@@ -7,16 +7,15 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-
-function createDestinationDatalistTemplate(destinations) {
+const createDestinationDatalistTemplate = (destinations) => {
   let optionsMarkup = '';
   destinations.forEach((destination) => {
     optionsMarkup += `<option value="${destination.name}"></option>`;
   });
   return optionsMarkup;
-}
+};
 
-function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers, isDisabled) {
+const createOptionOffersTemplate = (allOffersOfCurrentType, checkedOffers, isDisabled) => {
   const allOffers = allOffersOfCurrentType.offers;
 
   if (!allOffers.length) {
@@ -46,9 +45,9 @@ function createOptionOffersTemplate(allOffersOfCurrentType, checkedOffers, isDis
       ${optionsMarkup}
       </div>
     </section>`;
-}
+};
 
-function createEventTypeItemsTemplate(chosenType, types, isDisabled) {
+const createEventTypeItemsTemplate = (chosenType, types, isDisabled) => {
   let itemsMarkup = '';
 
   types.forEach((currentType) => {
@@ -59,17 +58,17 @@ function createEventTypeItemsTemplate(chosenType, types, isDisabled) {
   });
 
   return itemsMarkup;
-}
+};
 
-function createPicturesTemplate(pictures) {
+const createPicturesTemplate = (pictures) => {
   let picturesMarkup = '';
   pictures.forEach((picture) => {
     picturesMarkup += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
   });
   return picturesMarkup;
-}
+};
 
-function createPointEditTemplate(pointData, offersData, destinationsData, isDisabled) {
+const createPointEditTemplate = (pointData, offersData, destinationsData, isDisabled) => {
   const {destination, data, type, isSaving, isDeleting} = pointData;
 
   // будет использоваться для отметки checked
@@ -78,7 +77,6 @@ function createPointEditTemplate(pointData, offersData, destinationsData, isDisa
   const allOffersOfCurrentType = offersData.find((item) => {
     return item.type === type;
   });
-  // !!! ПРОВЕРИТЬ TYPES
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -121,7 +119,7 @@ function createPointEditTemplate(pointData, offersData, destinationsData, isDisa
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${data.price}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${data.price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
@@ -146,7 +144,7 @@ function createPointEditTemplate(pointData, offersData, destinationsData, isDisa
       </section>
     </form>
   </li>`;
-}
+};
 
 export default class PointEdit extends SmartView {
   constructor(point, allOffers, allDestinations) {
@@ -191,6 +189,16 @@ export default class PointEdit extends SmartView {
     return createPointEditTemplate(this._data, this._offers, this._destinations);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setRollUpClickHandler(callback) {
+    this._callback.rollUpClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
 
@@ -204,6 +212,11 @@ export default class PointEdit extends SmartView {
 
   reset(point) {
     this.updateData(PointEdit.parsePointToData(point));
+  }
+
+  _getDestinationList(destinations) {
+    const destinationList = destinations.map((destination) => destination.name);
+    return destinationList;
   }
 
   _setFromDatepicker() {
@@ -278,19 +291,18 @@ export default class PointEdit extends SmartView {
     }
   }
 
-  _getDestinationList(destinations) {
-    const destinationList = destinations.map((destination) => destination.name);
-    return destinationList;
-  }
-
   _destinationChangeHandler(evt) {
     const newDestinationName = evt.currentTarget.value;
     if (newDestinationName === this._data.destination) {
       return;
     } else if (this._getDestinationList(this._destinations).indexOf(newDestinationName) === -1) {
+      evt.target.setCustomValidity('Choose destination from the list');
+      evt.target.reportValidity();
       evt.currentTarget.value = '';
       return;
     }
+
+    evt.target.setCustomValidity('');
 
     const destinationItem = this._destinations.find((destination) => {
       return destination.name === newDestinationName;
@@ -306,6 +318,14 @@ export default class PointEdit extends SmartView {
   _basicPriceChangeHandler(evt) {
     const newPrice = parseInt(evt.currentTarget.value);
     const justDataUpdating = true; // для читабельности
+
+    evt.target.setCustomValidity(''); // устанавливаем значение до проверки, иначе validity.CustomError = true
+
+    if (!evt.target.checkValidity()) {
+      evt.target.setCustomValidity('Set positive integer');
+      evt.target.reportValidity();
+      return;
+    }
 
     this.updateData({
       data: Object.assign(
@@ -398,19 +418,9 @@ export default class PointEdit extends SmartView {
     }
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
-
   _rollUpClickHandler(evt) {
     evt.preventDefault();
     this._callback.rollUpClick();
-  }
-
-  setRollUpClickHandler(callback) {
-    this._callback.rollUpClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._rollUpClickHandler);
   }
 
   _formDeleteClickHandler(evt) {

@@ -5,7 +5,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-function render(container, child, position) {
+const render = (container, child, position) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -23,20 +23,20 @@ function render(container, child, position) {
       container.append(child);
       break;
   }
-}
+};
 
-function renderTemplate(container, template, place) {
+const renderTemplate = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
-}
+};
 
-function createElement(template) {
+const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
   return newElement.firstChild;
-}
+};
 
-function replace(newChild, oldChild) {
+const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
   }
@@ -52,9 +52,9 @@ function replace(newChild, oldChild) {
   }
 
   parent.replaceChild(newChild, oldChild);
-}
+};
 
-function remove(component) {
+const remove = (component) => {
   if (component === null) {
     return;
   }
@@ -65,6 +65,6 @@ function remove(component) {
 
   component.getElement().remove();
   component.removeElement();
-}
+};
 
 export {RenderPosition, renderTemplate, render, createElement, replace, remove};
