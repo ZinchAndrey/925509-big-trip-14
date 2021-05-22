@@ -71,15 +71,6 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  _handlePointCreateFormClose() {
-    const points = this._getPoints();
-    const pointsCount = points.length;
-
-    if (!pointsCount) {
-      this._renderNoPoints();
-    }
-  }
-
   createPoint() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
@@ -206,7 +197,6 @@ export default class Trip {
   }
 
   _clearTrip({resetSortType = false} = {}) {
-    // this._pointCreatePresenter.destroy();
     this._clearEventsTable();
 
     if (this._tripInfoPresenter.destroy) {
@@ -217,6 +207,15 @@ export default class Trip {
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
+    }
+  }
+
+  _handlePointCreateFormClose() {
+    const points = this._getPoints();
+    const pointsCount = points.length;
+
+    if (!pointsCount) {
+      this._renderNoPoints();
     }
   }
 

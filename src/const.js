@@ -33,5 +33,4 @@ const MenuItem = {
   STATS: 'Stats',
 };
 
-
 export {DESTINATIONS, TYPES, POINTS_COUNT, SortType, DEFAULT_POINT_TIME_DIF, UserAction, UpdateType, FilterType, MenuItem};

@@ -61,12 +61,11 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-
-// Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных
 const destinationsRequest = api.getDestinations();
 const offersRequest = api.getOffers();
 const pointsRequest = api.getPoints();
 
+// Необходимо проводить манипуляции с приложением только после загрузки ВСЕХ данных
 Promise.all([destinationsRequest, offersRequest, pointsRequest])
   .then((results) => {
     const [destinations, offers, points] = results;

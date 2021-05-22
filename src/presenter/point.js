@@ -113,19 +113,6 @@ export default class Point {
     }
   }
 
-  _handleEscPress(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      this._editPointComponent.reset(this._point);
-      this._replaceEditToPoint();
-      document.removeEventListener('keydown', this._handleEscPress);
-    }
-  }
-
-  _handleRollUpClick() {
-    this._editPointComponent.reset(this._point);
-    this._replaceEditToPoint();
-  }
-
   _replacePointToEdit() {
     replace(this._editPointComponent, this._pointComponent);
     document.addEventListener('keydown', this._handleEscPress);
@@ -139,6 +126,19 @@ export default class Point {
     document.removeEventListener('keydown', this._handleEscPress);
 
     this._mode = Mode.DEFAULT;
+  }
+
+  _handleEscPress(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      this._editPointComponent.reset(this._point);
+      this._replaceEditToPoint();
+      document.removeEventListener('keydown', this._handleEscPress);
+    }
+  }
+
+  _handleRollUpClick() {
+    this._editPointComponent.reset(this._point);
+    this._replaceEditToPoint();
   }
 
   _handleEditClick() {

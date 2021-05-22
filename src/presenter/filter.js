@@ -31,6 +31,10 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
+  _getFilter() {
+    return this._filterModel.getFilter();
+  }
+
   _handleModelEvent() {
     this.init();
   }
@@ -41,9 +45,5 @@ export default class Filter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
-  _getFilter() {
-    return this._filterModel.getFilter();
   }
 }
