@@ -1,6 +1,6 @@
 import TripInfoBlockView from '../view/trip-info-block.js';
 import TripInfoView from '../view/trip-info.js';
-import TripCostView from '../view/cost';
+import TripCostView from '../view/trip-cost.js';
 
 import {RenderPosition, render, remove} from '../utils/render.js';
 

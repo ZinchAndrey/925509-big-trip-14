@@ -120,7 +120,7 @@ const createPointCreateTemplate = (pointData, offersData, destinationsData, isDi
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" step="1" name="event-price" value="${data.price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" step="1" name="event-price" value="${data.price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
@@ -455,7 +455,7 @@ export default class PointCreate extends SmartView {
           from: dayjs().toDate(),
           to: dayjs().toDate(),
         },
-        price: 0,
+        price: 100,
         isFavorite: false,
       },
     };
